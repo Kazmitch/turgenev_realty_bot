@@ -1,0 +1,50 @@
+version: '3'
+services:
+  realty_db:
+    image: postgres:14
+    restart: always
+    env_file:
+      - '.env'
+    volumes:
+      - /opt/postgres/realty_bot:/var/lib/postgresql/data/
+    ports:
+      - '5459:5432'
+    networks:
+      - realty_db_network
+
+  realty_bot:
+    build:
+      context: .
+    restart: always
+    command: python3 bot.py
+    env_file:
+      - ".env"
+    volumes:
+      - .:/realty_tg_bot
+#      - ./telegram_bot/logs:/var/logs
+    depends_on:
+      - realty_db
+      - realty_web
+    networks:
+      - realty_db_network
+
+  realty_web:
+    build:
+      context: .
+    image: realty_web
+    restart: always
+    command: ./run_web.sh
+    env_file:
+      - '.env'
+    volumes:
+      - .:/realty_tg_bot
+    depends_on:
+      - realty_db
+    ports:
+      - '8383:8000'
+    networks:
+      - realty_db_network
+
+networks:
+  realty_db_network:
+    driver: bridge
