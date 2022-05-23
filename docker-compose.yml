@@ -18,7 +18,7 @@ services:
     restart: always
     command: python3 bot.py
     env_file:
-      - ".env"
+      - '.env'
     volumes:
       - .:/realty_tg_bot
 #      - ./telegram_bot/logs:/var/logs

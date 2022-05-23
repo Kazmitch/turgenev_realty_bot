@@ -26,7 +26,7 @@ printf "$script" | python3 django_app.py shell
 bash -c "python3 django_app.py makemigrations"
 bash -c "python3 django_app.py migrate"
 #bash -c "python django_app.py collectstatic --noinput"
-bash -c "crontab /realty_tg_bot/crontab"
-bash -c "service cron restart"
+#bash -c "crontab /realty_tg_bot/crontab"
+#bash -c "service cron restart"
 
 bash -c "python3 django_app.py runserver 0.0.0.0:8000"

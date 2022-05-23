@@ -3,3 +3,4 @@ aioredis
 environs
 Django
 psycopg2-binary
+tzdata
