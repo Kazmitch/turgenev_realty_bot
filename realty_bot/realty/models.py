@@ -50,6 +50,7 @@ class Address(BaseModel):
 
 class Building(BaseModel):
     name = models.CharField(verbose_name="Название ЖК", max_length=255, unique=True, blank=False)
+    latin_name = models.CharField(verbose_name="Название на английском", max_length=255, unique=True, null=True)
     address = models.ForeignKey(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
     developer = models.ForeignKey(Developer, verbose_name="Застройщик", on_delete=models.CASCADE, null=True)
     building_description = models.TextField(verbose_name="Описание ЖК", blank=True)
