@@ -1,4 +1,8 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.callback_data import CallbackData
+
+
+building = CallbackData('building', 'name', 'section')
 
 
 async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
@@ -8,43 +12,43 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       [
                                           InlineKeyboardButton(
                                               text='О проекте',
-                                              callback_data=f'{building_name}_project'
+                                              callback_data=building.new(name=building_name, section='project')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
                                               text='Подобрать квартиру/планировки',
-                                              callback_data=f'{building_name}_flats'
+                                              callback_data=building.new(name=building_name, section='flats')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
                                               text='Специальные предложения',
-                                              callback_data=f'{building_name}_offers'
+                                              callback_data=building.new(name=building_name, section='offers')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
                                               text='Документация',
-                                              callback_data=f'{building_name}_documents'
+                                              callback_data=building.new(name=building_name, section='documents')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
                                               text='Новости',
-                                              callback_data=f'{building_name}_news'
+                                              callback_data=building.new(name=building_name, section='news')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
                                               text='Динамика строительства',
-                                              callback_data=f'{building_name}_constructing'
+                                              callback_data=building.new(name=building_name, section='constructing')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
                                               text='Условия покупки',
-                                              callback_data=f'{building_name}_purchase terms'
+                                              callback_data=building.new(name=building_name, section='purchase_terms')
                                           )
                                       ],
                                   ])
