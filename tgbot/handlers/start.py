@@ -31,7 +31,7 @@ async def show_find_building(message: Message, state: FSMContext):
     """Выводим меню искомого ЖК."""
     building_name = message.text
     building = await get_find_building(building_name)
-    markup = await main_building_menu(building.name)
+    markup = await main_building_menu(building.latin_name)
     await message.answer(text=f'Меню {building.name}', reply_markup=markup)
 
 

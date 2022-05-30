@@ -53,3 +53,5 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       ],
                                   ])
     return markup
+
+menu = InlineKeyboardButton(text="В начало", callback_data="menu")
