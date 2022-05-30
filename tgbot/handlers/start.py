@@ -16,7 +16,7 @@ async def start_deep_link(message: Message):
     args = message.get_args()
     await message.answer(f"Привет, {message.from_user.full_name}!")
     building = await get_building(args)
-    markup = await main_building_menu(building.name)
+    markup = await main_building_menu(building.latin_name)
     await message.answer(text=f'Меню {building.name}', reply_markup=markup)
 
 

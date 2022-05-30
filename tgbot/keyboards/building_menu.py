@@ -3,6 +3,7 @@ from aiogram.utils.callback_data import CallbackData
 
 
 building = CallbackData('building', 'name', 'section')
+menu_cd = CallbackData('menu', 'name')
 
 
 async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
@@ -54,4 +55,8 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                   ])
     return markup
 
-menu = InlineKeyboardButton(text="В начало", callback_data="menu")
+
+async def menu_button(building_name):
+    callback_data = menu_cd.new(name=building_name)
+    menu = InlineKeyboardButton(text="В начало", callback_data=callback_data)
+    return menu
