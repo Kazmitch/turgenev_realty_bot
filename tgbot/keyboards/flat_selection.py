@@ -2,9 +2,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
 # Создаем CallbackData-объекты, которые будут нужны для работы с меню
-from tgbot.keyboards.building_menu import main_building_menu, menu_button
+from tgbot.keyboards.building_menu import menu_button
 
-# flat_cd = CallbackData('flat_parameters', 'level', 'area', 'price', 'year', 'rooms', 'floor')
 flat_cd = CallbackData('flat_parameters', 'building_name', 'level', 'area', 'price', 'year', 'rooms', 'floor')
 
 
@@ -13,44 +12,86 @@ def make_callback_data(building_name, level, area='0', price='0', year='0', room
     Создаем коллбекдату для каждого элемента меню, в зависимости от передаваемых параметров.
     По умолчанию площадь, год, кол-во комнат
     """
-    # return flat_cd.new(level=level, area=area, price=price, year=year, rooms=rooms, floor=floor)
-    return flat_cd.new(building_name=building_name, level=level, area=area, price=price, year=year, rooms=rooms, floor=floor)
+    return flat_cd.new(building_name=building_name, level=level, area=area, price=price, year=year, rooms=rooms,
+                       floor=floor)
 
 
 async def area_keyboard(building_name: str) -> InlineKeyboardMarkup:
     """Создаем клавиатуру с выбором площади."""
+
     # Указываем, что текущий уровень меню - 0
     current_level = 0
 
     # Создаем Клавиатуру
     markup = InlineKeyboardMarkup(row_width=1)
 
-    # Сформируем коллбек дату, которая будет на кнопке.
-    callback_data = make_callback_data(level=current_level + 1, building_name=building_name)
-
-    markup.insert(
-        InlineKeyboardButton(text='Рассматриваю все варианты', callback_data=callback_data)
-    )
+    markup.inline_keyboard = [
+        [
+            InlineKeyboardButton(
+                text='До 25 кв. м',
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area='1,25')
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text='25-45 кв. м',
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area='25,45')
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='45-65 кв. м',
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area='45,65')
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='Более 65 кв. м',
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area='65,100')
+            )
+        ]
+    ]
 
     markup.row(await menu_button(building_name))
 
     return markup
 
 
-async def price_keyboard(area: str, building_name: str) -> InlineKeyboardMarkup:
+async def price_keyboard(building_name: str) -> InlineKeyboardMarkup:
     """Создаем клавиатуру с выбором цены."""
+
     # Указываем, что текущий уровень меню - 1
     current_level = 1
 
     # Создаем Клавиатуру
     markup = InlineKeyboardMarkup(row_width=1)
 
-    # Сформируем коллбек дату, которая будет на кнопке.
-    callback_data = make_callback_data(level=current_level + 1, building_name=building_name, area=area)
-
-    markup.insert(
-        InlineKeyboardButton(text='Рассматриваю все варианты', callback_data=callback_data)
-    )
+    markup.inline_keyboard = [
+        [
+            InlineKeyboardButton(
+                text='До 10 млн руб.',
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='1,10')
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text='10-20 млн руб.',
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='10,20')
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='20-30 млн руб.',
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='20,30')
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='Более 30 млн руб.',
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='30,100')
+            )
+        ]
+    ]
 
     markup.row(
         InlineKeyboardButton(
@@ -63,8 +104,9 @@ async def price_keyboard(area: str, building_name: str) -> InlineKeyboardMarkup:
     return markup
 
 
-async def year_keyboard(area: str, price: str, building_name: str) -> InlineKeyboardMarkup:
+async def year_keyboard(building_name: str) -> InlineKeyboardMarkup:
     """Создаем клавиатуру с выбором года."""
+
     # Указываем, что текущий уровень меню - 2
     current_level = 2
 
@@ -75,19 +117,19 @@ async def year_keyboard(area: str, price: str, building_name: str) -> InlineKeyb
         [
             InlineKeyboardButton(
                 text='Объект сдан',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price, year='ho')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, year='hand over')
             ),
         ],
         [
             InlineKeyboardButton(
                 text='До конца текущего года',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price, year='ty')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, year='this year')
             )
         ],
         [
             InlineKeyboardButton(
                 text='Рассматриваю все варианты',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price)
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name)
             )
         ]
     ]
@@ -95,7 +137,7 @@ async def year_keyboard(area: str, price: str, building_name: str) -> InlineKeyb
     markup.row(
         InlineKeyboardButton(
             text='Назад',
-            callback_data=make_callback_data(level=current_level - 1, building_name=building_name, area=area)
+            callback_data=make_callback_data(level=current_level - 1, building_name=building_name)
         )
     )
     markup.row(await menu_button(building_name))
@@ -103,8 +145,9 @@ async def year_keyboard(area: str, price: str, building_name: str) -> InlineKeyb
     return markup
 
 
-async def rooms_keyboard(area: str, price: str, year: str, building_name: str) -> InlineKeyboardMarkup:
+async def rooms_keyboard(building_name: str) -> InlineKeyboardMarkup:
     """Создаем клавиатуру с выбором кол-ва комнат."""
+
     # Указываем, что текущий уровень меню - 3
     current_level = 3
 
@@ -115,28 +158,25 @@ async def rooms_keyboard(area: str, price: str, year: str, building_name: str) -
         [
             InlineKeyboardButton(
                 text='Студия/1 комната',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price, year=year,
-                                                 rooms='s/1')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, rooms='1')
             ),
         ],
         [
             InlineKeyboardButton(
                 text='2 комнаты',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price, year=year,
-                                                 rooms='2r')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, rooms='2')
             )
         ],
         [
             InlineKeyboardButton(
                 text='3 и более',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price, year=year,
-                                                 rooms='3m')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, rooms='3')
             )
         ],
         [
             InlineKeyboardButton(
                 text='Рассматриваю все варианты',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price)
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name)
             )
         ]
     ]
@@ -144,7 +184,7 @@ async def rooms_keyboard(area: str, price: str, year: str, building_name: str) -
     markup.row(
         InlineKeyboardButton(
             text='Назад',
-            callback_data=make_callback_data(level=current_level - 1, building_name=building_name, area=area, price=price)
+            callback_data=make_callback_data(level=current_level - 1, building_name=building_name)
         )
     )
     markup.row(await menu_button(building_name))
@@ -152,7 +192,7 @@ async def rooms_keyboard(area: str, price: str, year: str, building_name: str) -
     return markup
 
 
-async def floor_keyboard(area: str, price: str, year: str, rooms: str, building_name: str) -> InlineKeyboardMarkup:
+async def floor_keyboard(building_name: str) -> InlineKeyboardMarkup:
     """Создаем клавиатуру с выбором этажа."""
 
     # Указываем, что текущий уровень меню - 4
@@ -165,22 +205,20 @@ async def floor_keyboard(area: str, price: str, year: str, rooms: str, building_
         [
             InlineKeyboardButton(
                 text='Не 1-й этаж',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price, year=year,
-                                                 rooms=rooms, floor='no1')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name,
+                                                 floor='non_first')
             ),
         ],
         [
             InlineKeyboardButton(
                 text='Не последний этаж',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price, year=year,
-                                                 rooms=rooms, floor='no_la')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, floor='non_last')
             )
         ],
         [
             InlineKeyboardButton(
                 text='Рассматриваю все варианты',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area=area, price=price, year=year,
-                                                 rooms=rooms)
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, floor='0')
             )
         ]
     ]
@@ -188,7 +226,7 @@ async def floor_keyboard(area: str, price: str, year: str, rooms: str, building_
     markup.row(
         InlineKeyboardButton(
             text='Назад',
-            callback_data=make_callback_data(level=current_level - 1, building_name=building_name, area=area, price=price, year=year)
+            callback_data=make_callback_data(level=current_level - 1, building_name=building_name)
         )
     )
     markup.row(await menu_button(building_name))
