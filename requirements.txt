@@ -4,3 +4,6 @@ environs
 Django
 psycopg2-binary
 tzdata
+requests
+xmltodict
+aiohttp

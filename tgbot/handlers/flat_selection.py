@@ -69,6 +69,7 @@ async def choice_floor(call: CallbackQuery, building_name: str, state: FSMContex
 async def show_flats(call: CallbackQuery, building_name: str, state: FSMContext, callback_data: dict, **kwargs):
     """Предлагаем квартиры на выбор."""
     await state.update_data(floor=callback_data.get('floor'))
+    data = await state.get_data()
     await call.message.answer(f'Вы выбрали {building_name}')
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
