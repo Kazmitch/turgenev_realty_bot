@@ -41,7 +41,7 @@ class Address(BaseModel):
     city = models.CharField(verbose_name="Название района субъекта РФ (город)", max_length=64, blank=True)
     street = models.CharField(verbose_name="Улица", max_length=64, blank=True)
     house = models.CharField(verbose_name="Номер дома", max_length=32, blank=True)
-    corpus = models.CharField(verbose_name="Корпус дома", max_length=32, blank=True)
+    corpus = models.CharField(verbose_name="Корпус дома", max_length=32, blank=True, null=True)
 
     class Meta:
         verbose_name = "Адрес"
@@ -58,7 +58,7 @@ class Building(BaseModel):
     built_year = models.DateField(verbose_name="Год сдачи (год постройки)", blank=False)
     ready_quarter = models.CharField(verbose_name="Квартал сдачи дома", max_length=32, blank=True)
     building_type = models.CharField(verbose_name="Тип дома", max_length=32, blank=True)
-    building_section = models.CharField(verbose_name="Корпус дома", max_length=32, blank=True)
+    building_section = models.CharField(verbose_name="Корпус дома", max_length=32, blank=True, null=True)
     ceiling_height = models.CharField(verbose_name="Высота потолков в метрах", max_length=32, blank=True)
     lift = models.BooleanField(verbose_name="Наличие лифта", blank=True)
     guarded_building = models.BooleanField(verbose_name="Закрытая территория", blank=True)
@@ -103,3 +103,15 @@ class News(BaseModel):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class XmlLinks(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
+    xml_link = models.TextField(verbose_name="Ссылка на xml", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "XML Ссылка"
+        verbose_name_plural = "XML Ссылки"
+
+    def __str__(self):
+        return f"{self.building.name} XML"

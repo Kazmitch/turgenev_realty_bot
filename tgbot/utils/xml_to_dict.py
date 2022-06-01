@@ -5,17 +5,16 @@ import aiohttp
 
 
 async def get_xml(url: str):
+    """Получаем данные в формате xml."""
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             data = await response.text()
             return data
 
 
-async def check_offers(url: str, area: str, price: str):
-
-    task = asyncio.create_task(get_xml(url))
-
-    xml = await task
+async def get_offers_yan(url: str, area: str, price: str):
+    """Отбираем лоты по критериям."""
+    xml = await get_xml(url)
     data = xmltodict.parse(xml)
 
     good_offers = []
@@ -26,5 +25,3 @@ async def check_offers(url: str, area: str, price: str):
             good_offers.append(offer)
 
     return good_offers
-
-asyncio.run(check_offers('https://beta.xml-108.ru/xml/f7c15110-b851-4aca-bd5a-1e6f15bce5ef.xml', '50', '135000000'))

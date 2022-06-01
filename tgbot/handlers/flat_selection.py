@@ -6,8 +6,9 @@ from aiogram.types import CallbackQuery, Message
 
 from tgbot.keyboards.building_menu import building
 from tgbot.keyboards.flat_selection import area_keyboard, price_keyboard, year_keyboard, rooms_keyboard, floor_keyboard, \
-    flat_cd
+    flat_cd, flats_keyboard
 from tgbot.states.flat_selection import FlatStates
+from tgbot.utils.xml_to_dict import get_offers_yan
 
 
 async def flats(call: CallbackQuery, callback_data: dict):
@@ -70,7 +71,9 @@ async def show_flats(call: CallbackQuery, building_name: str, state: FSMContext,
     """Предлагаем квартиры на выбор."""
     await state.update_data(floor=callback_data.get('floor'))
     data = await state.get_data()
-    await call.message.answer(f'Вы выбрали {building_name}')
+    markup = await flats_keyboard(building_name, data)
+    # some_data = await get_offers_yan('https://beta.xml-108.ru/xml/f7c15110-b851-4aca-bd5a-1e6f15bce5ef.xml', '50', '135000000')
+    await call.message.answer(text='Подобрал для вас варианты, смотрим?', reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
 

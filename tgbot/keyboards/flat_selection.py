@@ -70,25 +70,25 @@ async def price_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='До 10 млн руб.',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='1,10')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='1000000,10000000')
             ),
         ],
         [
             InlineKeyboardButton(
                 text='10-20 млн руб.',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='10,20')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='10000000,20000000')
             )
         ],
         [
             InlineKeyboardButton(
                 text='20-30 млн руб.',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='20,30')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='20000000,30000000')
             )
         ],
         [
             InlineKeyboardButton(
                 text='Более 30 млн руб.',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='30,100')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='30000000')
             )
         ]
     ]
@@ -229,6 +229,32 @@ async def floor_keyboard(building_name: str) -> InlineKeyboardMarkup:
             callback_data=make_callback_data(level=current_level - 1, building_name=building_name)
         )
     )
+    markup.row(await menu_button(building_name))
+
+    return markup
+
+
+async def flats_keyboard(building_name: str, flats_data: dict):
+    """Создаем клавиатуру с предложением посмотреть квартиры."""
+    # Создаем Клавиатуру
+    markup = InlineKeyboardMarkup(row_width=1)
+
+    markup.inline_keyboard = [
+        [
+            InlineKeyboardButton(
+                text='Показать предложения',
+                callback_data='show_flats',
+                building_name=building_name,
+                flats_data=flats_data
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='Заказать обратный звонок',
+                callback_data='contact'
+            )
+        ]
+    ]
     markup.row(await menu_button(building_name))
 
     return markup
