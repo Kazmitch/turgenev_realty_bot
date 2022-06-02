@@ -47,7 +47,7 @@ async def area_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='Более 65 кв. м',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area='65,100')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, area='65,9999')
             )
         ]
     ]
@@ -88,7 +88,7 @@ async def price_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='Более 30 млн руб.',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='30000000')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, price='30000000,999999999')
             )
         ]
     ]
@@ -117,13 +117,13 @@ async def year_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='Объект сдан',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, year='hand over')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, year='hand_over')
             ),
         ],
         [
             InlineKeyboardButton(
                 text='До конца текущего года',
-                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, year='this year')
+                callback_data=make_callback_data(level=current_level + 1, building_name=building_name, year='now_year')
             )
         ],
         [
@@ -234,7 +234,7 @@ async def floor_keyboard(building_name: str) -> InlineKeyboardMarkup:
     return markup
 
 
-async def flats_keyboard(building_name: str, flats_data: dict):
+async def flats_keyboard(building_name: str):
     """Создаем клавиатуру с предложением посмотреть квартиры."""
     # Создаем Клавиатуру
     markup = InlineKeyboardMarkup(row_width=1)
@@ -244,8 +244,6 @@ async def flats_keyboard(building_name: str, flats_data: dict):
             InlineKeyboardButton(
                 text='Показать предложения',
                 callback_data='show_flats',
-                building_name=building_name,
-                flats_data=flats_data
             )
         ],
         [

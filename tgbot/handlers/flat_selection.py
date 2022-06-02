@@ -29,6 +29,7 @@ async def choice_area(call: CallbackQuery, **kwargs):
 
 async def choice_price(call: Union[CallbackQuery, Message], building_name: str, state: FSMContext, callback_data: dict, **kwargs):
     """Предлагаем выбрать стоимость квартиры."""
+    await state.update_data(building_name=building_name)
     await state.update_data(area=callback_data.get('area'))
     markup = await price_keyboard(building_name)
     await call.message.answer(text='Укажите максимальную цену квартиры/апартаментов', reply_markup=markup)
@@ -70,10 +71,9 @@ async def choice_floor(call: CallbackQuery, building_name: str, state: FSMContex
 async def show_flats(call: CallbackQuery, building_name: str, state: FSMContext, callback_data: dict, **kwargs):
     """Предлагаем квартиры на выбор."""
     await state.update_data(floor=callback_data.get('floor'))
-    data = await state.get_data()
-    markup = await flats_keyboard(building_name, data)
-    # some_data = await get_offers_yan('https://beta.xml-108.ru/xml/f7c15110-b851-4aca-bd5a-1e6f15bce5ef.xml', '50', '135000000')
+    markup = await flats_keyboard(building_name)
     await call.message.answer(text='Подобрал для вас варианты, смотрим?', reply_markup=markup)
+    await FlatStates.flat_data.set()
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
 
