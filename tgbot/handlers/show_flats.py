@@ -4,6 +4,7 @@ from aiogram.types import CallbackQuery
 
 from tgbot.states.flat_selection import FlatStates
 from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
+from tgbot.utils.images import make_photo
 from tgbot.utils.xml_to_dict import get_offers_yan
 
 
@@ -16,8 +17,10 @@ async def show_flats(call: CallbackQuery, state: FSMContext, **kwargs):
     rooms = data.get('rooms')
     floor = data.get('floor')
     xml_link = await get_xml_link_by_name(building_name)
-    offers = await get_offers_yan(xml_link, area, price)
-    await call.message.answer("The best")
+    offers = await get_offers_yan(xml_link, area, price, year, rooms, floor)
+    offers_with_photo = await make_photo(offers)
+    max_pages_book = len(offers_with_photo)
+    await call.message.answer(f'{max_pages_book}')
 
 
 def register_show_flats(dp: Dispatcher):
