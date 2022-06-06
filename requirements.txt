@@ -7,3 +7,6 @@ tzdata
 requests
 xmltodict
 aiohttp
+xmltodict
+Pillow
+cairosvg

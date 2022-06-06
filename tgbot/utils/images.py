@@ -1,3 +1,4 @@
+import asyncio
 from io import BytesIO
 
 import aiohttp
@@ -21,7 +22,7 @@ async def get_photo_bytes(url: str):
             print(e)
 
 
-async def merge_photos(photos: list):
+async def merge_photos(photos: tuple):
     """Делаем из двух фото одно"""
     image1 = Image.open(BytesIO(photos[0]))
     image2 = Image.open(BytesIO(photos[1]))
@@ -37,18 +38,26 @@ async def merge_photos(photos: list):
     new_image.paste(image1, (0, 0))
     new_image.paste(white, (image1_size[0], 0))
     new_image.paste(image2, (image1_size[0] + white_size[0], 0))
+    # new_image.show()
 
     return new_image
 
 
 async def make_photo(offers: list):
     for offer in offers:
-        image_objects = []
+        tasks_photo_bytes = []
         for image in offer['image'][:2]:
             if type(image) == dict:
-                image_objects.append(await get_photo_bytes(image['#text']))
+                tasks_photo_bytes.append(asyncio.create_task(get_photo_bytes(image['#text'])))
+                # image_objects.append(await get_photo_bytes(image['#text']))
             else:
-                image_objects.append(await get_photo_bytes(image))
-        merged_photo = await merge_photos(image_objects)
-        offer['photo'] = merged_photo
+                # image_objects.append(await get_photo_bytes(image))
+                tasks_photo_bytes.append(asyncio.create_task(get_photo_bytes(image)))
+        photo_bytes = await asyncio.gather(*tasks_photo_bytes)
+        # merged_photo = await merge_photos(image_objects)
+        merged_photo = []
+        # for photo in photo_bytes:
+        merged_photo.append(asyncio.create_task(merge_photos(photo_bytes)))
+        photos = await asyncio.gather(*merged_photo)
+        offer['photo'] = photos
     return offers
