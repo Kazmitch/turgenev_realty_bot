@@ -23,3 +23,10 @@ def get_xml_link_by_name(building_name: str) -> str:
     """Получаем ссылку на xml по имени."""
     xml_link = XmlLinks.objects.filter(building__latin_name=building_name).first().xml_link
     return xml_link
+
+
+@sync_to_async
+def get_developer_description(building_name: str) -> str:
+    """Получаем описание о застройщике по названию ЖК."""
+    description = Developer.objects.filter(building__latin_name=building_name).first().developer_description
+    return description

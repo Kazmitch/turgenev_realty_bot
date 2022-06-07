@@ -1,3 +1,4 @@
+from tgbot.handlers.about_project import register_about_project
 from tgbot.handlers.admin import register_admin
 from tgbot.handlers.echo import register_echo
 from tgbot.handlers.menu import register_menu
@@ -13,6 +14,7 @@ def register_all_handlers(dp):
     register_start(dp)
     register_menu(dp)
     register_send_contact(dp)
+    register_about_project(dp)
     register_selection_flat(dp)
     register_show_flats(dp)
     register_admin(dp)

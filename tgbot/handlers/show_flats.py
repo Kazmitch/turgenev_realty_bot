@@ -4,6 +4,7 @@ from aiogram.types import CallbackQuery, InputMediaPhoto, InputMedia
 
 from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_call
 from tgbot.states.flat_selection import FlatStates
+from tgbot.states.send_contact import ContactStates
 from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
 from tgbot.utils.images import make_photo, get_photo_bytes
 from tgbot.utils.page import get_offer
@@ -39,6 +40,7 @@ async def show_flats(call: CallbackQuery, state: FSMContext, **kwargs):
     )
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
+    await ContactStates.building_name.set()
 
 
 async def current_page_error(call: CallbackQuery):
@@ -78,6 +80,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     )
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
+    await ContactStates.building_name.set()
 
 
 def register_show_flats(dp: Dispatcher):
