@@ -2,6 +2,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
 from tgbot.keyboards.building_menu import menu_button
+from tgbot.keyboards.send_contact import contact_button
 
 pagination_call = CallbackData("paginator", "key", "page")
 # show_item = CallbackData("show_item", "item_id")
@@ -42,12 +43,7 @@ async def get_page_keyboard(max_pages: int, building_name: str, key="flat", page
                 callback_data=pagination_call.new(key=key, page=next_page)
             )
         )
-    markup.row(
-        InlineKeyboardButton(
-            text='Заказать обратный звонок',
-            callback_data='contact'
-        )
-    )
+    markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
     return markup

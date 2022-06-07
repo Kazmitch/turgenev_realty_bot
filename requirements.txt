@@ -9,4 +9,4 @@ xmltodict
 aiohttp
 xmltodict
 Pillow
-cairosvg
+CairoSVG
