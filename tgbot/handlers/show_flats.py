@@ -37,6 +37,8 @@ async def show_flats(call: CallbackQuery, state: FSMContext, **kwargs):
             building_name=building_name
         )
     )
+    await call.message.edit_reply_markup(reply_markup=None)
+    await call.message.delete()
 
 
 async def current_page_error(call: CallbackQuery):
