@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto, InputMedia
 
 from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_call
+from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.flat_selection import FlatStates
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
@@ -21,26 +22,34 @@ async def show_flats(call: CallbackQuery, state: FSMContext, **kwargs):
     floor = data.get('floor')
     xml_link = await get_xml_link_by_name(building_name)
     offers = await get_offers_yan(xml_link, area, price, year, rooms, floor)
-    max_pages = len(offers)
-    # offers_with_photo = await make_photo(offers)
-    offer = await get_offer(offers)
-    photo = await get_photo_bytes(offer['image'][0]['#text'])
-    offer_area = offer['area']['value']
-    offer_price = offer['price']['value']
-    offer_description = offer['description']
-    await call.message.answer_photo(
-        photo=photo,
-        caption=f'Стоимость: <b>{offer_price} рублей</b>\n'
-                f'Площадь: <b>{offer_area} м²</b>\n',
-        reply_markup=await get_page_keyboard(
-            key='flat',
-            max_pages=max_pages,
-            building_name=building_name
+    if offers:
+        max_pages = len(offers)
+        # offers_with_photo = await make_photo(offers)
+        offer = await get_offer(offers)
+        photo = await get_photo_bytes(offer['image'][0]['#text'])
+        offer_area = offer['area']['value']
+        offer_price = offer['price']['value']
+        offer_description = offer['description']
+        await call.message.answer_photo(
+            photo=photo,
+            caption=f'Стоимость: <b>{offer_price} рублей</b>\n'
+                    f'Площадь: <b>{offer_area} м²</b>\n',
+            reply_markup=await get_page_keyboard(
+                key='flat',
+                max_pages=max_pages,
+                building_name=building_name
+            )
         )
-    )
-    await call.message.edit_reply_markup(reply_markup=None)
-    await call.message.delete()
-    await ContactStates.building_name.set()
+        await call.message.edit_reply_markup(reply_markup=None)
+        await call.message.delete()
+        await ContactStates.building_name.set()
+    else:
+        markup = await contact_markup(building_name)
+        await call.message.answer(text='К сожалению, не смогли найти квартиры по данным параметрам.\n'
+                                       'Давайте поможем вам подобрать', reply_markup=markup)
+        await call.message.edit_reply_markup(reply_markup=None)
+        await call.message.delete()
+        await ContactStates.building_name.set()
 
 
 async def current_page_error(call: CallbackQuery):
