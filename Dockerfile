@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 RUN apt-get update && apt-get install -y \
-    python3 python3-pip cron
+    python3 python3-pip cron libpangocairo-1.0-0
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /realty_tg_bot
 COPY ./requirements.txt /realty_tg_bot/
