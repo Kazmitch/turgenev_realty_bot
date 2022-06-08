@@ -105,7 +105,7 @@ class News(BaseModel):
         return f"{self.title}"
 
 
-class XmlLinks(BaseModel):
+class XmlLink(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
     xml_link = models.TextField(verbose_name="Ссылка на xml", blank=True, null=True)
 
@@ -115,3 +115,42 @@ class XmlLinks(BaseModel):
 
     def __str__(self):
         return f"{self.building.name} XML"
+
+
+class SpecialOffer(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
+    title = models.CharField(verbose_name="Заголовок спецпредложения", max_length=255, blank=False, null=True)
+    description = models.TextField(verbose_name="Описание спецпредложения", blank=False, null=True)
+
+    class Meta:
+        verbose_name = "Спецпредложения"
+        verbose_name_plural = "Спецпредложения"
+
+    def __str__(self):
+        return f"{self.title}"
+
+
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    # return 'user_{0}/{1}'.format(instance.user.id, filename)
+    return 'user_{0}/{1}'.format(instance.user.id, filename)
+
+
+class LocationPhoto(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='locations')
+    photo = models.FileField(upload_to='photos/location')
+
+
+class ProcessingCorpus(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='corps')
+    photo = models.FileField(upload_to='photos/processing')
+
+
+class Interior(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='interiors')
+    photo = models.FileField(upload_to='photos/interior')
+
+
+class ShowRoomPhoto(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='show_rooms')
+    photo = models.FileField(upload_to='photos/show_room')

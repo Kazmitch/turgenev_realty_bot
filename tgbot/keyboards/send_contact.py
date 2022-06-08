@@ -1,6 +1,8 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.callback_data import CallbackData
 
+from tgbot.keyboards.building_menu import menu_button
+
 contact_cd = CallbackData('contact', 'building_name')
 
 contact = ReplyKeyboardMarkup(
@@ -23,4 +25,5 @@ async def contact_button(building_name: str):
 async def contact_markup(building_name: str):
     markup = InlineKeyboardMarkup(row_width=1)
     markup.row(await contact_button(building_name))
+    markup.row(await menu_button(building_name))
     return markup
