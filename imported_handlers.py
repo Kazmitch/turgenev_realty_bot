@@ -2,6 +2,7 @@ from tgbot.handlers.about_project import register_about_project
 from tgbot.handlers.admin import register_admin
 from tgbot.handlers.echo import register_echo
 from tgbot.handlers.menu import register_menu
+from tgbot.handlers.photo_id import register_photo_id
 from tgbot.handlers.send_contact import register_send_contact
 from tgbot.handlers.show_flats import register_show_flats
 from tgbot.handlers.start import register_start
@@ -17,6 +18,7 @@ def register_all_handlers(dp):
     register_about_project(dp)
     register_selection_flat(dp)
     register_show_flats(dp)
+    register_photo_id(dp)
     register_admin(dp)
     register_user(dp)
     # register_echo(dp)

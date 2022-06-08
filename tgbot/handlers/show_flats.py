@@ -1,6 +1,8 @@
+import io
+
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InputMediaPhoto, InputMedia
+from aiogram.types import CallbackQuery, InputMediaPhoto, InputMedia, InputFile
 
 from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_call
 from tgbot.keyboards.send_contact import contact_markup
@@ -26,12 +28,13 @@ async def show_flats(call: CallbackQuery, state: FSMContext, **kwargs):
         max_pages = len(offers)
         # offers_with_photo = await make_photo(offers)
         offer = await get_offer(offers)
-        photo = await get_photo_bytes(offer['image'][0]['#text'])
+        photo = io.BytesIO(await get_photo_bytes(offer['image'][0]['#text']))
+        file = InputFile(path_or_bytesio=photo)
         offer_area = offer['area']['value']
         offer_price = offer['price']['value']
         offer_description = offer['description']
         await call.message.answer_photo(
-            photo=photo,
+            photo=file,
             caption=f'Стоимость: <b>{offer_price} рублей</b>\n'
                     f'Площадь: <b>{offer_area} м²</b>\n',
             reply_markup=await get_page_keyboard(
@@ -70,16 +73,14 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     offer = await get_offer(offers, page=current_page)
     offer_area = offer['area']['value']
     offer_price = offer['price']['value']
-    photo = await get_photo_bytes(offer['image'][0]['#text'])
-    # photo = offer['image'][1]
-    # media = InputMediaPhoto(media=photo,
-    #                         caption=f'Стоимость: <b>{offer_price} рублей</b>\n'
-    #                                 f'Площадь: <b>{offer_area} м²</b>\n', )
+    photo = io.BytesIO(await get_photo_bytes(offer['image'][0]['#text']))
+    file = InputFile(path_or_bytesio=photo)
+    media = InputMediaPhoto(media=file,
+                            caption=f'Стоимость: <b>{offer_price} рублей</b>\n'
+                                    f'Площадь: <b>{offer_area} м²</b>\n')
     max_pages = len(offers)
-    await call.message.answer_photo(
-        photo=photo,
-        caption=f'Стоимость: <b>{offer_price} рублей</b>\n'
-                f'Площадь: <b>{offer_area} м²</b>\n',
+    await call.message.edit_media(
+        media=media,
         reply_markup=await get_page_keyboard(
             building_name=building_name,
             key='flat',
@@ -87,12 +88,10 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
             page=current_page
         )
     )
-    await call.message.edit_reply_markup(reply_markup=None)
-    await call.message.delete()
     await ContactStates.building_name.set()
 
 
 def register_show_flats(dp: Dispatcher):
     dp.register_callback_query_handler(show_flats, text='show_flats', state=FlatStates.flat_data)
     dp.register_callback_query_handler(current_page_error, pagination_call.filter(page='current_page'))
-    dp.register_callback_query_handler(show_chosen_page, pagination_call.filter(key='flat'), state=FlatStates.flat_data)
+    dp.register_callback_query_handler(show_chosen_page, pagination_call.filter(key='flat'), state='*')

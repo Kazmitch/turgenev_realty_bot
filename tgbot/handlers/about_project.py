@@ -1,5 +1,5 @@
 from aiogram import Dispatcher
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, InputMediaPhoto
 
 from tgbot.keyboards.about_project import about_project_keyboard, project_cd, photo_gallery_keyboard, photos_keyboard, \
     photo_gallery_cd
