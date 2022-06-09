@@ -1,11 +1,12 @@
 aiogram
-aiohttp
 aioredis
-CairoSVG
-Django
 environs
-Pillow
+Django
 psycopg2-binary
-requests
 tzdata
+requests
 xmltodict
+aiohttp
+xmltodict
+Pillow
+CairoSVG
