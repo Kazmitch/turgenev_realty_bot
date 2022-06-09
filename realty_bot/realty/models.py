@@ -47,12 +47,15 @@ class Address(BaseModel):
         verbose_name = "Адрес"
         verbose_name_plural = "Адреса"
 
+    def __str__(self):
+        return f"{self.city} {self.street} {self.house}"
+
 
 class Building(BaseModel):
     name = models.CharField(verbose_name="Название ЖК", max_length=255, unique=True, blank=False)
     latin_name = models.CharField(verbose_name="Название на английском", max_length=255, unique=True, null=True)
-    address = models.ForeignKey(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
-    developer = models.ForeignKey(Developer, verbose_name="Застройщик", on_delete=models.CASCADE, null=True)
+    address = models.OneToOneField(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
+    developer = models.ForeignKey(Developer, verbose_name="Застройщик", related_name="buildings", on_delete=models.CASCADE, null=True)
     building_description = models.TextField(verbose_name="Описание ЖК", blank=True)
     floors_total = models.CharField(verbose_name="Количество этажей", max_length=32, blank=False)
     built_year = models.DateField(verbose_name="Год сдачи (год постройки)", blank=False)
@@ -73,7 +76,7 @@ class Building(BaseModel):
 
 
 class Flat(BaseModel):
-    building_name = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="flats", null=True)
     flat_description = models.TextField(verbose_name="Описание квартиры", blank=True)
     floor = models.CharField(verbose_name="Этаж", max_length=32, blank=False, null=True)
     rooms = models.CharField(verbose_name="Количество комнат", max_length=32, blank=True)
@@ -89,24 +92,25 @@ class Flat(BaseModel):
         verbose_name_plural = "Квартиры"
 
     def __str__(self):
-        return f"{self.building_name} {self.total_area} {self.rooms} {self.price}"
+        return f"{self.building.name} {self.total_area} {self.rooms} {self.price}"
 
 
 class News(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="news",  null=True)
     title = models.CharField(verbose_name="Заголовок", max_length=255, blank=False, null=True)
     text = models.TextField(verbose_name="Текст новости", blank=False, null=True)
 
     class Meta:
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
+        ordering = ['-updated_at']
 
     def __str__(self):
         return f"{self.title}"
 
 
 class XmlLink(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="xml_links", null=True)
     xml_link = models.TextField(verbose_name="Ссылка на xml", blank=True, null=True)
 
     class Meta:
@@ -118,7 +122,7 @@ class XmlLink(BaseModel):
 
 
 class SpecialOffer(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="special_offers", null=True)
     title = models.CharField(verbose_name="Заголовок спецпредложения", max_length=255, blank=False, null=True)
     description = models.TextField(verbose_name="Описание спецпредложения", blank=False, null=True)
 
@@ -137,20 +141,61 @@ def user_directory_path(instance, filename):
 
 
 class LocationPhoto(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='locations')
-    photo = models.FileField(upload_to='photos/location')
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='locations')
+    photo = models.FileField(upload_to='photos/location', verbose_name='Фотография')
+
+    class Meta:
+        verbose_name = "Локация ЖК Фото"
+        verbose_name_plural = "Локация ЖК Фото"
+
+    def __str__(self):
+        return f"{self.building.name}"
 
 
-class ProcessingCorpus(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='corps')
-    photo = models.FileField(upload_to='photos/processing')
+class ProcessingCorpusPhoto(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='corps')
+    photo = models.FileField(upload_to='photos/processing', verbose_name='Фотография')
+
+    class Meta:
+        verbose_name = "Строящийся корпус Фото"
+        verbose_name_plural = "Строящиеся корпуса Фото"
+
+    def __str__(self):
+        return f"{self.building.name}"
 
 
-class Interior(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='interiors')
-    photo = models.FileField(upload_to='photos/interior')
+class InteriorPhoto(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='interiors')
+    photo = models.FileField(upload_to='photos/interior', verbose_name='Фотография')
+
+    class Meta:
+        verbose_name = "Интерьер Фото"
+        verbose_name_plural = "Интерьеры Фото"
+
+    def __str__(self):
+        return f"{self.building.name}"
 
 
 class ShowRoomPhoto(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='show_rooms')
-    photo = models.FileField(upload_to='photos/show_room')
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='show_rooms')
+    photo = models.FileField(upload_to='photos/show_room', verbose_name='Фотография')
+
+    class Meta:
+        verbose_name = "Шоурум Фото"
+        verbose_name_plural = "Шоурумы Фото"
+
+    def __str__(self):
+        return f"{self.building.name}"
+
+
+class Documentation(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='documentations')
+    title = models.CharField(verbose_name="Название документа", max_length=255, blank=False, null=True)
+    document = models.FileField(upload_to=f'{building.name}/documentation', verbose_name='Документ')
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документация"
+
+    def __str__(self):
+        return f"{self.title}"
