@@ -3,6 +3,7 @@ from aiogram.utils.callback_data import CallbackData
 
 # Создаем CallbackData-объекты, которые будут нужны для работы с меню
 from tgbot.keyboards.building_menu import menu_button
+from tgbot.keyboards.send_contact import contact_button
 
 flat_cd = CallbackData('flat_parameters', 'building_name', 'level', 'area', 'price', 'year', 'rooms', 'floor')
 
@@ -246,13 +247,8 @@ async def flats_keyboard(building_name: str):
                 callback_data='show_flats',
             )
         ],
-        [
-            InlineKeyboardButton(
-                text='Заказать обратный звонок',
-                callback_data='contact'
-            )
-        ]
     ]
+    markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
     return markup

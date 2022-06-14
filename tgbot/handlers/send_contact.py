@@ -40,5 +40,5 @@ async def get_contact(message: Message, state: FSMContext):
 
 
 def register_send_contact(dp: Dispatcher):
-    dp.register_callback_query_handler(send_contact, contact_cd.filter(), state=ContactStates.building_name)
+    dp.register_callback_query_handler(send_contact, contact_cd.filter(), state='*')
     dp.register_message_handler(get_contact, content_types=[ContentType.CONTACT, ContentType.TEXT], state=ContactStates.contact)

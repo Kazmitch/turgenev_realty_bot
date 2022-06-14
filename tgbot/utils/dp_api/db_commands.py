@@ -3,7 +3,7 @@ from typing import List
 from asgiref.sync import sync_to_async
 from django.db.models import Q
 
-from realty_bot.realty.models import Developer, Address, Building, XmlLink, SpecialOffer
+from realty_bot.realty.models import Developer, Address, Building, XmlLink, SpecialOffer, Documentation
 
 
 @sync_to_async
@@ -30,13 +30,13 @@ def get_xml_link_by_name(building_name: str) -> str:
 @sync_to_async
 def get_developer_description(building_name: str) -> str:
     """Получаем описание о застройщике по названию ЖК."""
-    description = Developer.objects.filter(building__latin_name=building_name).first().developer_description
+    description = Developer.objects.filter(buildings__latin_name=building_name).first().developer_description
     return description
 
 
 @sync_to_async
 def get_special_offers(building_name: str) -> List[SpecialOffer]:
-    """Получаем список спецпредложений по названию ЖК."""
+    """Получаем список объектов SpecialOffer по названию ЖК."""
     offers = SpecialOffer.objects.filter(building__latin_name=building_name)
     return offers
 
@@ -46,3 +46,17 @@ def get_special_offer_description(offer_id: int) -> str:
     """Получаем описание спецпредложения по его id."""
     description = SpecialOffer.objects.get(id=offer_id).description
     return description
+
+
+@sync_to_async
+def get_documents(building_name: str) -> List[Documentation]:
+    """Получаем список объектов Documentation по названию ЖК."""
+    documents = Documentation.objects.filter(building__latin_name=building_name)
+    return documents
+
+
+@sync_to_async
+def get_document_file(document_id: int) -> str:
+    """Получаем путь документа по его id."""
+    document_path = Documentation.objects.get(id=document_id).document
+    return document_path

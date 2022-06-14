@@ -12,7 +12,7 @@ async def project(call: CallbackQuery, callback_data: dict):
     """Хендлер на кнопку 'О проекте'"""
     building_name = callback_data.get('name')
     description = await get_developer_description(building_name)
-    photo = open('media/photos/arbat_stars_project.jpg', 'rb')
+    photo = open('media/arbat_stars/photos/arbat_stars_project.jpg', 'rb')
     markup = await about_project_keyboard(building_name)
     await call.message.answer_photo(photo=photo,
                                     caption=description,

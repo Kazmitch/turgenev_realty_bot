@@ -1,5 +1,11 @@
+import os
+from django.utils.functional import cached_property
+from django.utils.html import format_html
+
 from django.db import models
 from django.contrib.auth.models import User
+
+from realty_bot.realty_bot.utils import user_directory_path
 
 
 class BaseModel(models.Model):
@@ -55,7 +61,8 @@ class Building(BaseModel):
     name = models.CharField(verbose_name="Название ЖК", max_length=255, unique=True, blank=False)
     latin_name = models.CharField(verbose_name="Название на английском", max_length=255, unique=True, null=True)
     address = models.OneToOneField(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
-    developer = models.ForeignKey(Developer, verbose_name="Застройщик", related_name="buildings", on_delete=models.CASCADE, null=True)
+    developer = models.ForeignKey(Developer, verbose_name="Застройщик", related_name="buildings",
+                                  on_delete=models.CASCADE, null=True)
     building_description = models.TextField(verbose_name="Описание ЖК", blank=True)
     floors_total = models.CharField(verbose_name="Количество этажей", max_length=32, blank=False)
     built_year = models.DateField(verbose_name="Год сдачи (год постройки)", blank=False)
@@ -76,7 +83,8 @@ class Building(BaseModel):
 
 
 class Flat(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="flats", null=True)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name="flats", null=True)
     flat_description = models.TextField(verbose_name="Описание квартиры", blank=True)
     floor = models.CharField(verbose_name="Этаж", max_length=32, blank=False, null=True)
     rooms = models.CharField(verbose_name="Количество комнат", max_length=32, blank=True)
@@ -96,7 +104,8 @@ class Flat(BaseModel):
 
 
 class News(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="news",  null=True)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="news",
+                                 null=True)
     title = models.CharField(verbose_name="Заголовок", max_length=255, blank=False, null=True)
     text = models.TextField(verbose_name="Текст новости", blank=False, null=True)
 
@@ -110,7 +119,8 @@ class News(BaseModel):
 
 
 class XmlLink(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="xml_links", null=True)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name="xml_links", null=True)
     xml_link = models.TextField(verbose_name="Ссылка на xml", blank=True, null=True)
 
     class Meta:
@@ -122,7 +132,8 @@ class XmlLink(BaseModel):
 
 
 class SpecialOffer(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="special_offers", null=True)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name="special_offers", null=True)
     title = models.CharField(verbose_name="Заголовок спецпредложения", max_length=255, blank=False, null=True)
     description = models.TextField(verbose_name="Описание спецпредложения", blank=False, null=True)
 
@@ -134,15 +145,34 @@ class SpecialOffer(BaseModel):
         return f"{self.title}"
 
 
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    # return 'user_{0}/{1}'.format(instance.user.id, filename)
-    return 'user_{0}/{1}'.format(instance.user.id, filename)
+class AboutProjectPhoto(BaseModel):
+    directory = 'photo/about_project'
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
+                                  related_name="about_projects")
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
+
+    class Meta:
+        verbose_name = "Локация ЖК Фото"
+        verbose_name_plural = "Локация ЖК Фото"
+
+    def __str__(self):
+        return f"{self.developer.developer_name}"
+
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
 
 
 class LocationPhoto(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='locations')
-    photo = models.FileField(upload_to='photos/location', verbose_name='Фотография')
+    directory = 'photo/location'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='locations')
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
 
     class Meta:
         verbose_name = "Локация ЖК Фото"
@@ -151,10 +181,21 @@ class LocationPhoto(BaseModel):
     def __str__(self):
         return f"{self.building.name}"
 
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
+
 
 class ProcessingCorpusPhoto(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='corps')
-    photo = models.FileField(upload_to='photos/processing', verbose_name='Фотография')
+    directory = 'photo/processing'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='corps')
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
 
     class Meta:
         verbose_name = "Строящийся корпус Фото"
@@ -163,10 +204,21 @@ class ProcessingCorpusPhoto(BaseModel):
     def __str__(self):
         return f"{self.building.name}"
 
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
+
 
 class InteriorPhoto(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='interiors')
-    photo = models.FileField(upload_to='photos/interior', verbose_name='Фотография')
+    directory = 'photo/interior'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='interiors')
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
 
     class Meta:
         verbose_name = "Интерьер Фото"
@@ -175,10 +227,21 @@ class InteriorPhoto(BaseModel):
     def __str__(self):
         return f"{self.building.name}"
 
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
+
 
 class ShowRoomPhoto(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='show_rooms')
-    photo = models.FileField(upload_to='photos/show_room', verbose_name='Фотография')
+    directory = 'photo/show_room'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='show_rooms')
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
 
     class Meta:
         verbose_name = "Шоурум Фото"
@@ -187,11 +250,22 @@ class ShowRoomPhoto(BaseModel):
     def __str__(self):
         return f"{self.building.name}"
 
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
+
 
 class Documentation(BaseModel):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name='documentations')
+    directory = 'documents/declaration'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='documentations')
     title = models.CharField(verbose_name="Название документа", max_length=255, blank=False, null=True)
-    document = models.FileField(upload_to=f'{building.name}/documentation', verbose_name='Документ')
+    document = models.FileField(upload_to=user_directory_path, verbose_name='Документ')
 
     class Meta:
         verbose_name = "Документ"

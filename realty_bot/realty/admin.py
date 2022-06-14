@@ -82,29 +82,28 @@ class Documentation(admin.ModelAdmin):
     search_fields = ('building',)
 
 
-@admin.register(LocationPhoto)
-class LocationPhotoAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'photo', 'created_at', 'updated_at')
+class PhotoBase(admin.ModelAdmin):
+    list_display = ('__str__', 'display_image', 'created_at', 'updated_at')
     list_filter = ('building',)
     search_fields = ('building',)
+    readonly_fields = ('display_image', 'created_at', 'updated_at')
+
+
+@admin.register(LocationPhoto)
+class LocationPhotoAdmin(PhotoBase):
+    pass
 
 
 @admin.register(ProcessingCorpusPhoto)
-class ProcessingCorpusPhotoAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'photo', 'created_at', 'updated_at')
-    list_filter = ('building',)
-    search_fields = ('building',)
+class ProcessingCorpusPhotoAdmin(PhotoBase):
+    pass
 
 
 @admin.register(InteriorPhoto)
-class InteriorPhotoAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'photo', 'created_at', 'updated_at')
-    list_filter = ('building',)
-    search_fields = ('building',)
+class InteriorPhotoAdmin(PhotoBase):
+    pass
 
 
 @admin.register(ShowRoomPhoto)
-class ShowRoomPhotoAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'photo', 'created_at', 'updated_at')
-    list_filter = ('building',)
-    search_fields = ('building',)
+class ShowRoomPhotoAdmin(PhotoBase):
+    pass
