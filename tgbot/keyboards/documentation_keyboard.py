@@ -10,7 +10,7 @@ documentation_cd = CallbackData("document", "name", "document_id")
 
 
 async def documents_keyboard(building_name: str) -> InlineKeyboardMarkup:
-    """Создаем клавиатуру на кнопку 'Спецпредложения'."""
+    """Создаем клавиатуру на кнопку 'Документация'."""
     markup = InlineKeyboardMarkup(row_width=1)
 
     documents = await get_documents(building_name)
@@ -30,13 +30,13 @@ async def documents_keyboard(building_name: str) -> InlineKeyboardMarkup:
     return markup
 
 
-async def current_offer_menu(building_name: str) -> InlineKeyboardMarkup:
-    """Создаем клавиатуру под спецпредложение."""
+async def current_declaration_menu(building_name: str) -> InlineKeyboardMarkup:
+    """Создаем клавиатуру под документацию."""
     markup = InlineKeyboardMarkup(row_width=1)
     markup.row(
         InlineKeyboardButton(
             text='Вернуться',
-            callback_data=building.new(name=building_name, section='offers')
+            callback_data=building.new(name=building_name, section='documents')
         )
     )
     markup.row(await contact_button(building_name))
