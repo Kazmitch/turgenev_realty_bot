@@ -1,7 +1,11 @@
+import io
+
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto
+from aiogram.types import InputFile
 
+from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.about_project import about_project_keyboard, project_cd, photo_gallery_keyboard, photos_keyboard, \
     photo_gallery_cd
 from tgbot.keyboards.building_menu import building
@@ -18,17 +22,17 @@ async def special_offers(call: CallbackQuery, callback_data: dict,  state: FSMCo
     await call.message.answer(text='Нашел для вас спецпредложения', reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
-    await SpecialOffer.offer.set()
 
 
 async def show_current_offer(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на показ конкретного предложения."""
-    data = await state.get_data()
     building_name = callback_data.get('name')
     offer_id = int(callback_data.get('offer_id'))
-    offer_description = await get_special_offer_description(offer_id)
+    offer = await get_special_offer_description(offer_id)
     markup = await current_offer_menu(building_name=building_name)
-    await call.message.answer(text=offer_description, reply_markup=markup)
+    description = offer.description
+    photo = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{offer.photo.name}')
+    await call.message.answer_photo(photo=photo, caption=description, reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
 

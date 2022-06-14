@@ -4,6 +4,7 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto, InputFile
 
+from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.about_project import about_project_keyboard, project_cd, photo_gallery_keyboard, photos_keyboard, \
     photo_gallery_cd
 from tgbot.keyboards.building_menu import building
@@ -29,7 +30,7 @@ async def share_document(call: CallbackQuery, callback_data: dict, **kwargs):
     building_name = callback_data.get('name')
     document_id = int(callback_data.get('document_id'))
     document = await get_document_file(document_id)
-    file = InputFile(path_or_bytesio=document.name)
+    file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{document.name}')
     markup = await current_declaration_menu(building_name)
     await call.message.answer_document(file, reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)

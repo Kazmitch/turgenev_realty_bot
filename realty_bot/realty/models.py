@@ -132,10 +132,12 @@ class XmlLink(BaseModel):
 
 
 class SpecialOffer(BaseModel):
+    directory = 'photo/special_offer'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name="special_offers", null=True)
     title = models.CharField(verbose_name="Заголовок спецпредложения", max_length=255, blank=False, null=True)
     description = models.TextField(verbose_name="Описание спецпредложения", blank=False, null=True)
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
 
     class Meta:
         verbose_name = "Спецпредложения"
@@ -143,6 +145,15 @@ class SpecialOffer(BaseModel):
 
     def __str__(self):
         return f"{self.title}"
+
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
 
 
 class AboutProjectPhoto(BaseModel):

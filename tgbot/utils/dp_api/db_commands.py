@@ -42,10 +42,10 @@ def get_special_offers(building_name: str) -> List[SpecialOffer]:
 
 
 @sync_to_async
-def get_special_offer_description(offer_id: int) -> str:
-    """Получаем описание спецпредложения по его id."""
-    description = SpecialOffer.objects.get(id=offer_id).description
-    return description
+def get_special_offer_description(offer_id: int) -> SpecialOffer:
+    """Получаем объект SpecialOffer по его id."""
+    special_offer = SpecialOffer.objects.get(id=offer_id)
+    return special_offer
 
 
 @sync_to_async

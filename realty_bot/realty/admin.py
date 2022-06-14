@@ -63,7 +63,7 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(SpecialOffer)
 class SpecialOfferAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'building', 'created_at', 'updated_at')
+    list_display = ('__str__', 'building', 'display_image', 'created_at', 'updated_at')
     list_filter = ('building',)
     search_fields = ('building',)
 
