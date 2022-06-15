@@ -6,6 +6,7 @@ from .models import UserBot, Developer, Address, Building, Flat, News, XmlLink, 
 
 class BuildingDeveloperInline(admin.TabularInline):
     model = Building
+    extra = 1
 
 
 @admin.register(UserBot)
@@ -17,7 +18,7 @@ class UserBotAdmin(admin.ModelAdmin):
 
 @admin.register(Developer)
 class DeveloperAdmin(admin.ModelAdmin):
-    inlines = (BuildingDeveloperInline,)
+    # inlines = (BuildingDeveloperInline,)
     list_display = ('__str__', 'developer_name', 'created_at', 'updated_at')
     list_filter = ('developer_name',)
     search_fields = ('developer_name',)
@@ -25,18 +26,22 @@ class DeveloperAdmin(admin.ModelAdmin):
 
 class NewsBuildingInline(admin.TabularInline):
     model = News
+    extra = 1
 
 
 class SpecialOfferBuildingInline(admin.TabularInline):
     model = SpecialOffer
+    extra = 1
 
 
 class XmlLinkBuildingInline(admin.TabularInline):
     model = XmlLink
+    extra = 1
 
 
 class DocumentationBuildingInline(admin.TabularInline):
     model = Documentation
+    extra = 1
 
 
 @admin.register(Building)
