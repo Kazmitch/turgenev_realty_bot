@@ -40,13 +40,13 @@ async def photo_gallery_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='Строящиеся корпуса',
-                callback_data=photo_gallery_cd.new(name=building_name, section='buildings_construction')
+                callback_data=photo_gallery_cd.new(name=building_name, section='construction')
             )
         ],
         [
             InlineKeyboardButton(
                 text='Интерьеры общих зон',
-                callback_data=photo_gallery_cd.new(name=building_name, section='local_interiors')
+                callback_data=photo_gallery_cd.new(name=building_name, section='interior')
             )
         ],
         [
@@ -69,24 +69,6 @@ async def photo_gallery_keyboard(building_name: str) -> InlineKeyboardMarkup:
         ]
     ]
 
-    markup.row(await menu_button(building_name))
-
-    return markup
-
-
-async def photos_keyboard(building_name: str) -> InlineKeyboardMarkup:
-    """Отображаем фотографии выбранной категории."""
-
-    markup = InlineKeyboardMarkup(row_width=1)
-
-    markup.row(
-        InlineKeyboardButton(
-            text='Вернуться',
-            callback_data=project_cd.new(name=building_name, section='photo_gallery')
-        )
-    )
-
-    markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
     return markup

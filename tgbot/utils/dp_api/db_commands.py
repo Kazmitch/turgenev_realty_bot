@@ -3,7 +3,8 @@ from typing import List
 from asgiref.sync import sync_to_async
 from django.db.models import Q
 
-from realty_bot.realty.models import Developer, Address, Building, XmlLink, SpecialOffer, Documentation
+from realty_bot.realty.models import Developer, Address, Building, XmlLink, SpecialOffer, Documentation, \
+    AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto
 
 
 @sync_to_async
@@ -60,3 +61,25 @@ def get_document_file(document_id: int) -> str:
     """Получаем путь документа по его id."""
     document_path = Documentation.objects.get(id=document_id).document
     return document_path
+
+
+@sync_to_async
+def get_about_project_photo(building_name: str) -> str:
+    """Получаем путь фотографии О Проекте."""
+    name = Developer.objects.filter(buildings__latin_name=building_name).first().latin_name
+    path = AboutProjectPhoto.objects.filter(developer__latin_name=name).first().photo.name
+    return path
+
+
+@sync_to_async
+def get_gallery_photos(section: str, building_name: str):
+    """Получаем список фотографий нужной модели."""
+    models_dict = {
+        'location': LocationPhoto,
+        'construction': ProcessingCorpusPhoto,
+        'interior': InteriorPhoto,
+        'showroom': ShowRoomPhoto
+    }
+    model = models_dict.get(section)
+    photo_set = model.objects.filter(building__latin_name=building_name)
+    return photo_set

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import UserBot, Developer, Address, Building, Flat, News, XmlLink, SpecialOffer, LocationPhoto, \
-    ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation
+    ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto
 
 
 class BuildingDeveloperInline(admin.TabularInline):
@@ -112,3 +112,11 @@ class InteriorPhotoAdmin(PhotoBase):
 @admin.register(ShowRoomPhoto)
 class ShowRoomPhotoAdmin(PhotoBase):
     pass
+
+
+@admin.register(AboutProjectPhoto)
+class AboutProjectPhotoAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'display_image', 'created_at', 'updated_at')
+    list_filter = ('developer',)
+    search_fields = ('developer',)
+    readonly_fields = ('display_image', 'created_at', 'updated_at')
