@@ -4,7 +4,7 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto, InputMedia, InputFile
 
-from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_call
+from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_flats_call
 from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.flat_selection import FlatStates
 from tgbot.states.send_contact import ContactStates
@@ -93,5 +93,5 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
 
 def register_show_flats(dp: Dispatcher):
     dp.register_callback_query_handler(show_flats, text='show_flats', state=FlatStates.flat_data)
-    dp.register_callback_query_handler(current_page_error, pagination_call.filter(page='current_page'))
-    dp.register_callback_query_handler(show_chosen_page, pagination_call.filter(key='flat'), state='*')
+    dp.register_callback_query_handler(current_page_error, pagination_flats_call.filter(page='current_page'))
+    dp.register_callback_query_handler(show_chosen_page, pagination_flats_call.filter(key='flat'), state='*')

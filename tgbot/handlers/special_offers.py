@@ -6,7 +6,7 @@ from aiogram.types import CallbackQuery, InputMediaPhoto
 from aiogram.types import InputFile
 
 from realty_bot.realty_bot.settings import MEDIA_ROOT
-from tgbot.keyboards.about_project import about_project_keyboard, project_cd, photo_gallery_keyboard, photos_keyboard, \
+from tgbot.keyboards.about_project import about_project_keyboard, project_cd, photo_gallery_keyboard, \
     photo_gallery_cd
 from tgbot.keyboards.building_menu import building
 from tgbot.keyboards.special_offers import special_offers_keyboard, special_offer_cd, current_offer_menu

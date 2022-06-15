@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from django.db import models
 from django.contrib.auth.models import User
 
-from realty_bot.realty_bot.utils import user_directory_path
+from realty_bot.realty_bot.utils import user_directory_path, about_project_path
 
 
 class BaseModel(models.Model):
@@ -31,7 +31,10 @@ class UserBot(BaseModel):
 
 class Developer(BaseModel):
     developer_name = models.CharField(verbose_name="Название застройщика", max_length=255, blank=False)
-    developer_description = models.TextField(verbose_name="Описание застройщика", blank=True)
+    latin_name = models.CharField(verbose_name="Название на английском", max_length=255, unique=True, null=True,
+                                  help_text='В формате <b>some_developer_name</b>')
+    developer_description = models.TextField(verbose_name="Описание застройщика", blank=True,
+                                             help_text='Не больше 1024 символов')
 
     class Meta:
         verbose_name = "Застройщик"
@@ -59,7 +62,8 @@ class Address(BaseModel):
 
 class Building(BaseModel):
     name = models.CharField(verbose_name="Название ЖК", max_length=255, unique=True, blank=False)
-    latin_name = models.CharField(verbose_name="Название на английском", max_length=255, unique=True, null=True)
+    latin_name = models.CharField(verbose_name="Название на английском", max_length=255, unique=True, null=True,
+                                  help_text='В формате <b>some_building_name</b>')
     address = models.OneToOneField(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
     developer = models.ForeignKey(Developer, verbose_name="Застройщик", related_name="buildings",
                                   on_delete=models.CASCADE, null=True)
@@ -160,11 +164,11 @@ class AboutProjectPhoto(BaseModel):
     directory = 'photo/about_project'
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
                                   related_name="about_projects")
-    photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
+    photo = models.ImageField(upload_to=about_project_path, verbose_name="Фотография")
 
     class Meta:
-        verbose_name = "Локация ЖК Фото"
-        verbose_name_plural = "Локация ЖК Фото"
+        verbose_name = "О проекте Фото"
+        verbose_name_plural = "О проекте Фото"
 
     def __str__(self):
         return f"{self.developer.developer_name}"

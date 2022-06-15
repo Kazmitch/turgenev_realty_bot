@@ -4,7 +4,7 @@ from aiogram.utils.callback_data import CallbackData
 from tgbot.keyboards.building_menu import menu_button
 from tgbot.keyboards.send_contact import contact_button
 
-pagination_call = CallbackData("paginator", "key", "page")
+pagination_flats_call = CallbackData("paginator_flats", "key", "page")
 # show_item = CallbackData("show_item", "item_id")
 
 
@@ -25,22 +25,22 @@ async def get_page_keyboard(max_pages: int, building_name: str, key="flat", page
         markup.insert(
             InlineKeyboardButton(
                 text=previous_page_text,
-                callback_data=pagination_call.new(key=key, page=previous_page)
+                callback_data=pagination_flats_call.new(key=key, page=previous_page)
             )
         )
 
     markup.insert(
         InlineKeyboardButton(
             text=current_page_text,
-            callback_data=pagination_call.new(key=key, page="current_page")
+            callback_data=pagination_flats_call.new(key=key, page="current_page")
         )
     )
 
-    if next_page < max_pages:
+    if next_page <= max_pages:
         markup.insert(
             InlineKeyboardButton(
                 text=next_page_text,
-                callback_data=pagination_call.new(key=key, page=next_page)
+                callback_data=pagination_flats_call.new(key=key, page=next_page)
             )
         )
     markup.row(await contact_button(building_name))
