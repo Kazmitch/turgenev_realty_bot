@@ -327,7 +327,8 @@ class Term(Bank):
                                   related_name="terms")
     title = models.CharField(verbose_name="Условие", max_length=255)
     description = models.TextField(verbose_name="Описание условия")
-    it_term = models.BooleanField(verbose_name="IT ипотека")
+    it_term = models.BooleanField(verbose_name="IT-ипотека")
+    installment_term = models.BooleanField(verbose_name="Рассрочка")
     document = models.FileField(upload_to=user_directory_path, verbose_name='Документ')
 
     class Meta:
