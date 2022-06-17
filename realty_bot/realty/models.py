@@ -288,3 +288,51 @@ class Documentation(BaseModel):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class Bank(BaseModel):
+    title = models.CharField(verbose_name="Название банка", max_length=255, blank=False, null=True)
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
+                                  related_name="banks")
+
+    class Meta:
+        verbose_name = "Банк"
+        verbose_name_plural = "Банки"
+
+    def __str__(self):
+        return f"{self.title}"
+
+
+class Benefit(BaseModel):
+    title = models.CharField(verbose_name="Льготные программы", max_length=255, null=True)
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
+                                  related_name="benefits")
+    description = models.TextField(verbose_name="Описание льготы", blank=True)
+
+    class Meta:
+        verbose_name = "Льгота"
+        verbose_name_plural = "Льготы"
+
+    def __str__(self):
+        return f"{self.title}"
+
+
+class Term(Bank):
+    directory = 'documents/term'
+    bank = models.ForeignKey(Bank, on_delete=models.CASCADE, verbose_name="Банк",
+                             related_name="terms", null=True)
+    benefit = models.ForeignKey(Benefit, on_delete=models.CASCADE, verbose_name="Льготная программа",
+                                related_name="terms")
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
+                                  related_name="terms")
+    title = models.CharField(verbose_name="Условие", max_length=255)
+    description = models.TextField(verbose_name="Описание условия")
+    it_term = models.BooleanField(verbose_name="IT ипотека")
+    document = models.FileField(upload_to=user_directory_path, verbose_name='Документ')
+
+    class Meta:
+        verbose_name = "Условие"
+        verbose_name_plural = "Условия"
+
+    def __str__(self):
+        return f"{self.title}"
