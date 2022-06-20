@@ -4,6 +4,7 @@ from tgbot.handlers.documentation import register_documentation
 from tgbot.handlers.echo import register_echo
 from tgbot.handlers.menu import register_menu
 # from tgbot.handlers.photo_id import register_photo_id
+from tgbot.handlers.purchase_terms import register_purchase_terms
 from tgbot.handlers.send_contact import register_send_contact
 from tgbot.handlers.show_flats import register_show_flats
 from tgbot.handlers.show_photo_gallery import register_show_gallery
@@ -24,6 +25,7 @@ def register_all_handlers(dp):
     register_show_flats(dp)
     register_show_special_offers(dp)
     register_documentation(dp)
+    register_purchase_terms(dp)
     # register_photo_id(dp)
     register_admin(dp)
     register_user(dp)

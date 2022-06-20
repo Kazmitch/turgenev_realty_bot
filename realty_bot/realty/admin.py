@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import UserBot, Developer, Address, Building, Flat, News, XmlLink, SpecialOffer, LocationPhoto, \
-    ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto
+    ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto, Bank, Benefit, Term
 
 
 class BuildingDeveloperInline(admin.TabularInline):
@@ -120,3 +120,36 @@ class AboutProjectPhotoAdmin(admin.ModelAdmin):
     list_filter = ('developer',)
     search_fields = ('developer',)
     readonly_fields = ('display_image', 'created_at', 'updated_at')
+
+
+class TermBankInline(admin.TabularInline):
+    model = Term
+    extra = 1
+
+
+class TermBenefitInline(admin.TabularInline):
+    model = Term
+    extra = 1
+
+
+@admin.register(Bank)
+class BankAdmin(admin.ModelAdmin):
+    inlines = (TermBankInline,)
+    list_display = ('__str__', 'developer', 'created_at', 'updated_at')
+    list_filter = ('title', 'developer',)
+    search_fields = ('title', 'developer',)
+
+
+@admin.register(Benefit)
+class BenefitAdmin(admin.ModelAdmin):
+    inlines = (TermBenefitInline,)
+    list_display = ('__str__', 'developer', 'created_at', 'updated_at')
+    list_filter = ('developer',)
+    search_fields = ('developer',)
+
+
+@admin.register(Term)
+class TermAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'bank', 'benefit', 'developer', 'title', 'it_term', 'installment_term', 'created_at', 'updated_at')
+    list_filter = ('bank', 'benefit', 'developer', 'title', 'it_term', 'installment_term')
+    search_fields = ('bank', 'benefit', 'developer', 'title', 'it_term', 'installment_term')

@@ -317,19 +317,19 @@ class Benefit(BaseModel):
         return f"{self.title}"
 
 
-class Term(Bank):
+class Term(BaseModel):
     directory = 'documents/term'
     bank = models.ForeignKey(Bank, on_delete=models.CASCADE, verbose_name="Банк",
-                             related_name="terms", null=True)
+                             related_name="terms", null=True, blank=True)
     benefit = models.ForeignKey(Benefit, on_delete=models.CASCADE, verbose_name="Льготная программа",
-                                related_name="terms")
+                                related_name="terms", null=True, blank=True)
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
                                   related_name="terms")
     title = models.CharField(verbose_name="Условие", max_length=255)
     description = models.TextField(verbose_name="Описание условия")
     it_term = models.BooleanField(verbose_name="IT-ипотека")
     installment_term = models.BooleanField(verbose_name="Рассрочка")
-    document = models.FileField(upload_to=user_directory_path, verbose_name='Документ')
+    document = models.FileField(upload_to=user_directory_path, verbose_name='Документ', blank=True)
 
     class Meta:
         verbose_name = "Условие"
