@@ -81,7 +81,8 @@ async def flat_selection(call: Union[CallbackQuery, Message], state: FSMContext 
         await message.delete()
 
 
-async def type_params(call: Union[CallbackQuery, Message], state: FSMContext, error: bool = False, callback_data: dict = None,
+async def type_params(call: Union[CallbackQuery, Message], state: FSMContext, error: bool = False,
+                      callback_data: dict = None,
                       **kwargs):
     """Ввести значения."""
 
@@ -190,7 +191,9 @@ async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict
 
 
 def register_selection_flat(dp: Dispatcher):
-    dp.register_callback_query_handler(flat_selection, building.filter(section='flats'), state='*')
+    dp.register_callback_query_handler(flat_selection, building.filter(section='flats'),
+                                       state=[FlatStates.flat_data, FlatStates.flat_area, FlatStates.flat_price,
+                                              FlatStates.flat_year, FlatStates.flat_rooms])
     dp.register_callback_query_handler(type_params, flat_selection_cd.filter(), state='*')
     dp.register_callback_query_handler(update_params, flat_params.filter(),
                                        state=[FlatStates.flat_area, FlatStates.flat_price, FlatStates.flat_year,
