@@ -2,25 +2,23 @@ import io
 
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InputMediaPhoto, InputMedia, InputFile
+from aiogram.types import CallbackQuery, InputMediaPhoto, InputFile
 
-from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_flats_call
 from tgbot.keyboards.flat_selection import order_cd
 from tgbot.keyboards.send_contact import contact_markup
-from tgbot.states.flat_selection import FlatStates
 from tgbot.states.send_contact import ContactStates
-from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
-from tgbot.utils.images import make_photo, get_photo_bytes
+from tgbot.utils.images import get_photo_bytes
+from tgbot.utils.offers import get_offers
 from tgbot.utils.page import get_offer
-from tgbot.utils.offers import get_offers_yan, get_offers
 
 
 async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
     data = await state.get_data()
     building_name = data.get('building_name')
     ordering = callback_data.get('sort')
-    offers = await get_offers(data, ordering)
+    flat_params = data.get('params')
+    offers = await get_offers(building_name, flat_params, ordering)
     if offers:
         max_pages = len(offers)
         # offers_with_photo = await make_photo(offers)
@@ -68,7 +66,8 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     data = await state.get_data()
     building_name = data.get('building_name')
     ordering = callback_data.get('sort')
-    offers = await get_offers(data, ordering)
+    flat_params = data.get('params')
+    offers = await get_offers(building_name, flat_params, ordering)
     current_page = int(callback_data.get('page'))
     offer = await get_offer(offers, page=current_page)
     offer_area = offer.get('area').get('value')
@@ -100,6 +99,6 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
 
 
 def register_show_flats(dp: Dispatcher):
-    dp.register_callback_query_handler(show_chosen_flats, order_cd.filter(), state=FlatStates.flat_data)
+    dp.register_callback_query_handler(show_chosen_flats, order_cd.filter(), state='*')
     dp.register_callback_query_handler(current_page_error, pagination_flats_call.filter(page='current_page'))
     dp.register_callback_query_handler(show_chosen_page, pagination_flats_call.filter(key='flat'), state='*')
