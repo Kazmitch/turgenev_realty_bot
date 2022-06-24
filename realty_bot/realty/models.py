@@ -1,4 +1,3 @@
-import os
 from django.utils.functional import cached_property
 from django.utils.html import format_html
 
@@ -93,11 +92,11 @@ class Flat(BaseModel):
     floor = models.CharField(verbose_name="Этаж", max_length=32, blank=False, null=True)
     rooms = models.CharField(verbose_name="Количество комнат", max_length=32, blank=True)
     studio = models.BooleanField(verbose_name="Студия", blank=True, null=True)
-    total_area = models.CharField(verbose_name="Общая площадь", max_length=32, blank=False, null=True)
+    total_area = models.CharField(verbose_name="Общая площадь", max_length=32, null=True)
     living_area = models.CharField(verbose_name="Жилая площадь", max_length=32, blank=True)
     kitchen_area = models.CharField(verbose_name="Площадь кухни", max_length=32, blank=True)
     bath_area = models.CharField(verbose_name="Площадь санузла", max_length=32, blank=True)
-    price = models.CharField(verbose_name="Стоимость квартиры", max_length=32, blank=False, null=True)
+    price = models.CharField(verbose_name="Стоимость квартиры", max_length=32, null=True)
 
     class Meta:
         verbose_name = "Квартира"
@@ -110,7 +109,7 @@ class Flat(BaseModel):
 class News(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="news",
                                  null=True)
-    title = models.CharField(verbose_name="Заголовок", max_length=255, blank=False, null=True)
+    title = models.CharField(verbose_name="Заголовок", max_length=255, null=True)
     text = models.TextField(verbose_name="Текст новости", blank=False, null=True)
 
     class Meta:
@@ -140,7 +139,7 @@ class SpecialOffer(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name="special_offers", null=True)
     title = models.CharField(verbose_name="Заголовок спецпредложения", max_length=255, blank=False, null=True)
-    description = models.TextField(verbose_name="Описание спецпредложения", blank=False, null=True)
+    description = models.TextField(verbose_name="Описание спецпредложения", null=True)
     photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
 
     class Meta:
@@ -290,45 +289,31 @@ class Documentation(BaseModel):
         return f"{self.title}"
 
 
-class Bank(BaseModel):
-    title = models.CharField(verbose_name="Название банка", max_length=255, blank=False, null=True)
-    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
-                                  related_name="banks")
-
-    class Meta:
-        verbose_name = "Банк"
-        verbose_name_plural = "Банки"
-
-    def __str__(self):
-        return f"{self.title}"
+class TypeOfTerm(models.TextChoices):
+    BANK_OFFER = 'bank', 'Предложение от банка'
+    INSTALLMENT = 'installment', 'Рассрочка'
+    SPECIAL_MORTGAGE = 'conditions', 'Ипотека на специальных условиях'
+    IT_MORTGAGE = 'it_mortgage', 'IT-ипотека'
 
 
-class Benefit(BaseModel):
-    title = models.CharField(verbose_name="Льготные программы", max_length=255, null=True)
-    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
-                                  related_name="benefits")
-    description = models.TextField(verbose_name="Описание льготы", blank=True)
-
-    class Meta:
-        verbose_name = "Льгота"
-        verbose_name_plural = "Льготы"
-
-    def __str__(self):
-        return f"{self.title}"
+class Bank(models.TextChoices):
+    SBER = 'sber', 'Сбер'
+    ALFA = 'alfa', 'Альфа Банк'
+    RSHB = 'rshb', 'Россельхозбанк'
+    GAZPROM = 'gazprom', 'Газпромбанк'
+    VTB = 'vtb', 'Банк ВТБ'
+    RAIFFEISEN = 'raiffeisen', 'Райффайзенбанк'
+    ROSBANK = 'rosbank', 'Росбанк'
 
 
 class Term(BaseModel):
     directory = 'documents/term'
-    bank = models.ForeignKey(Bank, on_delete=models.CASCADE, verbose_name="Банк",
-                             related_name="terms", null=True, blank=True)
-    benefit = models.ForeignKey(Benefit, on_delete=models.CASCADE, verbose_name="Льготная программа",
-                                related_name="terms", null=True, blank=True)
-    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
-                                  related_name="terms")
+    bank = models.CharField(verbose_name="Банк", max_length=64, choices=Bank.choices, null=True, blank=True)
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик", related_name="terms")
+    type_of_term = models.CharField(verbose_name="Тип условия", max_length=64, choices=TypeOfTerm.choices)
+    payment = models.IntegerField(verbose_name="Ежемесячный платёж", blank=True)
     title = models.CharField(verbose_name="Условие", max_length=255)
     description = models.TextField(verbose_name="Описание условия")
-    it_term = models.BooleanField(verbose_name="IT-ипотека")
-    installment_term = models.BooleanField(verbose_name="Рассрочка")
     document = models.FileField(upload_to=user_directory_path, verbose_name='Документ', blank=True)
 
     class Meta:
