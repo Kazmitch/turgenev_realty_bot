@@ -311,7 +311,7 @@ class Term(BaseModel):
     bank = models.CharField(verbose_name="Банк", max_length=64, choices=Bank.choices, null=True, blank=True)
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик", related_name="terms")
     type_of_term = models.CharField(verbose_name="Тип условия", max_length=64, choices=TypeOfTerm.choices)
-    payment = models.IntegerField(verbose_name="Ежемесячный платёж", blank=True)
+    payment = models.IntegerField(verbose_name="Ежемесячный платёж", blank=True, default=30000)
     title = models.CharField(verbose_name="Условие", max_length=255)
     description = models.TextField(verbose_name="Описание условия")
     document = models.FileField(upload_to=user_directory_path, verbose_name='Документ', blank=True)
