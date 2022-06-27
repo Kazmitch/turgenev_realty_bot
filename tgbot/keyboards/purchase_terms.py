@@ -15,25 +15,25 @@ async def purchase_terms_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup.inline_keyboard = [
         [
             InlineKeyboardButton(
-                text='Ипотека - предложения от банков',
+                text='🏦 Ипотека - предложения от банков',
                 callback_data=purchase_terms_cd.new(building_name=building_name, term='bank')
             )
         ],
         [
             InlineKeyboardButton(
-                text='Рассрочка',
+                text='📉 Рассрочка',
                 callback_data=purchase_terms_cd.new(building_name=building_name, term='installment')
             )
         ],
         [
             InlineKeyboardButton(
-                text='Ипотека на специальных условиях',
+                text='👨‍👩‍👧‍👦 Ипотека на специальных условиях',
                 callback_data=purchase_terms_cd.new(building_name=building_name, term='conditions')
             )
         ],
         [
             InlineKeyboardButton(
-                text='Ипотека для IT-специалистов',
+                text='👨‍💻 Ипотека для IT-специалистов',
                 callback_data=purchase_terms_cd.new(building_name=building_name, term='it_mortgage')
             )
         ]

@@ -18,7 +18,7 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='Подобрать квартиру/планировки',
+                                              text='🔑 Подобрать квартиру/планировки',
                                               callback_data=building.new(name=building_name, section='flats')
                                           )
                                       ],
@@ -48,7 +48,7 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='Условия покупки',
+                                              text='📄 Условия покупки',
                                               callback_data=building.new(name=building_name, section='purchase_terms')
                                           )
                                       ],

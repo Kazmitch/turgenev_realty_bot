@@ -13,7 +13,7 @@ async def special_offers(call: CallbackQuery, callback_data: dict, state: FSMCon
     """Хендлер на кнопку 'Спецпредложения'."""
     building_name = callback_data.get('name')
     markup = await special_offers_keyboard(building_name)
-    await call.message.answer(text='Нашел для вас спецпредложения', reply_markup=markup)
+    await call.message.answer(text='😄 На недвижимость в этом ЖК есть скидки! Посмотрим? 🤔', reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
 

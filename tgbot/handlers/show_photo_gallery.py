@@ -14,7 +14,7 @@ async def photo_gallery(call: CallbackQuery, callback_data: dict):
     """Хендлер на кнопку 'Фотогалерея'"""
     building_name = callback_data.get('name')
     markup = await photo_gallery_keyboard(building_name)
-    await call.message.answer(text='Что хотели бы посмотреть?', reply_markup=markup)
+    await call.message.answer(text='Я вижу, тебе стало интересно! ☺ Ты можешь посмотреть на комплекс прямо тут! 👇', reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
 

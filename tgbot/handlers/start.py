@@ -17,7 +17,7 @@ async def start_deep_link(message: Message):
     await message.answer(f"Привет, {message.from_user.full_name}!")
     building = await get_building(args)
     markup = await main_building_menu(building.latin_name)
-    await message.answer(text=f'Меню {building.name}', reply_markup=markup)
+    await message.answer(text=f'Хочу показать тебе классный ЖК {building.name}', reply_markup=markup)
 
 
 async def start(message: Message):
@@ -32,7 +32,7 @@ async def show_find_building(message: Message, state: FSMContext):
     building_name = message.text
     building = await get_find_building(building_name)
     markup = await main_building_menu(building.latin_name)
-    await message.answer(text=f'Меню {building.name}', reply_markup=markup)
+    await message.answer(text=f'Хочу показать тебе классный ЖК {building.name}', reply_markup=markup)
 
 
 def register_start(dp: Dispatcher):

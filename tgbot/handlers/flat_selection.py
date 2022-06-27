@@ -27,8 +27,8 @@ async def make_text(building_name: str, chosen_params: dict) -> str:
     year = int(chosen_params.get('flat_year'))
     rooms = int(chosen_params.get('flat_rooms'))
     text = f'Доступные варианты:\n' \
-           f'квартиры от {low_price} до {max_price} млн.р.\n' \
-           f'и по площади от {low_area} до {max_area} кв.м\n' \
+           f'квартиры от <b>{low_price} млн руб.</b> до <b>{max_price} млн руб.</b>\n' \
+           f'и по площади от <b>{low_area} м²</b> до <b>{max_area} м²</b>\n' \
            f'\n' \
            f'Выбранные параметры:\n' \
            f'Общая площадь от: {area if area != 0 else "все варианты"}\n' \
@@ -119,10 +119,10 @@ async def type_params(call: Union[CallbackQuery, Message], state: FSMContext, er
         building_name = callback_data.get('building_name')
 
         texts = {
-            'flat_area': 'Введите желаемую площадь, например: <b>25</b>',
-            'flat_price': 'Введите желаемую стоимость, например: <b>30</b>',
-            'flat_year': 'Введите год сдачи, например: <b>2022</b>',
-            'flat_rooms': 'Введите количество комнат, например: <b>2</b>',
+            'flat_area': 'Уточни, пожалуйста, какая минимальная площадь тебе подходит? (введите желаемое число , например: <b>25</b>)',
+            'flat_price': 'Подскажи, пожалуйста, 💫 До какой цены рассматриваешь варианты?  (введите желаемое число , например: <b>30</b>)',
+            'flat_year': '🎉 В каком году планируешь получить ключи? (введите желаемый год сдачи, например : <b>2022</b>)',
+            'flat_rooms': 'А сколько комнат должно быть в твоих апартаментах? (введите желаемое число комнат , например: <b>2</b>)',
         }
         text = texts.get(option)
         markup = await type_value_keyboard(building_name)
@@ -192,8 +192,7 @@ async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict
 
 def register_selection_flat(dp: Dispatcher):
     dp.register_callback_query_handler(flat_selection, building.filter(section='flats'),
-                                       state=[FlatStates.flat_data, FlatStates.flat_area, FlatStates.flat_price,
-                                              FlatStates.flat_year, FlatStates.flat_rooms])
+                                       state='*')
     dp.register_callback_query_handler(type_params, flat_selection_cd.filter(), state='*')
     dp.register_callback_query_handler(update_params, flat_params.filter(),
                                        state=[FlatStates.flat_area, FlatStates.flat_price, FlatStates.flat_year,

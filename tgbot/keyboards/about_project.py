@@ -33,19 +33,19 @@ async def photo_gallery_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup.inline_keyboard = [
         [
             InlineKeyboardButton(
-                text='Расположение ЖК и инфраструктура',
+                text='📍 Расположение ЖК и инфраструктура',
                 callback_data=photo_gallery_cd.new(name=building_name, section='location')
             )
         ],
         [
             InlineKeyboardButton(
-                text='Строящиеся корпуса',
+                text='🧱 Строящиеся корпуса',
                 callback_data=photo_gallery_cd.new(name=building_name, section='construction')
             )
         ],
         [
             InlineKeyboardButton(
-                text='Интерьеры общих зон',
+                text='🏠 Интерьеры общих зон',
                 callback_data=photo_gallery_cd.new(name=building_name, section='interior')
             )
         ],
@@ -63,7 +63,7 @@ async def photo_gallery_keyboard(building_name: str) -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton(
-                text='Аэрофотосъемка 3D',
+                text='🚁 Аэрофотосъемка 3D',
                 callback_data=photo_gallery_cd.new(name=building_name, section='photography_3d')
             )
         ]
