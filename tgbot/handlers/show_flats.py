@@ -21,7 +21,6 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
     offers = await get_offers(building_name, flat_params, ordering)
     if offers:
         max_pages = len(offers)
-        # offers_with_photo = await make_photo(offers)
         offer = await get_page(offers)
         try:
             photo = io.BytesIO(await get_photo_bytes(offer.get('image')[0].get('#text')))

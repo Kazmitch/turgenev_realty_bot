@@ -1,7 +1,6 @@
 from aiogram import Dispatcher
 from aiogram.types import CallbackQuery, InputFile, InputMediaPhoto
 
-from realty_bot.realty.models import LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto
 from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.about_project import photo_gallery_keyboard, project_cd, photo_gallery_cd
 from tgbot.keyboards.photo_gallery_pagination import get_photos_keyboard, pagination_gallery_call
@@ -14,7 +13,8 @@ async def photo_gallery(call: CallbackQuery, callback_data: dict):
     """Хендлер на кнопку 'Фотогалерея'"""
     building_name = callback_data.get('name')
     markup = await photo_gallery_keyboard(building_name)
-    await call.message.answer(text='Я вижу, тебе стало интересно! ☺ Ты можешь посмотреть на комплекс прямо тут! 👇', reply_markup=markup)
+    await call.message.answer(text='Я вижу, тебе стало интересно! ☺ Ты можешь посмотреть на комплекс прямо тут! 👇',
+                              reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
 

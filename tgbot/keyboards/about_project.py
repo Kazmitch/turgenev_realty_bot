@@ -2,7 +2,6 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
 from tgbot.keyboards.building_menu import menu_button
-from tgbot.keyboards.send_contact import contact_button
 
 project_cd = CallbackData('project', 'name', 'section')
 photo_gallery_cd = CallbackData('photo_gallery', 'name', 'section')

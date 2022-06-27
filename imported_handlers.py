@@ -15,7 +15,7 @@ from tgbot.handlers.user import register_user
 
 
 def register_all_handlers(dp):
-
+    """Регистрируем все хендлеры."""
     register_start(dp)
     register_menu(dp)
     register_send_contact(dp)

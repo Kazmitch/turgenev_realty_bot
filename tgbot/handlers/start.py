@@ -8,7 +8,6 @@ from aiogram.types import Message
 from tgbot.keyboards.building_menu import main_building_menu
 from tgbot.states.find_building import BuildingState
 from tgbot.utils.dp_api.db_commands import get_building, get_find_building
-# from realty_bot.realty.models import Developer, Address, Building
 
 
 async def start_deep_link(message: Message):
