@@ -15,7 +15,7 @@ async def about_project_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup.inline_keyboard = [
         [
             InlineKeyboardButton(
-                text='Фотогалерея',
+                text='📷 Фотогалерея',
                 callback_data=project_cd.new(name=building_name, section='photo_gallery')
             )
         ]
@@ -51,13 +51,13 @@ async def photo_gallery_keyboard(building_name: str) -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton(
-                text='Шоурум',
+                text='👀 Шоурум',
                 callback_data=photo_gallery_cd.new(name=building_name, section='showroom')
             )
         ],
         [
             InlineKeyboardButton(
-                text='Ход строительства live',
+                text='🏗 Ход строительства live',
                 callback_data=photo_gallery_cd.new(name=building_name, section='progress_live')
             )
         ],

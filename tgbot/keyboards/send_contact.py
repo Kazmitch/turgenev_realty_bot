@@ -18,7 +18,7 @@ contact = ReplyKeyboardMarkup(
 
 async def contact_button(building_name: str):
     callback_data = contact_cd.new(building_name=building_name)
-    request_contact_button = InlineKeyboardButton(text="Заказать обратный звонок", callback_data=callback_data)
+    request_contact_button = InlineKeyboardButton(text="📞 Заказать обратный звонок", callback_data=callback_data)
     return request_contact_button
 
 

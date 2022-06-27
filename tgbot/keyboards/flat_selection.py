@@ -62,7 +62,7 @@ async def type_value_keyboard(building_name: str):
         ],
         [
             InlineKeyboardButton(
-                text='Вернуться',
+                text='🔙 Вернуться',
                 callback_data=building.new(name=building_name, section='flats'),
             )
         ],
@@ -102,7 +102,7 @@ async def order_flats_keyboard(building_name: str):
         ],
         [
             InlineKeyboardButton(
-                text='Вернуться',
+                text=' 🔙Вернуться',
                 callback_data=building.new(name=building_name, section='flats')
             )
         ]

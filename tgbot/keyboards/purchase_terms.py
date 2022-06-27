@@ -51,7 +51,7 @@ async def term_keyboard(building_name: str) -> InlineKeyboardMarkup:
 
     markup.row(
         InlineKeyboardButton(
-            text='Вернуться',
+            text='🔙 Вернуться',
             callback_data=building.new(name=building_name, section='purchase_terms')
         )
     )
