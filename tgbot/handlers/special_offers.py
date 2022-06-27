@@ -1,21 +1,15 @@
-import io
-
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InputMediaPhoto
+from aiogram.types import CallbackQuery
 from aiogram.types import InputFile
 
 from realty_bot.realty_bot.settings import MEDIA_ROOT
-from tgbot.keyboards.about_project import about_project_keyboard, project_cd, photo_gallery_keyboard, \
-    photo_gallery_cd
 from tgbot.keyboards.building_menu import building
 from tgbot.keyboards.special_offers import special_offers_keyboard, special_offer_cd, current_offer_menu
-from tgbot.states.send_contact import ContactStates
-from tgbot.states.special_offers import SpecialOffer
-from tgbot.utils.dp_api.db_commands import get_developer_description, get_special_offer_description
+from tgbot.utils.dp_api.db_commands import get_special_offer_description
 
 
-async def special_offers(call: CallbackQuery, callback_data: dict,  state: FSMContext, **kwargs):
+async def special_offers(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Спецпредложения'."""
     building_name = callback_data.get('name')
     markup = await special_offers_keyboard(building_name)

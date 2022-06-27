@@ -10,7 +10,7 @@ from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.images import get_photo_bytes
 from tgbot.utils.offers import get_offers
-from tgbot.utils.page import get_offer
+from tgbot.utils.page import get_page
 
 
 async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
@@ -22,7 +22,7 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
     if offers:
         max_pages = len(offers)
         # offers_with_photo = await make_photo(offers)
-        offer = await get_offer(offers)
+        offer = await get_page(offers)
         try:
             photo = io.BytesIO(await get_photo_bytes(offer.get('image')[0].get('#text')))
         except KeyError:
@@ -69,7 +69,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     flat_params = data.get('params')
     offers = await get_offers(building_name, flat_params, ordering)
     current_page = int(callback_data.get('page'))
-    offer = await get_offer(offers, page=current_page)
+    offer = await get_page(offers, page=current_page)
     offer_area = offer.get('area').get('value')
     offer_price = offer.get('price').get('value')
     offer_rooms = offer.get('rooms')
