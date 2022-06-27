@@ -1,21 +1,19 @@
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.utils.callback_data import CallbackData
+from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, ContentType
 
-from tgbot.keyboards.building_menu import main_building_menu, menu_markup
+from tgbot.keyboards.building_menu import menu_markup
 from tgbot.keyboards.send_contact import contact, contact_cd
-from aiogram.types import CallbackQuery, InputMediaPhoto, Message, ReplyKeyboardRemove, ContentType
-
 from tgbot.states.send_contact import ContactStates
 
 
 async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMContext):
-
     await call.answer(cache_time=60)
     building_name = callback_data.get('building_name')
     await state.update_data(building_name=building_name)
     await call.message.answer(text=f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
-                                   f'Нажмите кнопку «Отправить контакт» или введите номер вручную', reply_markup=contact)
+                                   f'Нажмите кнопку «Отправить контакт» или введите номер вручную',
+                              reply_markup=contact)
     await call.message.delete()
     await ContactStates.contact.set()
 
@@ -41,4 +39,5 @@ async def get_contact(message: Message, state: FSMContext):
 
 def register_send_contact(dp: Dispatcher):
     dp.register_callback_query_handler(send_contact, contact_cd.filter(), state='*')
-    dp.register_message_handler(get_contact, content_types=[ContentType.CONTACT, ContentType.TEXT], state=ContactStates.contact)
+    dp.register_message_handler(get_contact, content_types=[ContentType.CONTACT, ContentType.TEXT],
+                                state=ContactStates.contact)

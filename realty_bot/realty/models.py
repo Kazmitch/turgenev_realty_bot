@@ -107,10 +107,13 @@ class Flat(BaseModel):
 
 
 class News(BaseModel):
+    directory = 'photo/news'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="news",
                                  null=True)
-    title = models.CharField(verbose_name="Заголовок", max_length=255, null=True)
-    text = models.TextField(verbose_name="Текст новости", blank=False, null=True)
+    title = models.CharField(verbose_name="Заголовок", max_length=255)
+    text = models.TextField(verbose_name="Текст новости")
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография', blank=True, null=True)
+    telegraph_url = models.CharField(verbose_name='Ссылка на Telegraph', max_length=255, blank=True, null=True)
 
     class Meta:
         verbose_name = "Новость"
@@ -119,6 +122,15 @@ class News(BaseModel):
 
     def __str__(self):
         return f"{self.title}"
+
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
 
 
 class XmlLink(BaseModel):

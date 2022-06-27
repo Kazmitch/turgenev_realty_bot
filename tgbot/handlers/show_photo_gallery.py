@@ -7,7 +7,7 @@ from tgbot.keyboards.about_project import photo_gallery_keyboard, project_cd, ph
 from tgbot.keyboards.photo_gallery_pagination import get_photos_keyboard, pagination_gallery_call
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.dp_api.db_commands import get_gallery_photos
-from tgbot.utils.page import get_offer
+from tgbot.utils.page import get_page
 
 
 async def photo_gallery(call: CallbackQuery, callback_data: dict):
@@ -25,7 +25,7 @@ async def show_photos(call: CallbackQuery, callback_data: dict):
     section = callback_data.get('section')
     photos = await get_gallery_photos(section, building_name)
     max_pages = len(photos)
-    photo = await get_offer(photos)
+    photo = await get_page(photos)
     file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
     await call.message.answer_photo(
         photo=file,
@@ -46,13 +46,13 @@ async def current_page_error(call: CallbackQuery):
 
 
 async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict):
-    """Хендлер на отображение нужно страницы."""
+    """Хендлер на отображение нужной страницы."""
     building_name = callback_data.get('name')
     section = callback_data.get('section')
     current_page = int(callback_data.get('page'))
     photos = await get_gallery_photos(section, building_name)
     max_pages = len(photos)
-    photo = await get_offer(photos, page=current_page)
+    photo = await get_page(photos, page=current_page)
     file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
     media = InputMediaPhoto(media=file)
     await call.message.edit_media(
