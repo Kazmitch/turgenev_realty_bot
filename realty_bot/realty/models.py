@@ -15,6 +15,16 @@ class BaseModel(models.Model):
         abstract = True
 
 
+class BasePublication(BaseModel):
+    is_published = models.BooleanField(verbose_name="Опубликовано")
+    is_active = models.BooleanField(verbose_name="Активно")
+    publicate_at = models.DateField(verbose_name="Опубликовать")
+    published_at = models.DateField(verbose_name="Опубликовано")
+
+    class Meta:
+        abstract = True
+
+
 class UserBot(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     telegram_id = models.BigIntegerField(verbose_name="ID Пользователя Телеграм", unique=True, blank=True, null=True)
@@ -106,7 +116,7 @@ class Flat(BaseModel):
         return f"{self.building.name} {self.total_area} {self.rooms} {self.price}"
 
 
-class News(BaseModel):
+class News(BasePublication):
     directory = 'photo/news'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс", related_name="news",
                                  null=True)

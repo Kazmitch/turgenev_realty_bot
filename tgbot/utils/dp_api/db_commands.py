@@ -97,5 +97,5 @@ def get_terms(building_name: str, term: str) -> List[Term]:
 @sync_to_async
 def get_news(building_name: str) -> QuerySet[News]:
     """Получаем query set объектов News по названию ЖК."""
-    news = News.objects.filter(building__latin_name=building_name)
+    news = News.objects.filter(building__latin_name=building_name, is_active=True, is_published=True)
     return news
