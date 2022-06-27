@@ -5,7 +5,7 @@ from asgiref.sync import sync_to_async
 from django.db.models import Q, QuerySet
 
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
-    AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News
+    AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction
 
 
 @sync_to_async
@@ -99,3 +99,10 @@ def get_news(building_name: str) -> QuerySet[News]:
     """Получаем query set объектов News по названию ЖК."""
     news = News.objects.filter(building__latin_name=building_name, is_active=True, is_published=True)
     return news
+
+
+@sync_to_async
+def get_construction_photos(building_name: str) -> QuerySet[Construction]:
+    """Получаем query set объектов Construction по названию ЖК."""
+    construct_photos = Construction.objects.filter(building__latin_name=building_name).order_by('-photo_date')
+    return construct_photos

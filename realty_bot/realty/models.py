@@ -18,8 +18,8 @@ class BaseModel(models.Model):
 class BasePublication(BaseModel):
     is_published = models.BooleanField(verbose_name="Опубликовано")
     is_active = models.BooleanField(verbose_name="Активно")
-    publicate_at = models.DateField(verbose_name="Опубликовать")
-    published_at = models.DateField(verbose_name="Опубликовано")
+    publicate_at = models.DateField(verbose_name="Опубликовать", blank=True, null=True)
+    published_at = models.DateField(verbose_name="Опубликовано", blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -349,3 +349,27 @@ class Term(BaseModel):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class Construction(BasePublication):
+    directory = 'photo/construction'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='constructions')
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
+    photo_date = models.DateField(verbose_name="Дата фотографии", help_text="К какой дате относится фотография")
+
+    class Meta:
+        verbose_name = "Динамика строительства Фото"
+        verbose_name_plural = "Динамика строительства Фото"
+
+    def __str__(self):
+        return f"{self.building.name}"
+
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
