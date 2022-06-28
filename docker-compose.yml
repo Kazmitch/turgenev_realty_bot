@@ -46,7 +46,7 @@ services:
     networks:
       - realty_db_network
 
-  redis:
+  realty_redis:
     image: redis:7.0.2
     restart: always
     ports:
