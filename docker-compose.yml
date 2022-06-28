@@ -25,6 +25,7 @@ services:
     depends_on:
       - realty_db
       - realty_web
+      - redis
     networks:
       - realty_db_network
 
@@ -44,6 +45,19 @@ services:
       - '8383:8000'
     networks:
       - realty_db_network
+
+  redis:
+    image: redis:7.0.2
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server
+    volumes:
+      - /var/lib/redis:/var/lib/redis
+      - ./redis.conf:/var/lib/redis/redis.conf
+    networks:
+      - realty_db_network
+
 
 networks:
   realty_db_network:

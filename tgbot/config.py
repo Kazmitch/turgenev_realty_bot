@@ -28,6 +28,7 @@ class Config:
     tg_bot: TgBot
     db: DbConfig
     misc: Miscellaneous
+    redis_host: str = None
 
 
 def load_config(path: str = None):
@@ -46,5 +47,6 @@ def load_config(path: str = None):
             user=env.str('POSTGRES_USER'),
             database=env.str('POSTGRES_DB')
         ),
-        misc=Miscellaneous()
+        misc=Miscellaneous(),
+        redis_host=env.str('REDIS_HOST')
     )
