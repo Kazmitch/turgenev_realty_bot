@@ -36,7 +36,7 @@ async def current_offer_menu(building_name: str) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup(row_width=1)
     markup.row(
         InlineKeyboardButton(
-            text='Вернуться',
+            text='🔙 Вернуться',
             callback_data=building.new(name=building_name, section='offers')
         )
     )
