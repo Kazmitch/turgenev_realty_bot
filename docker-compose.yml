@@ -25,7 +25,7 @@ services:
     depends_on:
       - realty_db
       - realty_web
-      - redis
+      - realty_redis
     networks:
       - realty_db_network
 
