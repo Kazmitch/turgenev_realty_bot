@@ -211,7 +211,8 @@ class LocationPhoto(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='locations')
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
-    description = models.CharField(verbose_name="Описание фотографии", max_length=1024, blank=True, null=True)
+    description = models.CharField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
 
     class Meta:
         verbose_name = "Локация ЖК Фото"
@@ -235,7 +236,8 @@ class ProcessingCorpusPhoto(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='corps')
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
-    description = models.CharField(verbose_name="Описание фотографии", max_length=1024, blank=True, null=True)
+    description = models.CharField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
 
     class Meta:
         verbose_name = "Строящийся корпус Фото"
@@ -259,7 +261,8 @@ class InteriorPhoto(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='interiors')
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
-    description = models.CharField(verbose_name="Описание фотографии", max_length=1024, blank=True, null=True)
+    description = models.CharField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
 
     class Meta:
         verbose_name = "Интерьер Фото"
@@ -283,7 +286,8 @@ class ShowRoomPhoto(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='show_rooms')
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
-    description = models.CharField(verbose_name="Описание фотографии", max_length=1024, blank=True, null=True)
+    description = models.CharField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
 
     class Meta:
         verbose_name = "Шоурум Фото"
