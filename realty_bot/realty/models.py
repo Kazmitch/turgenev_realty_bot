@@ -145,10 +145,16 @@ class News(BasePublication):
     display_image.short_description = 'Изображение'
 
 
+class TypeOfXml(models.TextChoices):
+    YANDEX = 'yandex', 'Яндекс'
+    CIAN = 'cian', 'Cian'
+
+
 class XmlLink(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name="xml_links", null=True)
-    xml_link = models.TextField(verbose_name="Ссылка на xml", blank=True, null=True)
+    xml_link = models.CharField(verbose_name="Ссылка на xml", max_length=255)
+    type_of_xml = models.CharField(verbose_name="Тип ссылка", max_length=16, choices=TypeOfXml.choices)
 
     class Meta:
         verbose_name = "XML Ссылка"

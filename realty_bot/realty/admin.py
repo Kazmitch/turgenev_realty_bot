@@ -75,9 +75,9 @@ class SpecialOfferAdmin(admin.ModelAdmin):
 
 @admin.register(XmlLink)
 class XmlLinkAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'xml_link', 'created_at', 'updated_at')
-    list_filter = ('building',)
-    search_fields = ('building',)
+    list_display = ('__str__', 'xml_link', 'type_of_xml', 'created_at', 'updated_at')
+    list_filter = ('building', 'type_of_xml')
+    search_fields = ('building', 'type_of_xml')
 
 
 @admin.register(Documentation)

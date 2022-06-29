@@ -42,7 +42,7 @@ def get_find_building(building_name: str) -> Building:
 @sync_to_async
 def get_xml_link_by_name(building_name: str) -> str:
     """Получаем ссылку на xml по имени."""
-    xml_link = XmlLink.objects.filter(building__latin_name=building_name).first().xml_link
+    xml_link = XmlLink.objects.filter(building__latin_name=building_name).first()
     return xml_link
 
 

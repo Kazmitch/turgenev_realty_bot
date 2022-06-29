@@ -11,7 +11,7 @@ from tgbot.keyboards.flat_selection import order_flats_keyboard
 from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.flat_selection import FlatStates
 from tgbot.states.send_contact import ContactStates
-from tgbot.utils.offers import get_max_and_low_values, get_all_offers
+from tgbot.utils.offers import get_all_offers
 
 
 async def make_text(building_name: str, chosen_params: dict) -> str:
@@ -168,7 +168,7 @@ async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict
     building_name = data.get('building_name')
     params = data.get('params')
     try:
-        min_max_values = await get_max_and_low_values(building_name=building_name, params=params)
+        min_max_values = await get_all_offers(building_name=building_name, params=params)
         max_price = min_max_values.get('max_price')[:-6]
         low_price = min_max_values.get('low_price')[:-6]
         max_area = min_max_values.get('max_area')

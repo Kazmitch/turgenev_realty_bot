@@ -8,8 +8,9 @@ from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_flats_
 from tgbot.keyboards.flat_selection import order_cd
 from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.send_contact import ContactStates
+from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
 from tgbot.utils.images import get_photo_bytes
-from tgbot.utils.offers import get_offers
+from tgbot.utils.offers import get_offers, get_photo_url, get_values
 from tgbot.utils.page import get_page
 
 
@@ -19,25 +20,23 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
     ordering = callback_data.get('sort')
     flat_params = data.get('params')
     offers = await get_offers(building_name, flat_params, ordering)
+    xml_link = await get_xml_link_by_name(building_name)
     if offers:
         max_pages = len(offers)
         offer = await get_page(offers)
         try:
-            photo = io.BytesIO(await get_photo_bytes(offer.get('image')[0].get('#text')))
+            photo_url = await get_photo_url(offer, xml_link.type_of_xml)
+            photo = io.BytesIO(await get_photo_bytes(photo_url))
         except KeyError:
             photo = 'realty_bot/media/errors/layout_error.jpg'
         file = InputFile(path_or_bytesio=photo)
-        offer_area = offer.get('area').get('value')
-        offer_price = offer.get('price').get('value')
-        offer_rooms = offer.get('rooms')
-        offer_floor = offer.get('floor')
-        offer_description = offer.get('description')
+        offer_values = await get_values(offer, xml_link.type_of_xml)
         await call.message.answer_photo(
             photo=file,
-            caption=f'Стоимость: <b>{offer_price} рублей</b>\n'
-                    f'Площадь: <b>{offer_area} м²</b>\n'
-                    f'Комнат: <b>{offer_rooms}</b>\n'
-                    f'Этаж: <b>{offer_floor}</b>',
+            caption=f'Стоимость: <b>{offer_values.get("offer_price")} рублей</b>\n'
+                    f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
+                    f'Комнат: <b>{offer_values.get("offer_rooms")}</b>\n'
+                    f'Этаж: <b>{offer_values.get("offer_floor")}</b>',
             reply_markup=await get_page_keyboard(
                 key='flat',
                 max_pages=max_pages,
@@ -69,20 +68,19 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     offers = await get_offers(building_name, flat_params, ordering)
     current_page = int(callback_data.get('page'))
     offer = await get_page(offers, page=current_page)
-    offer_area = offer.get('area').get('value')
-    offer_price = offer.get('price').get('value')
-    offer_rooms = offer.get('rooms')
-    offer_floor = offer.get('floor')
+    xml_link = await get_xml_link_by_name(building_name)
+    offer_values = await get_values(offer, xml_link.type_of_xml)
     try:
-        photo = io.BytesIO(await get_photo_bytes(offer.get('image')[0].get('#text')))
+        photo_url = await get_photo_url(offer, xml_link.type_of_xml)
+        photo = io.BytesIO(await get_photo_bytes(photo_url))
     except KeyError:
         photo = 'realty_bot/media/errors/layout_error.jpg'
     file = InputFile(path_or_bytesio=photo)
     media = InputMediaPhoto(media=file,
-                            caption=f'Стоимость: <b>{offer_price} рублей</b>\n'
-                                    f'Площадь: <b>{offer_area} м²</b>\n'
-                                    f'Комнат: <b>{offer_rooms}</b>\n'
-                                    f'Этаж: <b>{offer_floor}</b>')
+                            caption=f'Стоимость: <b>{offer_values.get("offer_price")} рублей</b>\n'
+                                    f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
+                                    f'Комнат: <b>{offer_values.get("offer_rooms")}</b>\n'
+                                    f'Этаж: <b>{offer_values.get("offer_floor")}</b>')
     max_pages = len(offers)
     await call.message.edit_media(
         media=media,
