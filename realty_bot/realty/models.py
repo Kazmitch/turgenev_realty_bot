@@ -26,16 +26,18 @@ class BasePublication(BaseModel):
 
 
 class UserBot(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
     telegram_id = models.BigIntegerField(verbose_name="ID Пользователя Телеграм", unique=True, blank=True, null=True)
-    telegram_username = models.CharField(verbose_name="Username Телеграм", max_length=255, blank=True, null=True)
+    telegram_username = models.CharField(verbose_name="Username Телеграм", max_length=32, blank=True, null=True)
+    telegram_first_name = models.CharField(verbose_name="Имя пользователя", max_length=64, blank=True, null=True)
+    telegram_last_name = models.CharField(verbose_name="Фамилия пользователя", max_length=64, blank=True, null=True)
+    is_admin = models.BooleanField(verbose_name="Администратор", default=False)
 
     class Meta:
         verbose_name = "Пользователь бота"
         verbose_name_plural = "Пользователи бота"
 
     def __str__(self):
-        return f"{self.user.get_full_name()}"
+        return f"{self.telegram_id}"
 
 
 class Developer(BaseModel):

@@ -7,12 +7,13 @@ from aiogram.types import Message
 
 from tgbot.keyboards.building_menu import main_building_menu
 from tgbot.states.find_building import BuildingState
-from tgbot.utils.dp_api.db_commands import get_building, get_find_building
+from tgbot.utils.dp_api.db_commands import get_building, get_find_building, create_userbot
 
 
 async def start_deep_link(message: Message):
     """Переход сразу в меню конкретного ЖК."""
     args = message.get_args()
+    await create_userbot(message)
     await message.answer(f"Привет, {message.from_user.full_name}!")
     building = await get_building(args)
     markup = await main_building_menu(building.latin_name)
@@ -21,6 +22,7 @@ async def start_deep_link(message: Message):
 
 async def start(message: Message):
     """Предлагаем пользователю ввести название ЖК."""
+    await create_userbot(message)
     await message.answer(f"Привет, {message.from_user.full_name}!")
     await message.answer(f"Введите название ЖК, который вас интересует")
     await BuildingState.name.set()

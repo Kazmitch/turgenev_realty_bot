@@ -11,9 +11,9 @@ class BuildingDeveloperInline(admin.TabularInline):
 
 @admin.register(UserBot)
 class UserBotAdmin(admin.ModelAdmin):
-    list_display = ('__str__', "user", "telegram_id", "telegram_username")
-    list_filter = ("user", "telegram_username")
-    search_fields = ("user", "telegram_username")
+    list_display = ('__str__', 'telegram_id', 'telegram_username', 'telegram_first_name', 'telegram_last_name')
+    # list_filter = ('telegram_username',)
+    search_fields = ('telegram_username',)
 
 
 @admin.register(Developer)

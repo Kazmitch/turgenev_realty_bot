@@ -1,11 +1,28 @@
 import operator
 from typing import List
 
+from aiogram.types import Message
 from asgiref.sync import sync_to_async
 from django.db.models import Q, QuerySet
 
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
-    AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction
+    AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
+    UserBot
+
+
+@sync_to_async
+def create_userbot(message: Message):
+    """Создаем пользователя в базе."""
+    telegram_id = message.from_user.id
+    telegram_username = message.from_user.username
+    telegram_first_name = message.from_user.first_name
+    telegram_last_name = message.from_user.last_name
+    UserBot.objects.update_or_create(
+        telegram_id=telegram_id,
+        telegram_username=telegram_username,
+        telegram_first_name=telegram_first_name,
+        telegram_last_name=telegram_last_name
+    )
 
 
 @sync_to_async
