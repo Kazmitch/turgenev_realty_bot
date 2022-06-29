@@ -332,6 +332,8 @@ class Term(BaseModel):
     directory = 'documents/term'
     bank = models.CharField(verbose_name="Банк", max_length=64, choices=Bank.choices, null=True, blank=True)
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик", related_name="terms")
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='terms')
     type_of_term = models.CharField(
         verbose_name="Тип условия",
         max_length=64,

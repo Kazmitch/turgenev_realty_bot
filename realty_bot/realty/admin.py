@@ -124,7 +124,7 @@ class AboutProjectPhotoAdmin(admin.ModelAdmin):
 
 @admin.register(Term)
 class TermAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'developer', 'type_of_term', 'bank', 'payment', 'created_at', 'updated_at')
+    list_display = ('__str__', 'developer', 'building', 'type_of_term', 'bank', 'payment', 'created_at', 'updated_at')
     list_filter = ('developer', 'type_of_term', 'bank',)
     search_fields = ('developer', 'type_of_term', 'bank',)
 

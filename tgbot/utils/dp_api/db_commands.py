@@ -89,7 +89,7 @@ def get_gallery_photos(section: str, building_name: str):
 @sync_to_async
 def get_terms(building_name: str, term: str) -> List[Term]:
     """Получаем query set объектов Term по названию ЖК и условию."""
-    order_date = Term.objects.filter(developer__buildings__latin_name=building_name, type_of_term=term).order_by('-created_at')[:5]
+    order_date = Term.objects.filter(building__latin_name=building_name, type_of_term=term).order_by('-created_at')[:5]
     terms = sorted(order_date, key=operator.attrgetter('payment'))
     return terms
 
