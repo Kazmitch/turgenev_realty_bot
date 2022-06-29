@@ -29,6 +29,7 @@ async def show_photos(call: CallbackQuery, callback_data: dict):
     file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
     await call.message.answer_photo(
         photo=file,
+        caption=photo.description,
         reply_markup=await get_photos_keyboard(
             max_pages=max_pages,
             key='photo',
@@ -54,7 +55,7 @@ async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict):
     max_pages = len(photos)
     photo = await get_page(photos, page=current_page)
     file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
-    media = InputMediaPhoto(media=file)
+    media = InputMediaPhoto(media=file, caption=photo.description)
     await call.message.edit_media(
         media=media,
         reply_markup=await get_photos_keyboard(
