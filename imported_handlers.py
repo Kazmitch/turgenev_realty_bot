@@ -3,6 +3,7 @@ from tgbot.handlers.admin import register_admin
 from tgbot.handlers.documentation import register_documentation
 from tgbot.handlers.dynamics import register_construction
 from tgbot.handlers.flat_selection import register_selection_flat
+from tgbot.handlers.make_call import register_make_call
 from tgbot.handlers.menu import register_menu
 from tgbot.handlers.news import register_news
 from tgbot.handlers.purchase_terms import register_purchase_terms
@@ -18,6 +19,7 @@ def register_all_handlers(dp):
     """Регистрируем все хендлеры."""
     register_start(dp)
     register_menu(dp)
+    register_make_call(dp)
     register_send_contact(dp)
     register_about_project(dp)
     register_show_gallery(dp)

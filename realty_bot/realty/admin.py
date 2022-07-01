@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from .models import UserBot, Developer, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
-    ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto, Term, Construction
+    ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto, Term, Construction, \
+    SalesDepartment
 
 
 class BuildingDeveloperInline(admin.TabularInline):
@@ -134,3 +135,10 @@ class ConstructionAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'display_image', 'is_active', 'is_published', 'photo_date', 'created_at', 'updated_at')
     list_filter = ('building', 'is_active', 'is_published')
     search_fields = ('building', 'is_active', 'is_published')
+
+
+@admin.register(SalesDepartment)
+class SalesDepartmentAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'developer', 'sales_department_phone')
+    list_filter = ('building', 'developer')
+    search_fields = ('building', 'developer')

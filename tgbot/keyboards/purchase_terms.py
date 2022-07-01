@@ -2,6 +2,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
 from tgbot.keyboards.building_menu import menu_button, building
+from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
 purchase_terms_cd = CallbackData('terms', 'building_name', 'term')
@@ -55,6 +56,8 @@ async def term_keyboard(building_name: str) -> InlineKeyboardMarkup:
             callback_data=building.new(name=building_name, section='purchase_terms')
         )
     )
+
+    markup.row(await call_button(building_name))
     markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 

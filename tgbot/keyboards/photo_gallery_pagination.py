@@ -3,6 +3,7 @@ from aiogram.utils.callback_data import CallbackData
 
 from tgbot.keyboards.about_project import project_cd
 from tgbot.keyboards.building_menu import menu_button
+from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
 pagination_gallery_call = CallbackData("paginator_gallery", "key", "page", "name", "section")
@@ -58,6 +59,7 @@ async def get_photos_keyboard(max_pages: int, building_name: str, section, key="
         )
     )
 
+    markup.row(await call_button(building_name))
     markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 

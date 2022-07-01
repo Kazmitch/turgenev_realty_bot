@@ -391,3 +391,20 @@ class Construction(BasePublication):
         return format_html('<strong>There is no image for this entry.<strong>')
 
     display_image.short_description = 'Изображение'
+
+
+class SalesDepartment(BaseModel):
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик", related_name="sales_departments")
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='sales_departments')
+    description = models.TextField(verbose_name="Дни и время работы офиса продаж")
+    # time_open = models.TimeField(verbose_name="Начало работы отдела продаж", auto_now=False, auto_now_add=False)
+    # time_close = models.TimeField(verbose_name="Конец работы отдела продаж", auto_now=False, auto_now_add=False)
+    sales_department_phone = models.CharField(verbose_name="Телефон отдела продаж", max_length=32, help_text="Пример: +79095432100")
+
+    class Meta:
+        verbose_name = "Офис продаж"
+        verbose_name_plural = "Офисы продаж"
+
+    def __str__(self):
+        return f"{self.building}"

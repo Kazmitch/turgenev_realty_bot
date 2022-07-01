@@ -2,6 +2,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
 from tgbot.keyboards.building_menu import menu_button, building
+from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
 order_cd = CallbackData('order', 'building_name', 'sort')
@@ -107,6 +108,8 @@ async def order_flats_keyboard(building_name: str):
             )
         ]
     ]
+
+    markup.row(await call_button(building_name))
     markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
