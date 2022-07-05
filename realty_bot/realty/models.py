@@ -1,8 +1,11 @@
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.functional import cached_property
 from django.utils.html import format_html
 
-from django.db import models
-from django.contrib.auth.models import User
+import base64
 
 from realty_bot.realty_bot.utils import user_directory_path, about_project_path
 
@@ -55,6 +58,31 @@ class Developer(BaseModel):
         return f"{self.developer_name}"
 
 
+class Profile(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    developer = models.ForeignKey(
+        Developer,
+        related_name='profiles',
+        verbose_name='Застройщик',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = "Профиль пользователя"
+        verbose_name_plural = "Профили пользователей"
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
+
+
 class Address(BaseModel):
     country = models.CharField(verbose_name="Страна", max_length=32, blank=True)
     region = models.CharField(verbose_name="Название субъекта РФ", max_length=64, blank=True)
@@ -73,8 +101,8 @@ class Address(BaseModel):
 
 class Building(BaseModel):
     name = models.CharField(verbose_name="Название ЖК", max_length=255, unique=True, blank=False)
-    latin_name = models.CharField(verbose_name="Название на английском", max_length=255, unique=True, null=True,
-                                  help_text='В формате <b>some_building_name</b>')
+    latin_name = models.CharField(verbose_name="Название на английском", max_length=40, unique=True, null=True,
+                                  help_text='В формате <b>some_building_name</b>\n<b>Не больше 40 символов</b>')
     address = models.OneToOneField(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
     developer = models.ForeignKey(Developer, verbose_name="Застройщик", related_name="buildings",
                                   on_delete=models.CASCADE, null=True)
@@ -95,6 +123,14 @@ class Building(BaseModel):
 
     def __str__(self):
         return f"{self.name}"
+
+    @property
+    def url_base64_encode(self, **kwargs):
+        if self.latin_name:
+            encoded_latin_name = base64.b64encode(self.latin_name.encode('UTF-8')).decode('UTF-8')
+            return f'https://t.me/realty_tg_bot?start={encoded_latin_name}'
+        else:
+            return f'Не заполнено поле: {self.latin_name}'
 
 
 class Flat(BaseModel):
@@ -394,13 +430,13 @@ class Construction(BasePublication):
 
 
 class SalesDepartment(BaseModel):
-    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик", related_name="sales_departments")
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
+                                  related_name="sales_departments")
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='sales_departments')
     description = models.TextField(verbose_name="Дни и время работы офиса продаж")
-    # time_open = models.TimeField(verbose_name="Начало работы отдела продаж", auto_now=False, auto_now_add=False)
-    # time_close = models.TimeField(verbose_name="Конец работы отдела продаж", auto_now=False, auto_now_add=False)
-    sales_department_phone = models.CharField(verbose_name="Телефон отдела продаж", max_length=32, help_text="Пример: +79095432100")
+    sales_department_phone = models.CharField(verbose_name="Телефон отдела продаж", max_length=32,
+                                              help_text="Пример: +79095432100")
 
     class Meta:
         verbose_name = "Офис продаж"
@@ -408,3 +444,21 @@ class SalesDepartment(BaseModel):
 
     def __str__(self):
         return f"{self.building}"
+
+
+class CallRequest(BaseModel):
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
+                                  related_name="requests")
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name="requests")
+    telegram_user = models.ForeignKey(UserBot, on_delete=models.CASCADE, verbose_name="Пользователь",
+                                      related_name="requests")
+    telegram_user_phone = models.CharField(verbose_name="Телефон заявки", max_length=32)
+    request_data = models.JSONField(verbose_name='Данные в JSON формате', blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Заявка"
+        verbose_name_plural = "Заявки"
+
+    def __str__(self):
+        return f"{self.building.name}"

@@ -1,4 +1,5 @@
 from aiogram import Dispatcher
+from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputFile, InputMediaPhoto
 
 from realty_bot.realty_bot.settings import MEDIA_ROOT
@@ -9,7 +10,7 @@ from tgbot.utils.news_text import make_news_text
 from tgbot.utils.page import get_page
 
 
-async def show_news(call: CallbackQuery, callback_data: dict, **kwargs):
+async def show_news(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Новости'"""
     building_name = callback_data.get('name')
     news = await get_news(building_name)
@@ -27,13 +28,14 @@ async def show_news(call: CallbackQuery, callback_data: dict, **kwargs):
         )
     )
     await call.message.delete()
+    await state.update_data(section=callback_data.get('section'))
 
 
 async def current_page_error(call: CallbackQuery):
     await call.answer(cache_time=60)
 
 
-async def show_chosen_news(call: CallbackQuery, callback_data: dict, **kwargs):
+async def show_chosen_news(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Отображаем выбранную страницу."""
     building_name = callback_data.get('building_name')
     current_page = int(callback_data.get('page'))
@@ -53,6 +55,7 @@ async def show_chosen_news(call: CallbackQuery, callback_data: dict, **kwargs):
             page=current_page
         )
     )
+    await state.update_data(section=callback_data.get('section'))
 
 
 def register_news(dp: Dispatcher):

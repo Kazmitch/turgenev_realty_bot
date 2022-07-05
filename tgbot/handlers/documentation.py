@@ -8,7 +8,7 @@ from tgbot.keyboards.documentation_keyboard import documents_keyboard, documenta
 from tgbot.utils.dp_api.db_commands import get_document_file
 
 
-async def documents(call: CallbackQuery, callback_data: dict,  state: FSMContext, **kwargs):
+async def documents(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Документация'."""
     building_name = callback_data.get('name')
     markup = await documents_keyboard(building_name)
@@ -17,7 +17,7 @@ async def documents(call: CallbackQuery, callback_data: dict,  state: FSMContext
     await call.message.delete()
 
 
-async def share_document(call: CallbackQuery, callback_data: dict, **kwargs):
+async def share_document(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на отправку конкретного документа."""
     await call.answer(cache_time=60)
     building_name = callback_data.get('name')
@@ -28,6 +28,7 @@ async def share_document(call: CallbackQuery, callback_data: dict, **kwargs):
     await call.message.answer_document(file, reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
+    await state.update_data(section=callback_data.get('section'))
 
 
 def register_documentation(dp: Dispatcher):

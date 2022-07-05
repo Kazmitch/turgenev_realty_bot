@@ -1,4 +1,5 @@
 from aiogram import Dispatcher
+from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
 from tgbot.keyboards.building_menu import building
@@ -14,7 +15,7 @@ async def terms(call: CallbackQuery, callback_data: dict, **kwargs):
     await call.message.delete()
 
 
-async def show_term(call: CallbackQuery, callback_data: dict, **kwargs):
+async def show_term(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Выводим условие покупки."""
     building_name = callback_data.get('building_name')
     term = callback_data.get('term')
@@ -22,6 +23,7 @@ async def show_term(call: CallbackQuery, callback_data: dict, **kwargs):
     markup = await term_keyboard(building_name)
     await call.message.answer(text=text, reply_markup=markup)
     await call.message.delete()
+    await state.update_data(section=callback_data.get('section'), term=callback_data.get('term'))
 
 
 def register_purchase_terms(dp: Dispatcher):

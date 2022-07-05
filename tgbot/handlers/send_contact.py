@@ -5,6 +5,7 @@ from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, ContentTy
 from tgbot.keyboards.building_menu import menu_markup
 from tgbot.keyboards.send_contact import contact, contact_cd
 from tgbot.states.send_contact import ContactStates
+from tgbot.utils.dp_api.db_commands import create_requests
 
 
 async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMContext):
@@ -21,20 +22,17 @@ async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMConte
 async def get_contact(message: Message, state: FSMContext):
     if message.contact:
         await state.update_data(contact_user=message.contact.phone_number)
-        data = await state.get_data()
-        await state.finish()
-        building_name = data.get('building_name')
-        markup = await menu_markup(building_name)
-        await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
-        await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
+        phone_number = message.contact.phone_number
     else:
         await state.update_data(contact_user=message.text)
-        data = await state.get_data()
-        await state.finish()
-        building_name = data.get('building_name')
-        markup = await menu_markup(building_name)
-        await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
-        await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
+        phone_number = message.text
+    data = await state.get_data()
+    await state.finish()
+    building_name = data.get('building_name')
+    markup = await menu_markup(building_name)
+    await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
+    await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
+    await create_requests(building_name, message.from_user.id, phone_number, data)
 
 
 def register_send_contact(dp: Dispatcher):

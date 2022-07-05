@@ -1,8 +1,16 @@
 from django.contrib import admin
 
-from .models import UserBot, Developer, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
+from .models import UserBot, Developer, Profile, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
     ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto, Term, Construction, \
-    SalesDepartment
+    SalesDepartment, CallRequest
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'developer', 'created_at', 'updated_at')
+    list_filter = ('developer',)
+    search_fields = ('developer',)
+    readonly_fields = ('created_at', 'updated_at')
 
 
 class BuildingDeveloperInline(admin.TabularInline):
@@ -48,9 +56,30 @@ class DocumentationBuildingInline(admin.TabularInline):
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
     inlines = (NewsBuildingInline, SpecialOfferBuildingInline, XmlLinkBuildingInline, DocumentationBuildingInline)
-    list_display = ('__str__', 'latin_name', 'developer', 'created_at', 'updated_at')
+    list_display = ('__str__', 'latin_name', 'developer', 'url_base64_encode', 'created_at', 'updated_at')
     list_filter = ('developer',)
     search_fields = ('developer',)
+    fieldsets = (
+        ('Some name', {
+            'fields': ('__str__',
+                       'name',
+                       'latin_name',
+                       'developer',
+                       'address',
+                       'building_description',
+                       'floors_total',
+                       'built_year',
+                       'ready_quarter',
+                       'building_type',
+                       'building_section',
+                       'ceiling_height',
+                       'lift',
+                       'guarded_building',
+                       'parking',
+                       'url_base64_encode',)
+        }),
+    )
+    readonly_fields = ['__str__', 'created_at', 'updated_at', 'url_base64_encode']
 
 
 @admin.register(Address)
@@ -142,3 +171,10 @@ class SalesDepartmentAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'developer', 'sales_department_phone')
     list_filter = ('building', 'developer')
     search_fields = ('building', 'developer')
+
+
+@admin.register(CallRequest)
+class RequestAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'developer', 'telegram_user', 'telegram_user_phone', 'created_at', 'updated_at')
+    list_filter = ('developer', 'building')
+    search_fields = ('developer', 'building')

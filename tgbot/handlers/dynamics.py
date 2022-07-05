@@ -1,4 +1,5 @@
 from aiogram import Dispatcher
+from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputFile, InputMediaPhoto
 
 from realty_bot.realty_bot.settings import MEDIA_ROOT
@@ -8,7 +9,7 @@ from tgbot.utils.dp_api.db_commands import get_construction_photos
 from tgbot.utils.page import get_page
 
 
-async def show_construction(call: CallbackQuery, callback_data: dict, **kwargs):
+async def show_construction(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Динамика строительства'"""
     building_name = callback_data.get('name')
     constructs = await get_construction_photos(building_name)
@@ -25,13 +26,14 @@ async def show_construction(call: CallbackQuery, callback_data: dict, **kwargs):
         )
     )
     await call.message.delete()
+    await state.update_data(section=callback_data.get('section'))
 
 
 async def current_page_error(call: CallbackQuery):
     await call.answer(cache_time=60)
 
 
-async def show_chosen_construction(call: CallbackQuery, callback_data: dict, **kwargs):
+async def show_chosen_construction(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Отображаем выбранную страницу."""
     building_name = callback_data.get('building_name')
     current_page = int(callback_data.get('page'))
@@ -50,6 +52,7 @@ async def show_chosen_construction(call: CallbackQuery, callback_data: dict, **k
             page=current_page
         )
     )
+    await state.update_data(section=callback_data.get('section'))
 
 
 def register_construction(dp: Dispatcher):

@@ -7,7 +7,7 @@ from django.db.models import Q, QuerySet
 
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
     AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
-    UserBot, SalesDepartment
+    UserBot, SalesDepartment, CallRequest
 
 
 @sync_to_async
@@ -130,3 +130,15 @@ def get_sales_department(building_name: str) -> SalesDepartment:
     """Получаем объект SalesDepartment по названию ЖК."""
     sales_department = SalesDepartment.objects.filter(building__latin_name=building_name).first()
     return sales_department
+
+
+@sync_to_async
+def create_requests(building_name: str, telegram_user_id: int, phone_number: str, data: dict):
+    """Записываем запрос на перезвон."""
+    CallRequest.objects.create(
+        developer=Developer.objects.get(buildings__latin_name=building_name),
+        building=Building.objects.get(latin_name=building_name),
+        telegram_user=UserBot.objects.get(telegram_id=telegram_user_id),
+        telegram_user_phone=phone_number,
+        request_data=data
+    )
