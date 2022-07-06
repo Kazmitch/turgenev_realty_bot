@@ -2,10 +2,11 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, ContentType
 
+from realty_bot.realty_bot.comagic_api import make_call_request
 from tgbot.keyboards.building_menu import menu_markup
 from tgbot.keyboards.send_contact import contact, contact_cd
 from tgbot.states.send_contact import ContactStates
-from tgbot.utils.dp_api.db_commands import create_requests
+from tgbot.utils.dp_api.db_commands import create_requests, create_comagic_call_request
 
 
 async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMContext):
@@ -27,12 +28,14 @@ async def get_contact(message: Message, state: FSMContext):
         await state.update_data(contact_user=message.text)
         phone_number = message.text
     data = await state.get_data()
-    await state.finish()
     building_name = data.get('building_name')
+    await state.finish()
     markup = await menu_markup(building_name)
+    call = await create_comagic_call_request(building_name=building_name, site_id='69669')
     await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
     await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
     await create_requests(building_name, message.from_user.id, phone_number, data)
+    await make_call_request(call.api_token.access_token, data, site_id='69669')
 
 
 def register_send_contact(dp: Dispatcher):

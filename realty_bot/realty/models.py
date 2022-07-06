@@ -7,7 +7,7 @@ from django.utils.html import format_html
 
 import base64
 
-from realty_bot.realty_bot.utils import user_directory_path, about_project_path
+from realty_bot.realty_bot.utils import user_directory_path, about_project_path, encode_decode_values
 
 
 class BaseModel(models.Model):
@@ -123,14 +123,6 @@ class Building(BaseModel):
 
     def __str__(self):
         return f"{self.name}"
-
-    @property
-    def url_base64_encode(self, **kwargs):
-        if self.latin_name:
-            encoded_latin_name = base64.b64encode(self.latin_name.encode('UTF-8')).decode('UTF-8')
-            return f'https://t.me/realty_tg_bot?start={encoded_latin_name}'
-        else:
-            return f'Не заполнено поле: {self.latin_name}'
 
 
 class Flat(BaseModel):
@@ -448,11 +440,11 @@ class SalesDepartment(BaseModel):
 
 class CallRequest(BaseModel):
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
-                                  related_name="requests")
+                                  related_name="call_requests")
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
-                                 related_name="requests")
+                                 related_name="call_requests")
     telegram_user = models.ForeignKey(UserBot, on_delete=models.CASCADE, verbose_name="Пользователь",
-                                      related_name="requests")
+                                      related_name="call_requests")
     telegram_user_phone = models.CharField(verbose_name="Телефон заявки", max_length=32)
     request_data = models.JSONField(verbose_name='Данные в JSON формате', blank=True, null=True)
 
@@ -462,3 +454,53 @@ class CallRequest(BaseModel):
 
     def __str__(self):
         return f"{self.building.name}"
+
+
+class CallTrackingCampaignCredentials(BaseModel):
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
+                                  related_name="call_tracking_campaign_credentials")
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name="call_tracking_campaign_credentials")
+    access_token = models.CharField(verbose_name="API ключ", max_length=128, null=True)
+
+    class Meta:
+        verbose_name = "Креды"
+        verbose_name_plural = "Креды"
+
+    def __str__(self):
+        return f"{self.building.name}, {self.access_token}"
+
+
+class TypeOfCallTracking(models.TextChoices):
+    COMAGIC = 'comagic', 'Comagic'
+    CALLTOUCH = 'calltouch', 'Calltouch'
+    SCB = 'smart_call_back', 'SmartCallBack'
+
+
+class CallTrackingCampaign(BaseModel):
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
+                                  related_name="call_tracking_campaigns")
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name="call_tracking_campaigns")
+    call_tracking_name = models.CharField(verbose_name="Название коллтрекинга", max_length=32, choices=TypeOfCallTracking.choices, default=TypeOfCallTracking.COMAGIC)
+    api_token = models.ForeignKey(CallTrackingCampaignCredentials, verbose_name="API ключ", on_delete=models.CASCADE, related_name="call_tracking_campaigns", null=True)
+    campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=32, blank=True, null=True)
+    site_id = models.CharField(verbose_name="ID сайта", max_length=32, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Рекламная кампания"
+        verbose_name_plural = "Рекламные кампании"
+
+    def __str__(self):
+        return f"{self.building.name}"
+
+    @property
+    def url_base64_encode(self, **kwargs):
+        if self.building.latin_name and (self.campaign_id or self.site_id):
+            encoded_latin_name = encode_decode_values(self.building.latin_name)
+            if self.campaign_id:
+                return f'https://t.me/realty_tg_bot?start={encoded_latin_name}&c_id={self.campaign_id}'
+            elif self.site_id:
+                return f'https://t.me/realty_tg_bot?start={encoded_latin_name}&s_id={self.site_id}'
+        else:
+            return f'Не заполнено поле: {self.building.latin_name} или {self.campaign_id} или {self.site_id}'

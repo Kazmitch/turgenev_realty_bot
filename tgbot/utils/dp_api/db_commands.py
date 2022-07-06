@@ -7,7 +7,7 @@ from django.db.models import Q, QuerySet
 
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
     AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
-    UserBot, SalesDepartment, CallRequest
+    UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials
 
 
 @sync_to_async
@@ -142,3 +142,9 @@ def create_requests(building_name: str, telegram_user_id: int, phone_number: str
         telegram_user_phone=phone_number,
         request_data=data
     )
+
+
+@sync_to_async
+def create_comagic_call_request(building_name: str, site_id: str = None, campaign_id: str = None) -> CallTrackingCampaign:
+    call = CallTrackingCampaign.objects.filter(building__latin_name=building_name, site_id=site_id, campaign_id=campaign_id).first()
+    return call
