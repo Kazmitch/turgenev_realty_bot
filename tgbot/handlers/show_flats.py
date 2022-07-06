@@ -33,7 +33,7 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         offer_values = await get_values(offer, xml_link.type_of_xml)
         await call.message.answer_photo(
             photo=file,
-            caption=f'Стоимость: <b>{offer_values.get("offer_price")} рублей</b>\n'
+            caption=f'Стоимость: <b>{offer_values.get("offer_price")} руб.</b>\n'
                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                     f'Комнат: <b>{offer_values.get("offer_rooms")}</b>\n'
                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>',
@@ -47,6 +47,11 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         await call.message.edit_reply_markup(reply_markup=None)
         await call.message.delete()
         await ContactStates.building_name.set()
+        await state.update_data(current_flat={'price': offer_values.get("offer_price"),
+                                              'area': offer_values.get("offer_area"),
+                                              'rooms': offer_values.get("offer_rooms"),
+                                              'floor': offer_values.get("offer_floor")})
+
     else:
         markup = await contact_markup(building_name)
         await call.message.answer(text='К сожалению, не смогли найти квартиры по данным параметрам.\n'
@@ -77,7 +82,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
         photo = 'realty_bot/media/errors/layout_error.jpg'
     file = InputFile(path_or_bytesio=photo)
     media = InputMediaPhoto(media=file,
-                            caption=f'Стоимость: <b>{offer_values.get("offer_price")} рублей</b>\n'
+                            caption=f'Стоимость: <b>{offer_values.get("offer_price")} руб.</b>\n'
                                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                                     f'Комнат: <b>{offer_values.get("offer_rooms")}</b>\n'
                                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>')
@@ -93,6 +98,10 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
         )
     )
     await ContactStates.building_name.set()
+    await state.update_data(current_flat={'price': offer_values.get("offer_price"),
+                                          'area': offer_values.get("offer_area"),
+                                          'rooms': offer_values.get("offer_rooms"),
+                                          'floor': offer_values.get("offer_floor")})
 
 
 def register_show_flats(dp: Dispatcher):

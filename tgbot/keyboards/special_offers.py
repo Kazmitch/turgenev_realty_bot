@@ -7,7 +7,7 @@ from tgbot.keyboards.send_contact import contact_button
 from tgbot.utils.dp_api.db_commands import get_special_offers
 
 
-special_offer_cd = CallbackData("offer", "name", "offer_id")
+special_offer_cd = CallbackData("offer", "name", "section", "offer_id")
 
 
 async def special_offers_keyboard(building_name: str) -> InlineKeyboardMarkup:
@@ -22,7 +22,7 @@ async def special_offers_keyboard(building_name: str) -> InlineKeyboardMarkup:
         markup.insert(
             InlineKeyboardButton(
                 text=button_text,
-                callback_data=special_offer_cd.new(name=building_name, offer_id=special_offer.id)
+                callback_data=special_offer_cd.new(name=building_name, section='offers', offer_id=special_offer.id)
             )
         )
 

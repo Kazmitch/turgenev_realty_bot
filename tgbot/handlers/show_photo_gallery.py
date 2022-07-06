@@ -1,4 +1,5 @@
 from aiogram import Dispatcher
+from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputFile, InputMediaPhoto
 
 from realty_bot.realty_bot.settings import MEDIA_ROOT
@@ -9,7 +10,7 @@ from tgbot.utils.dp_api.db_commands import get_gallery_photos
 from tgbot.utils.page import get_page
 
 
-async def photo_gallery(call: CallbackQuery, callback_data: dict):
+async def photo_gallery(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """Хендлер на кнопку 'Фотогалерея'"""
     building_name = callback_data.get('name')
     markup = await photo_gallery_keyboard(building_name)
@@ -19,7 +20,7 @@ async def photo_gallery(call: CallbackQuery, callback_data: dict):
     await call.message.delete()
 
 
-async def show_photos(call: CallbackQuery, callback_data: dict):
+async def show_photos(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """Хендлер на отображение фотографий конкретной категории."""
     building_name = callback_data.get('name')
     section = callback_data.get('section')
@@ -39,14 +40,15 @@ async def show_photos(call: CallbackQuery, callback_data: dict):
     )
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
-    await ContactStates.building_name.set()
+    # await ContactStates.building_name.set()
+    await state.update_data(section=callback_data.get('section'))
 
 
 async def current_page_error(call: CallbackQuery):
     await call.answer(cache_time=60)
 
 
-async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict):
+async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """Хендлер на отображение нужной страницы."""
     building_name = callback_data.get('name')
     section = callback_data.get('section')
@@ -66,7 +68,8 @@ async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict):
             page=current_page
         )
     )
-    await ContactStates.building_name.set()
+    # await ContactStates.building_name.set()
+    await state.update_data(section=callback_data.get('section'))
 
 
 def register_show_gallery(dp: Dispatcher):

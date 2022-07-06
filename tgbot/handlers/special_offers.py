@@ -16,6 +16,7 @@ async def special_offers(call: CallbackQuery, callback_data: dict, state: FSMCon
     await call.message.answer(text='😄 На недвижимость в этом ЖК есть скидки! Посмотрим? 🤔', reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
+    await state.update_data(section=callback_data.get('section'))
 
 
 async def show_current_offer(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
@@ -29,6 +30,7 @@ async def show_current_offer(call: CallbackQuery, callback_data: dict, state: FS
     await call.message.answer_photo(photo=photo, caption=description, reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
+    await state.update_data(section=callback_data.get('section'), offer=offer.title)
 
 
 def register_show_special_offers(dp: Dispatcher):

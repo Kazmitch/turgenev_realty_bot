@@ -54,7 +54,7 @@ async def get_photos_keyboard(max_pages: int, building_name: str, section, key="
 
     markup.row(
         InlineKeyboardButton(
-            text='Вернуться',
+            text='🔙 Вернуться',
             callback_data=project_cd.new(name=building_name, section='photo_gallery')
         )
     )

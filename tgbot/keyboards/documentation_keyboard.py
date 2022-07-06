@@ -7,7 +7,7 @@ from tgbot.keyboards.send_contact import contact_button
 from tgbot.utils.dp_api.db_commands import get_documents
 
 
-documentation_cd = CallbackData("document", "name", "document_id")
+documentation_cd = CallbackData("document", "name", "section", "document_id")
 
 
 async def documents_keyboard(building_name: str) -> InlineKeyboardMarkup:
@@ -22,7 +22,7 @@ async def documents_keyboard(building_name: str) -> InlineKeyboardMarkup:
         markup.insert(
             InlineKeyboardButton(
                 text=button_text,
-                callback_data=documentation_cd.new(name=building_name, document_id=document.id)
+                callback_data=documentation_cd.new(name=building_name, section='documents', document_id=document.id)
             )
         )
 

@@ -113,7 +113,6 @@ async def type_params(call: Union[CallbackQuery, Message], state: FSMContext, er
         await message.delete()
         await state.update_data(msg_id=msg.message_id)
     else:
-
         option = callback_data.get('option')
         await state.update_data(option=option)
         building_name = callback_data.get('building_name')
@@ -181,6 +180,7 @@ async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict
         await FlatStates.flat_data.set()
         await call.message.edit_reply_markup(reply_markup=None)
         await call.message.delete()
+        await state.update_data(section='offers')
     except ValueError:
         markup = await contact_markup(building_name)
         await call.message.answer(text='К сожалению, не смогли найти квартиры по данным параметрам.\n'
