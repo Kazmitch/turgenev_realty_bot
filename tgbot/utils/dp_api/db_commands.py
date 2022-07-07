@@ -7,22 +7,31 @@ from django.db.models import Q, QuerySet
 
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
     AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
-    UserBot, SalesDepartment, CallRequest
+    UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials
 
 
 @sync_to_async
-def create_userbot(message: Message):
+def create_userbot(message: Message, source: str, source_id: str):
     """Создаем пользователя в базе."""
     telegram_id = message.from_user.id
     telegram_username = message.from_user.username
     telegram_first_name = message.from_user.first_name
     telegram_last_name = message.from_user.last_name
-    UserBot.objects.update_or_create(
+    UserBot.objects.create(
         telegram_id=telegram_id,
         telegram_username=telegram_username,
         telegram_first_name=telegram_first_name,
-        telegram_last_name=telegram_last_name
+        telegram_last_name=telegram_last_name,
+        campaign_id=source_id if source == 'c_id' else None,
+        site_id=source_id if source == 's_id' else None
     )
+
+
+@sync_to_async
+def get_userbot(telegram_id: str) -> UserBot:
+    """Получаем объект UserBot по telegram_id."""
+    user_bot = UserBot.objects.filter(telegram_id=telegram_id).order_by('-id').first()
+    return user_bot
 
 
 @sync_to_async
@@ -138,7 +147,13 @@ def create_requests(building_name: str, telegram_user_id: int, phone_number: str
     CallRequest.objects.create(
         developer=Developer.objects.get(buildings__latin_name=building_name),
         building=Building.objects.get(latin_name=building_name),
-        telegram_user=UserBot.objects.get(telegram_id=telegram_user_id),
+        telegram_user=UserBot.objects.filter(telegram_id=telegram_user_id).order_by('-id').first(),
         telegram_user_phone=phone_number,
         request_data=data
     )
+
+
+@sync_to_async
+def create_comagic_call_request(building_name: str, site_id: str = None, campaign_id: str = None) -> CallTrackingCampaign:
+    call = CallTrackingCampaign.objects.filter(building__latin_name=building_name, site_id=site_id, campaign_id=campaign_id).first()
+    return call

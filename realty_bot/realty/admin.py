@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import UserBot, Developer, Profile, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
     ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto, Term, Construction, \
-    SalesDepartment, CallRequest
+    SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials
 
 
 @admin.register(Profile)
@@ -56,30 +56,9 @@ class DocumentationBuildingInline(admin.TabularInline):
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
     inlines = (NewsBuildingInline, SpecialOfferBuildingInline, XmlLinkBuildingInline, DocumentationBuildingInline)
-    list_display = ('__str__', 'latin_name', 'developer', 'url_base64_encode', 'created_at', 'updated_at')
+    list_display = ('__str__', 'latin_name', 'developer', 'created_at', 'updated_at')
     list_filter = ('developer',)
     search_fields = ('developer',)
-    fieldsets = (
-        ('Some name', {
-            'fields': ('__str__',
-                       'name',
-                       'latin_name',
-                       'developer',
-                       'address',
-                       'building_description',
-                       'floors_total',
-                       'built_year',
-                       'ready_quarter',
-                       'building_type',
-                       'building_section',
-                       'ceiling_height',
-                       'lift',
-                       'guarded_building',
-                       'parking',
-                       'url_base64_encode',)
-        }),
-    )
-    readonly_fields = ['__str__', 'created_at', 'updated_at', 'url_base64_encode']
 
 
 @admin.register(Address)
@@ -176,5 +155,35 @@ class SalesDepartmentAdmin(admin.ModelAdmin):
 @admin.register(CallRequest)
 class RequestAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'developer', 'telegram_user', 'telegram_user_phone', 'created_at', 'updated_at')
+    list_filter = ('developer', 'building')
+    search_fields = ('developer', 'building')
+
+
+@admin.register(CallTrackingCampaign)
+class CallTrackingCampaignAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'call_tracking_name', 'developer', 'url_base64_encode', 'campaign_id', 'site_id', 'created_at', 'updated_at')
+    list_filter = ('developer', 'call_tracking_name')
+    search_fields = ('developer', 'call_tracking_name')
+    fieldsets = (
+        ('Some name', {
+            'fields': ('__str__',
+                       'developer',
+                       'building',
+                       'call_tracking_name',
+                       'url_base64_encode',
+                       'api_token',
+                       'campaign_id',
+                       'site_id',
+                       'created_at',
+                       'updated_at',
+)
+        }),
+    )
+    readonly_fields = ['__str__', 'created_at', 'updated_at', 'url_base64_encode']
+
+
+@admin.register(CallTrackingCampaignCredentials)
+class CallTrackingCampaignCredentialsAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'developer', 'access_token')
     list_filter = ('developer', 'building')
     search_fields = ('developer', 'building')
