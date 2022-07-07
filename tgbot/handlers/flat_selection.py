@@ -18,8 +18,8 @@ async def make_text(building_name: str, chosen_params: dict) -> str:
     """Формируем текст."""
 
     min_max_values = await get_all_offers(building_name)
-    max_price = min_max_values.get('max_price')[:-6]
-    low_price = min_max_values.get('low_price')[:-6]
+    max_price = min_max_values.get('max_price').split('.')[0][:-6]
+    low_price = min_max_values.get('low_price').split('.')[0][:-6]
     max_area = min_max_values.get('max_area')
     low_area = min_max_values.get('low_area')
     area = int(chosen_params.get('flat_area'))

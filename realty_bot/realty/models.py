@@ -5,9 +5,13 @@ from django.dispatch import receiver
 from django.utils.functional import cached_property
 from django.utils.html import format_html
 
-import base64
+from environs import Env
+
 
 from realty_bot.realty_bot.utils import user_directory_path, about_project_path, encode_decode_values
+
+env = Env()
+env.read_env()
 
 
 class BaseModel(models.Model):
@@ -29,11 +33,21 @@ class BasePublication(BaseModel):
 
 
 class UserBot(BaseModel):
-    telegram_id = models.BigIntegerField(verbose_name="ID Пользователя Телеграм", unique=True, blank=True, null=True)
+    telegram_id = models.BigIntegerField(verbose_name="ID Пользователя Телеграм", blank=True, null=True)
     telegram_username = models.CharField(verbose_name="Username Телеграм", max_length=32, blank=True, null=True)
     telegram_first_name = models.CharField(verbose_name="Имя пользователя", max_length=64, blank=True, null=True)
     telegram_last_name = models.CharField(verbose_name="Фамилия пользователя", max_length=64, blank=True, null=True)
     is_admin = models.BooleanField(verbose_name="Администратор", default=False)
+    campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=16, blank=True, null=True)
+    site_id = models.CharField(verbose_name="ID сайта", max_length=16, blank=True, null=True)
+
+    @property
+    def get_source_id(self):
+        return self.campaign_id or self.site_id
+
+    @property
+    def get_source(self):
+        return "campaign_id" if self.campaign_id else "site_id"
 
     class Meta:
         verbose_name = "Пользователь бота"
@@ -106,8 +120,9 @@ class Building(BaseModel):
     address = models.OneToOneField(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
     developer = models.ForeignKey(Developer, verbose_name="Застройщик", related_name="buildings",
                                   on_delete=models.CASCADE, null=True)
+    greeting = models.TextField(verbose_name="Фраза приветствия")
     building_description = models.TextField(verbose_name="Описание ЖК", blank=True)
-    floors_total = models.CharField(verbose_name="Количество этажей", max_length=32, blank=False)
+    floors_total = models.CharField(verbose_name="Количество этажей", max_length=32)
     built_year = models.DateField(verbose_name="Год сдачи (год постройки)", blank=False)
     ready_quarter = models.CharField(verbose_name="Квартал сдачи дома", max_length=32, blank=True)
     building_type = models.CharField(verbose_name="Тип дома", max_length=32, blank=True)
@@ -497,10 +512,11 @@ class CallTrackingCampaign(BaseModel):
     @property
     def url_base64_encode(self, **kwargs):
         if self.building.latin_name and (self.campaign_id or self.site_id):
-            encoded_latin_name = encode_decode_values(self.building.latin_name)
             if self.campaign_id:
-                return f'https://t.me/realty_tg_bot?start={encoded_latin_name}&c_id={self.campaign_id}'
+                encoded_url = encode_decode_values(f'{self.building.latin_name}&c_id={self.campaign_id}')
+                return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'
             elif self.site_id:
-                return f'https://t.me/realty_tg_bot?start={encoded_latin_name}&s_id={self.site_id}'
+                encoded_url = encode_decode_values(f'{self.building.latin_name}&s_id={self.site_id}')
+                return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'
         else:
             return f'Не заполнено поле: {self.building.latin_name} или {self.campaign_id} или {self.site_id}'
