@@ -1,12 +1,13 @@
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InputFile, InputMediaPhoto
+from aiogram.types import CallbackQuery, InputFile, InputMediaPhoto, InputMediaVideo
 
 from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.about_project import photo_gallery_keyboard, project_cd, photo_gallery_cd
 from tgbot.keyboards.photo_gallery_pagination import get_photos_keyboard, pagination_gallery_call
+from tgbot.keyboards.progress_video import video_progress_keyboard
 from tgbot.states.send_contact import ContactStates
-from tgbot.utils.dp_api.db_commands import get_gallery_photos
+from tgbot.utils.dp_api.db_commands import get_gallery_photos, get_progress_video
 from tgbot.utils.page import get_page
 
 
@@ -72,8 +73,25 @@ async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict, stat
     await state.update_data(section=callback_data.get('section'))
 
 
+async def show_progress_video(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
+    """Хендлер на кнопку 'Ход строительства'."""
+    building_name = callback_data.get('name')
+    video_progress = await get_progress_video(building_name)
+    markup = await video_progress_keyboard(building_name)
+    # file = InputFile.from_url(video_progress.video_url)
+    # media = InputMediaVideo(media=file, caption=video_progress.description)
+    await call.message.answer(
+        text=video_progress.video_url,
+        # caption=video_progress.description,
+        reply_markup=markup
+    )
+    await call.message.delete()
+    await state.update_data(section=callback_data.get('section'))
+
+
 def register_show_gallery(dp: Dispatcher):
     dp.register_callback_query_handler(photo_gallery, project_cd.filter(section='photo_gallery'), state='*')
+    dp.register_callback_query_handler(show_progress_video, photo_gallery_cd.filter(section='progress_video'), state='*')
     dp.register_callback_query_handler(show_photos, photo_gallery_cd.filter(), state='*')
     dp.register_callback_query_handler(current_page_error, pagination_gallery_call.filter(page='current_page'))
     dp.register_callback_query_handler(show_chosen_page_photos, pagination_gallery_call.filter(key='photo'), state='*')

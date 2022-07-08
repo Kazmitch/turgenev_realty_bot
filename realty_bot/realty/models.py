@@ -7,7 +7,6 @@ from django.utils.html import format_html
 
 from environs import Env
 
-
 from realty_bot.realty_bot.utils import user_directory_path, about_project_path, encode_decode_values
 
 env = Env()
@@ -355,6 +354,33 @@ class ShowRoomPhoto(BaseModel):
     display_image.short_description = 'Изображение'
 
 
+class ProgressVideo(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='progress_videos')
+    video_url = models.CharField(verbose_name="Прямая ссылка на видео (youtube, vimeo)", max_length=255, blank=True,
+                                 null=True)
+    source_url = models.CharField(verbose_name="Ссылка на другой источник (telegra.ph)", max_length=255, blank=True,
+                                  null=True)
+    description = models.TextField(verbose_name="Описание видео", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Ход строительства"
+        verbose_name_plural = "Ход строительства"
+
+    def __str__(self):
+        return f"{self.building.name}"
+
+    @cached_property
+    def display_video(self):
+        html = '<iframe width="420" height="315" src="{video}"></iframe>'
+        if self.video_url:
+            return format_html(html, video=self.video_url)
+        return format_html('<strong>There is no video for this entry.<strong>')
+
+    display_video.short_description = 'Видео'
+
+
 class Documentation(BaseModel):
     directory = 'documents/declaration'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
@@ -442,8 +468,8 @@ class SalesDepartment(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='sales_departments')
     description = models.TextField(verbose_name="Дни и время работы офиса продаж")
-    sales_department_phone = models.CharField(verbose_name="Телефон отдела продаж", max_length=32,
-                                              help_text="Пример: +79095432100")
+    sales_department_phone = models.CharField(verbose_name="Телефон отдела продаж", max_length=32, blank=True,
+                                              null=True, help_text="Пример: +79095432100")
 
     class Meta:
         verbose_name = "Офис продаж"
@@ -497,8 +523,10 @@ class CallTrackingCampaign(BaseModel):
                                   related_name="call_tracking_campaigns")
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name="call_tracking_campaigns")
-    call_tracking_name = models.CharField(verbose_name="Название коллтрекинга", max_length=32, choices=TypeOfCallTracking.choices, default=TypeOfCallTracking.COMAGIC)
-    api_token = models.ForeignKey(CallTrackingCampaignCredentials, verbose_name="API ключ", on_delete=models.CASCADE, related_name="call_tracking_campaigns", null=True)
+    call_tracking_name = models.CharField(verbose_name="Название коллтрекинга", max_length=32,
+                                          choices=TypeOfCallTracking.choices, default=TypeOfCallTracking.COMAGIC)
+    api_token = models.ForeignKey(CallTrackingCampaignCredentials, verbose_name="API ключ", on_delete=models.CASCADE,
+                                  related_name="call_tracking_campaigns", null=True)
     campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=32, blank=True, null=True)
     site_id = models.CharField(verbose_name="ID сайта", max_length=32, blank=True, null=True)
 

@@ -7,7 +7,7 @@ from django.db.models import Q, QuerySet
 
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
     AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
-    UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials
+    UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo
 
 
 @sync_to_async
@@ -110,6 +110,13 @@ def get_gallery_photos(section: str, building_name: str):
     model = models_dict.get(section)
     photo_set = model.objects.filter(building__latin_name=building_name)
     return photo_set
+
+
+@sync_to_async
+def get_progress_video(building_name: str) -> ProgressVideo:
+    """Получаем объект ProgressVideo по названию ЖК."""
+    video_progress = ProgressVideo.objects.filter(building__latin_name=building_name).first()
+    return video_progress
 
 
 @sync_to_async

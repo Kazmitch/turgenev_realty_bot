@@ -14,11 +14,7 @@ async def make_call(call: CallbackQuery, callback_data: dict, state: FSMContext)
     department_text = sales_department.description
     department_phone = sales_department.sales_department_phone
     markup = await menu_markup(building_name)
-    await call.message.answer(text=f'{department_text}\n'
-                                   f'\n'
-                                   f'Позвонить:\n'
-                                   f'{department_phone}',
-                              reply_markup=markup)
+    await call.message.answer(text=f'{department_text}', reply_markup=markup)
     await call.message.delete()
 
 

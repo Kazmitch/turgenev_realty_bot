@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import UserBot, Developer, Profile, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
     ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto, Term, Construction, \
-    SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials
+    SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo
 
 
 @admin.register(Profile)
@@ -121,6 +121,14 @@ class InteriorPhotoAdmin(PhotoBase):
 @admin.register(ShowRoomPhoto)
 class ShowRoomPhotoAdmin(PhotoBase):
     pass
+
+
+@admin.register(ProgressVideo)
+class ProgressVideoAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'video_url', 'source_url', 'created_at', 'updated_at')
+    list_filter = ('building',)
+    search_fields = ('building',)
+    readonly_fields = ('display_video', 'created_at', 'updated_at')
 
 
 @admin.register(AboutProjectPhoto)

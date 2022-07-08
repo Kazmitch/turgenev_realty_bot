@@ -56,14 +56,8 @@ async def photo_gallery_keyboard(building_name: str) -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton(
-                text='🏗 Ход строительства live',
-                callback_data=photo_gallery_cd.new(name=building_name, section='progress_live')
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text='🚁 Аэрофотосъемка 3D',
-                callback_data=photo_gallery_cd.new(name=building_name, section='photography_3d')
+                text='🏗 Ход строительства (видео)',
+                callback_data=photo_gallery_cd.new(name=building_name, section='progress_video')
             )
         ]
     ]
