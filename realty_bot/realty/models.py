@@ -57,7 +57,7 @@ class UserBot(BaseModel):
 
 
 class Developer(BaseModel):
-    developer_name = models.CharField(verbose_name="Название застройщика", max_length=255, blank=False)
+    developer_name = models.CharField(verbose_name="Название застройщика", max_length=255)
     latin_name = models.CharField(verbose_name="Название на английском", max_length=255, unique=True, null=True,
                                   help_text='В формате <b>some_developer_name</b>')
     developer_description = models.TextField(verbose_name="Описание застройщика", blank=True,
@@ -113,7 +113,7 @@ class Address(BaseModel):
 
 
 class Building(BaseModel):
-    name = models.CharField(verbose_name="Название ЖК", max_length=255, unique=True, blank=False)
+    name = models.CharField(verbose_name="Название ЖК", max_length=255, unique=True)
     latin_name = models.CharField(verbose_name="Название на английском", max_length=40, unique=True, null=True,
                                   help_text='В формате <b>some_building_name</b>\n<b>Не больше 40 символов</b>')
     address = models.OneToOneField(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
@@ -122,7 +122,7 @@ class Building(BaseModel):
     greeting = models.TextField(verbose_name="Фраза приветствия")
     building_description = models.TextField(verbose_name="Описание ЖК", blank=True)
     floors_total = models.CharField(verbose_name="Количество этажей", max_length=32)
-    built_year = models.DateField(verbose_name="Год сдачи (год постройки)", blank=False)
+    built_year = models.DateField(verbose_name="Год сдачи (год постройки)")
     ready_quarter = models.CharField(verbose_name="Квартал сдачи дома", max_length=32, blank=True)
     building_type = models.CharField(verbose_name="Тип дома", max_length=32, blank=True)
     building_section = models.CharField(verbose_name="Корпус дома", max_length=32, blank=True, null=True)
@@ -143,7 +143,7 @@ class Flat(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name="flats", null=True)
     flat_description = models.TextField(verbose_name="Описание квартиры", blank=True)
-    floor = models.CharField(verbose_name="Этаж", max_length=32, blank=False, null=True)
+    floor = models.CharField(verbose_name="Этаж", max_length=32, null=True)
     rooms = models.CharField(verbose_name="Количество комнат", max_length=32, blank=True)
     studio = models.BooleanField(verbose_name="Студия", blank=True, null=True)
     total_area = models.CharField(verbose_name="Общая площадь", max_length=32, null=True)
@@ -210,7 +210,7 @@ class SpecialOffer(BaseModel):
     directory = 'photo/special_offer'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name="special_offers", null=True)
-    title = models.CharField(verbose_name="Заголовок спецпредложения", max_length=255, blank=False, null=True)
+    title = models.CharField(verbose_name="Заголовок спецпредложения", max_length=255, null=True)
     description = models.TextField(verbose_name="Описание спецпредложения", null=True)
     photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
 
@@ -385,7 +385,7 @@ class Documentation(BaseModel):
     directory = 'documents/declaration'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='documentations')
-    title = models.CharField(verbose_name="Название документа", max_length=255, blank=False, null=True)
+    title = models.CharField(verbose_name="Название документа", max_length=255, null=True)
     document = models.FileField(upload_to=user_directory_path, verbose_name='Документ')
 
     class Meta:
@@ -519,6 +519,7 @@ class TypeOfCallTracking(models.TextChoices):
 
 
 class CallTrackingCampaign(BaseModel):
+    campaign_name = models.CharField(verbose_name="Название рекламной кампании", max_length=255)
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
                                   related_name="call_tracking_campaigns")
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
