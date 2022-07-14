@@ -40,12 +40,18 @@ async def get_contact(message: Message, state: FSMContext):
         source = user.get_source
         source_id = user.get_source_id
         telegram_first_name = message.from_user.first_name
-        call = await create_comagic_call_request(building_name=building_name, site_id='69669')
+        if source == 'site_id':
+            call = await create_comagic_call_request(building_name=building_name, site_id=source_id)
+            await make_call_request(call.api_token.access_token, name=telegram_first_name, phone_number=phone_number,
+                                    data=data, source=source, source_id=source_id)
+        elif source == 'campaign_id':
+            call = await create_comagic_call_request(building_name=building_name, campaign_id=source_id)
+            await make_call_request(call.api_token.access_token, name=telegram_first_name, phone_number=phone_number,
+                                    data=data, source=source, source_id=source_id)
         await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
         await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
         await create_requests(building_name, message.from_user.id, phone_number, data)
-        await make_call_request(call.api_token.access_token, name=telegram_first_name, phone_number=phone_number,
-                                data=data, source=source, source_id=source_id)
+
     else:
         await message.answer(text="Вы ввели неправильный номер", reply_markup=markup)
 
