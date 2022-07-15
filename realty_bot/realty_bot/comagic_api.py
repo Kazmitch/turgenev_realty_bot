@@ -6,7 +6,7 @@ from datetime import datetime
 import requests
 
 
-async def make_call_request(token: str, name: str, phone_number: str, data: dict, source: str, source_id: str = None, **kwargs):
+async def make_comagic_call_request(token: str, name: str, phone_number: str, data: dict, source: str, source_id: str = None, **kwargs):
     """Отправляем заявку в Comagic."""
     url = 'https://dataapi.comagic.ru/v2.0'
     query_id = random.randint(0, 10 ** 6)

@@ -14,9 +14,10 @@ async def start_deep_link(message: Message):
     args = message.get_args()
     values = base64.b64decode(args).decode('UTF-8')
     building_name = values.split('&')[0]
-    source = values.split('&')[1].split('=')[0]
-    source_id = values.split('&')[1].split('=')[1]
-    await create_userbot(message, source, source_id)
+    calltracking = values.split('&')[1].split('=')[1]
+    source = values.split('&')[2].split('=')[0]
+    source_id = values.split('&')[2].split('=')[1]
+    await create_userbot(message, calltracking, source, source_id)
     await message.answer(f"Привет, {message.from_user.full_name}!")
     building = await get_building(building_name)
     markup = await main_building_menu(building_name)

@@ -37,6 +37,7 @@ class UserBot(BaseModel):
     telegram_first_name = models.CharField(verbose_name="Имя пользователя", max_length=64, blank=True, null=True)
     telegram_last_name = models.CharField(verbose_name="Фамилия пользователя", max_length=64, blank=True, null=True)
     is_admin = models.BooleanField(verbose_name="Администратор", default=False)
+    calltracking = models.CharField(verbose_name="Название коллтрекинга", max_length=32, blank=True, null=True)
     campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=16, blank=True, null=True)
     site_id = models.CharField(verbose_name="ID сайта", max_length=16, blank=True, null=True)
 
@@ -542,10 +543,10 @@ class CallTrackingCampaign(BaseModel):
     def url_base64_encode(self, **kwargs):
         if self.building.latin_name and (self.campaign_id or self.site_id):
             if self.campaign_id:
-                encoded_url = encode_decode_values(f'{self.building.latin_name}&c_id={self.campaign_id}')
+                encoded_url = encode_decode_values(f'{self.building.latin_name}&ct={self.call_tracking_name}&c_id={self.campaign_id}')
                 return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'
             elif self.site_id:
-                encoded_url = encode_decode_values(f'{self.building.latin_name}&s_id={self.site_id}')
+                encoded_url = encode_decode_values(f'{self.building.latin_name}&ct={self.call_tracking_name}&s_id={self.site_id}')
                 return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'
         else:
             return f'Не заполнено поле: {self.building.latin_name} или {self.campaign_id} или {self.site_id}'

@@ -19,21 +19,21 @@ async def flat_selection_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup.inline_keyboard = [
         [
             InlineKeyboardButton(
-                text='Ввести площадь квартиры',
+                text='1️⃣ Ввести площадь квартиры',
                 callback_data=flat_selection_cd.new(building_name=building_name, option='flat_area')
             ),
             InlineKeyboardButton(
-                text='Ввести цену квартиры',
+                text='2️⃣ Ввести цену квартиры',
                 callback_data=flat_selection_cd.new(building_name=building_name, option='flat_price')
             )
         ],
         [
             InlineKeyboardButton(
-                text='Год сдачи объекта',
+                text='3️⃣ Год сдачи объекта',
                 callback_data=flat_selection_cd.new(building_name=building_name, option='flat_year')
             ),
             InlineKeyboardButton(
-                text='Количество комнат',
+                text='4️⃣ Количество комнат',
                 callback_data=flat_selection_cd.new(building_name=building_name, option='flat_rooms')
             )
         ],

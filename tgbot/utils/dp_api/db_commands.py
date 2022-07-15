@@ -11,7 +11,7 @@ from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer,
 
 
 @sync_to_async
-def create_userbot(message: Message, source: str, source_id: str):
+def create_userbot(message: Message, calltracking,  source: str, source_id: str):
     """Создаем пользователя в базе."""
     telegram_id = message.from_user.id
     telegram_username = message.from_user.username
@@ -22,6 +22,7 @@ def create_userbot(message: Message, source: str, source_id: str):
         telegram_username=telegram_username,
         telegram_first_name=telegram_first_name,
         telegram_last_name=telegram_last_name,
+        calltracking=calltracking,
         campaign_id=source_id if source == 'c_id' else None,
         site_id=source_id if source == 's_id' else None
     )
@@ -161,6 +162,7 @@ def create_requests(building_name: str, telegram_user_id: int, phone_number: str
 
 
 @sync_to_async
-def create_comagic_call_request(building_name: str, site_id: str = None, campaign_id: str = None) -> CallTrackingCampaign:
+def create_call_request(building_name: str, site_id: str = None, campaign_id: str = None) -> CallTrackingCampaign:
+    """Получаем объект рекламной кампании."""
     call = CallTrackingCampaign.objects.filter(building__latin_name=building_name, site_id=site_id, campaign_id=campaign_id).first()
     return call

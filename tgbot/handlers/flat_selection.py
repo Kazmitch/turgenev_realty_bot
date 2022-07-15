@@ -31,10 +31,10 @@ async def make_text(building_name: str, chosen_params: dict) -> str:
            f'и по площади от <b>{low_area} м²</b> до <b>{max_area} м²</b>\n' \
            f'\n' \
            f'Выбранные параметры:\n' \
-           f'Общая площадь от: {area if area != 0 else "все варианты"}\n' \
-           f'Цена до: {price if price != 0 else "все варианты"}\n' \
-           f'Год сдачи объекта: {year if year != 0 else "все варианты"}\n' \
-           f'Количество комнат: {rooms if rooms != 0 else "все варианты"}\n' \
+           f'1️⃣ Общая площадь от: {area if area != 0 else "все варианты"}\n' \
+           f'2️⃣ Цена до: {price if price != 0 else "все варианты"}\n' \
+           f'3️⃣ Год сдачи объекта: {year if year != 0 else "все варианты"}\n' \
+           f'4️⃣ Количество комнат: {rooms if rooms != 0 else "все варианты"}\n' \
            f'\n' \
            f'Чтобы начать подбор, нажмите кнопку "Показать предложения"'
     return text
