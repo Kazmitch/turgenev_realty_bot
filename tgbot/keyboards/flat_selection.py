@@ -19,11 +19,11 @@ async def flat_selection_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup.inline_keyboard = [
         [
             InlineKeyboardButton(
-                text='1️⃣ Ввести площадь квартиры',
+                text='1️⃣ Площадь квартиры',
                 callback_data=flat_selection_cd.new(building_name=building_name, option='flat_area')
             ),
             InlineKeyboardButton(
-                text='2️⃣ Ввести цену квартиры',
+                text='2️⃣ Цена квартиры',
                 callback_data=flat_selection_cd.new(building_name=building_name, option='flat_price')
             )
         ],
@@ -74,36 +74,32 @@ async def type_value_keyboard(building_name: str):
 async def order_flats_keyboard(building_name: str):
     """Создаем клавиатуру с предложением показать квартиры в нужном порядке."""
     # Создаем Клавиатуру
-    markup = InlineKeyboardMarkup(row_width=1)
+    markup = InlineKeyboardMarkup(row_width=2)
 
     markup.inline_keyboard = [
         [
             InlineKeyboardButton(
-                text='По возрастанию цены',
+                text='⬆️ По возрастанию цены',
                 callback_data=order_cd.new(building_name=building_name, sort='price_low_to_high'),
-            )
-        ],
-        [
+            ),
             InlineKeyboardButton(
-                text='По убыванию цены',
+                text='⬇️ По убыванию цены',
                 callback_data=order_cd.new(building_name=building_name, sort='price_high_to_low'),
             )
         ],
         [
             InlineKeyboardButton(
-                text='По возрастанию площади',
+                text='⬆️ По возрастанию площади',
                 callback_data=order_cd.new(building_name=building_name, sort='area_low_to_high'),
-            )
-        ],
-        [
+            ),
             InlineKeyboardButton(
-                text='По убыванию площади',
+                text='⬇️ По убыванию площади',
                 callback_data=order_cd.new(building_name=building_name, sort='area_high_to_low'),
             )
         ],
         [
             InlineKeyboardButton(
-                text=' 🔙Вернуться',
+                text='🔙 Вернуться',
                 callback_data=building.new(name=building_name, section='flats')
             )
         ]

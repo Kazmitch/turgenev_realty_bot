@@ -18,8 +18,8 @@ async def make_text(building_name: str, chosen_params: dict) -> str:
     """Формируем текст."""
 
     min_max_values = await get_all_offers(building_name)
-    max_price = min_max_values.get('max_price').split('.')[0][:-6]
-    low_price = min_max_values.get('low_price').split('.')[0][:-6]
+    max_price = f"{int(min_max_values.get('max_price').split('.')[0]):,}"
+    low_price = f"{int(min_max_values.get('low_price').split('.')[0]):,}"
     max_area = min_max_values.get('max_area')
     low_area = min_max_values.get('low_area')
     area = int(chosen_params.get('flat_area'))
@@ -27,7 +27,7 @@ async def make_text(building_name: str, chosen_params: dict) -> str:
     year = int(chosen_params.get('flat_year'))
     rooms = int(chosen_params.get('flat_rooms'))
     text = f'Доступные варианты:\n' \
-           f'квартиры от <b>{low_price} млн руб.</b> до <b>{max_price} млн руб.</b>\n' \
+           f'квартиры от <b>{low_price[:-5]} млн руб.</b> до <b>{max_price[:-5]} млн руб.</b>\n' \
            f'и по площади от <b>{low_area} м²</b> до <b>{max_area} м²</b>\n' \
            f'\n' \
            f'Выбранные параметры:\n' \
@@ -168,13 +168,13 @@ async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict
     params = data.get('params')
     try:
         min_max_values = await get_all_offers(building_name=building_name, params=params)
-        max_price = min_max_values.get('max_price')[:-6]
-        low_price = min_max_values.get('low_price')[:-6]
+        max_price = f"{int(min_max_values.get('max_price').split('.')[0]):,}"
+        low_price = f"{int(min_max_values.get('low_price').split('.')[0]):,}"
         max_area = min_max_values.get('max_area')
         low_area = min_max_values.get('low_area')
         markup = await order_flats_keyboard(building_name)
         await call.message.answer(text=f'Подобрал для вас варианты квартир:\n'
-                                       f'по стоимости от <b>{low_price} млн руб.</b> до <b>{max_price} млн руб.</b>\n'
+                                       f'по стоимости от <b>{low_price[:-5]} млн руб.</b> до <b>{max_price[:-5]} млн руб.</b>\n'
                                        f'и площади от <b>{low_area} м²</b> до <b>{max_area} м²</b>',
                                   reply_markup=markup)
         await FlatStates.flat_data.set()

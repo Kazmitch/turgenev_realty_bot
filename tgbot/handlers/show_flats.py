@@ -31,9 +31,10 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
             photo = 'realty_bot/media/errors/layout_error.jpg'
         file = InputFile(path_or_bytesio=photo)
         offer_values = await get_values(offer, xml_link.type_of_xml)
+        price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
         await call.message.answer_photo(
             photo=file,
-            caption=f'Стоимость: <b>{offer_values.get("offer_price")} руб.</b>\n'
+            caption=f'Стоимость: <b>{price} руб.</b>\n'
                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>',
@@ -75,6 +76,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     offer = await get_page(offers, page=current_page)
     xml_link = await get_xml_link_by_name(building_name)
     offer_values = await get_values(offer, xml_link.type_of_xml)
+    price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     try:
         photo_url = await get_photo_url(offer, xml_link.type_of_xml)
         photo = io.BytesIO(await get_photo_bytes(photo_url))
@@ -82,7 +84,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
         photo = 'realty_bot/media/errors/layout_error.jpg'
     file = InputFile(path_or_bytesio=photo)
     media = InputMediaPhoto(media=file,
-                            caption=f'Стоимость: <b>{offer_values.get("offer_price")} руб.</b>\n'
+                            caption=f'Стоимость: <b>{price} руб.</b>\n'
                                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>')
