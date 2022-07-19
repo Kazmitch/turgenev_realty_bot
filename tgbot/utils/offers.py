@@ -15,10 +15,17 @@ async def get_xml(url: str):
 async def get_photo_url(offer: dict, type_xml: str) -> str:
     """Получаем url фотографии."""
     if type_xml == 'yandex':
-        photo_url = offer.get('image')[0].get('#text')
+        # photo_url = offer.get('image').get('#text')
+        photos = offer.get('image')
+        if isinstance(photos, list):
+            photo_url = photos[0].get('#text')
+            return photo_url
+        elif isinstance(photos, dict):
+            photo_url = photos.get('#text')
+            return photo_url
     else:
         photo_url = offer.get('LayoutPhoto').get('FullUrl')
-    return photo_url
+        return photo_url
 
 
 async def get_values(offer: dict, type_xml: str) -> dict:

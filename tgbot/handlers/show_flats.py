@@ -35,7 +35,7 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
             photo=file,
             caption=f'Стоимость: <b>{offer_values.get("offer_price")} руб.</b>\n'
                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
-                    f'Комнат: <b>{offer_values.get("offer_rooms")}</b>\n'
+                    f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>',
             reply_markup=await get_page_keyboard(
                 key='flat',
@@ -84,7 +84,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     media = InputMediaPhoto(media=file,
                             caption=f'Стоимость: <b>{offer_values.get("offer_price")} руб.</b>\n'
                                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
-                                    f'Комнат: <b>{offer_values.get("offer_rooms")}</b>\n'
+                                    f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>')
     max_pages = len(offers)
     await call.message.edit_media(
