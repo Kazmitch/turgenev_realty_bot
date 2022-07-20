@@ -22,6 +22,8 @@ async def get_photo_url(offer: dict, type_xml: str) -> str:
         elif isinstance(photos, dict):
             photo_url = photos.get('#text')
             return photo_url
+        elif isinstance(photos, str):
+            return photos
     else:
         photo_url = offer.get('LayoutPhoto').get('FullUrl')
         return photo_url
@@ -62,7 +64,7 @@ async def get_offers_yan(url: str, area: str, price: str, year: str, rooms: str)
     good_offers = []
 
     for offer in data['realty-feed']['offer']:
-        if float(offer['area']['value']) >= float(area) and (
+        if float(offer['area']['value'].replace(',', '.')) >= float(area) and (
                 float(offer['price']['value']) <= float(price) if price != '0000000' else float(
                     offer['price']['value']) >= float(price)):
             if year == '0' and int(offer['built-year']) > 0:
@@ -148,13 +150,13 @@ async def get_max_and_low_values_yan(offers: list = None, params: dict = None, b
         offers = await get_offers(building_name, params)
     max_price_offer = max(offers, key=lambda d: float(d['price']['value']))
     low_price_offer = min(offers, key=lambda d: float(d['price']['value']))
-    max_area_offer = max(offers, key=lambda d: float(d['area']['value']))
-    low_area_offer = min(offers, key=lambda d: float(d['area']['value']))
+    max_area_offer = max(offers, key=lambda d: float(d['area']['value'].replace(',', '.')))
+    low_area_offer = min(offers, key=lambda d: float(d['area']['value'].replace(',', '.')))
     values = {
         'max_price': max_price_offer['price']['value'],
         'low_price': low_price_offer['price']['value'],
-        'max_area': max_area_offer['area']['value'],
-        'low_area': low_area_offer['area']['value'],
+        'max_area': max_area_offer['area']['value'].replace(',', '.'),
+        'low_area': low_area_offer['area']['value'].replace(',', '.'),
     }
     return values
 
