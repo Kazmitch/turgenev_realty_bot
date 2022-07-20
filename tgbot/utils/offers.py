@@ -50,7 +50,7 @@ async def get_values(offer: dict, type_xml: str) -> dict:
 
 async def get_max_floor_yan(xml: dict) -> int:
     """Получаем максимальный этаж ЖК из фида."""
-    max_floor = int(xml['realty-feed']['offer'][0]['floors-total'])
+    max_floor = int(xml.get('realty-feed').get('offer')[0].get('floors-total'))
     return max_floor
 
 
@@ -63,17 +63,17 @@ async def get_offers_yan(url: str, area: str, price: str, year: str, rooms: str)
 
     good_offers = []
 
-    for offer in data['realty-feed']['offer']:
-        if float(offer['area']['value'].replace(',', '.')) >= float(area) and (
-                float(offer['price']['value']) <= float(price) if price != '0000000' else float(
-                    offer['price']['value']) >= float(price)):
-            if year == '0' and int(offer['built-year']) > 0:
+    for offer in data.get('realty-feed').get('offer'):
+        if float(offer.get('area').get('value').replace(',', '.')) >= float(area) and (
+                float(offer.get('price').get('value')) <= float(price) if price != '0000000' else float(
+                    offer.get('price').get('value')) >= float(price)):
+            if year == '0' and int(offer.get('built-year')) > 0:
                 good_offers.append(offer)
-            elif year != '0' and int(offer['built-year']) <= int(year):
+            elif year != '0' and int(offer.get('built-year')) <= int(year):
                 good_offers.append(offer)
-            elif rooms == '0' and int(offer['rooms']) >= 1:
+            elif rooms == '0' and int(offer.get('rooms')) >= 1:
                 good_offers.append(offer)
-            elif rooms != '0' and int(offer['rooms']) >= int(rooms):
+            elif rooms != '0' and int(offer.get('rooms')) >= int(rooms):
                 good_offers.append(offer)
     return good_offers
 
@@ -87,42 +87,42 @@ async def get_offers_cian(url: str, area: str, price: str, year: str, rooms: str
 
     good_offers = []
 
-    for offer in data['feed']['object']:
-        if float(offer['TotalArea']) >= float(area) and (
-                float(offer['BargainTerms']['Price']) <= float(price) if price != '0000000' else float(
-                offer['BargainTerms']['Price']) >= float(price)):
-            if year == '0' and int(offer['Building']['Deadline']['Year']) > 0:
+    for offer in data.get('feed').get('object'):
+        if float(offer.get('TotalArea').replace(',', '.')) >= float(area) and (
+                float(offer.get('BargainTerms').get('Price')) <= float(price) if price != '0000000' else float(
+                offer.get('BargainTerms').get('Price')) >= float(price)):
+            if year == '0' and int(offer.get('Building').get('Deadline').get('Year')) > 0:
                 good_offers.append(offer)
-            elif year != '0' and int(offer['Building']['Deadline']['Year']) <= int(year):
+            elif year != '0' and int(offer.get('Building').get('Deadline').get('Year')) <= int(year):
                 good_offers.append(offer)
-            elif rooms == '0' and int(offer['FlatRoomsCount']) >= 1:
+            elif rooms == '0' and int(offer.get('FlatRoomsCount')) >= 1:
                 good_offers.append(offer)
-            elif rooms != '0' and int(offer['FlatRoomsCount']) >= int(rooms):
+            elif rooms != '0' and int(offer.get('FlatRoomsCount')) >= int(rooms):
                 good_offers.append(offer)
     return good_offers
 
 
 async def sort_yan_offers(offers: list, type_sort: str):
     if type_sort == 'price_low_to_high':
-        offers = sorted(offers, key=lambda d: float(d['price']['value']))
+        offers = sorted(offers, key=lambda d: float(d.get('price').get('value')))
     if type_sort == 'price_high_to_low':
-        offers = sorted(offers, key=lambda d: float(d['price']['value']), reverse=True)
+        offers = sorted(offers, key=lambda d: float(d.get('price').get('value')), reverse=True)
     if type_sort == 'area_low_to_high':
-        offers = sorted(offers, key=lambda d: float(d['area']['value']))
+        offers = sorted(offers, key=lambda d: float(d.get('area').get('value')))
     if type_sort == 'area_high_to_low':
-        offers = sorted(offers, key=lambda d: float(d['area']['value']), reverse=True)
+        offers = sorted(offers, key=lambda d: float(d.get('area').get('value')), reverse=True)
     return offers
 
 
 async def sort_cian_offers(offers: list, type_sort):
     if type_sort == 'price_low_to_high':
-        offers = sorted(offers, key=lambda d: float(d['BargainTerms']['Price']))
+        offers = sorted(offers, key=lambda d: float(d.get('BargainTerms').get('Price')))
     if type_sort == 'price_high_to_low':
-        offers = sorted(offers, key=lambda d: float(d['BargainTerms']['Price']), reverse=True)
+        offers = sorted(offers, key=lambda d: float(d.get('BargainTerms').get('Price')), reverse=True)
     if type_sort == 'area_low_to_high':
-        offers = sorted(offers, key=lambda d: float(d['TotalArea']))
+        offers = sorted(offers, key=lambda d: float(d.get('TotalArea')))
     if type_sort == 'area_high_to_low':
-        offers = sorted(offers, key=lambda d: float(d['TotalArea']), reverse=True)
+        offers = sorted(offers, key=lambda d: float(d.get('TotalArea')), reverse=True)
     return offers
 
 
@@ -148,15 +148,15 @@ async def get_offers(building_name, data: dict = None, sort=None) -> list:
 async def get_max_and_low_values_yan(offers: list = None, params: dict = None, building_name: str = None) -> dict:
     if params:
         offers = await get_offers(building_name, params)
-    max_price_offer = max(offers, key=lambda d: float(d['price']['value']))
-    low_price_offer = min(offers, key=lambda d: float(d['price']['value']))
-    max_area_offer = max(offers, key=lambda d: float(d['area']['value'].replace(',', '.')))
-    low_area_offer = min(offers, key=lambda d: float(d['area']['value'].replace(',', '.')))
+    max_price_offer = max(offers, key=lambda d: float(d.get('price').get('value')))
+    low_price_offer = min(offers, key=lambda d: float(d.get('price').get('value')))
+    max_area_offer = max(offers, key=lambda d: float(d.get('area').get('value').replace(',', '.')))
+    low_area_offer = min(offers, key=lambda d: float(d.get('area').get('value').replace(',', '.')))
     values = {
-        'max_price': max_price_offer['price']['value'],
-        'low_price': low_price_offer['price']['value'],
-        'max_area': max_area_offer['area']['value'].replace(',', '.'),
-        'low_area': low_area_offer['area']['value'].replace(',', '.'),
+        'max_price': max_price_offer.get('price').get('value'),
+        'low_price': low_price_offer.get('price').get('value'),
+        'max_area': max_area_offer.get('area').get('value').replace(',', '.'),
+        'low_area': low_area_offer.get('area').get('value').replace(',', '.'),
     }
     return values
 
@@ -164,15 +164,15 @@ async def get_max_and_low_values_yan(offers: list = None, params: dict = None, b
 async def get_max_and_low_values_cian(offers: list = None, params: dict = None, building_name: str = None) -> dict:
     if params:
         offers = await get_offers(building_name, params)
-    max_price_offer = max(offers, key=lambda d: float(d['BargainTerms']['Price']))
-    low_price_offer = min(offers, key=lambda d: float(d['BargainTerms']['Price']))
-    max_area_offer = max(offers, key=lambda d: float(d['TotalArea']))
-    low_area_offer = min(offers, key=lambda d: float(d['TotalArea']))
+    max_price_offer = max(offers, key=lambda d: float(d.get('BargainTerms').get('Price')))
+    low_price_offer = min(offers, key=lambda d: float(d.get('BargainTerms').get('Price')))
+    max_area_offer = max(offers, key=lambda d: float(d.get('TotalArea').replace(',', '.')))
+    low_area_offer = min(offers, key=lambda d: float(d.get('TotalArea').replace(',', '.')))
     values = {
-        'max_price': max_price_offer['BargainTerms']['Price'],
-        'low_price': low_price_offer['BargainTerms']['Price'],
-        'max_area': max_area_offer['TotalArea'],
-        'low_area': low_area_offer['TotalArea'],
+        'max_price': max_price_offer.get('BargainTerms').get('Price'),
+        'low_price': low_price_offer.get('BargainTerms').get('Price'),
+        'max_area': max_area_offer.get('TotalArea').replace(',', '.'),
+        'low_area': low_area_offer.get('TotalArea').replace(',', '.'),
     }
     return values
 
@@ -183,10 +183,10 @@ async def get_all_offers(building_name: str, params: dict = None):
     xml = await get_xml(xml_link.xml_link)
     data = xmltodict.parse(xml)
     if xml_link.type_of_xml == 'yandex':
-        offers = data['realty-feed']['offer']
+        offers = data.get('realty-feed').get('offer')
         values = await get_max_and_low_values_yan(offers, params, building_name)
         return values
     elif xml_link.type_of_xml == 'cian':
-        offers = data['feed']['object']
+        offers = data.get('feed').get('object')
         values = await get_max_and_low_values_cian(offers, params, building_name)
         return values
