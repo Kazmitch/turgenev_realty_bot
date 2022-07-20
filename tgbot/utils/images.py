@@ -61,3 +61,15 @@ async def make_photo(offers: list):
         photos = await asyncio.gather(*merged_photo)
         offer['photo'] = photos
     return offers
+
+
+async def resize_photo(url: str) -> BytesIO:
+    """Изменяем размер фотографии."""
+    bytes_photo = await get_photo_bytes(url)
+    img = Image.open(BytesIO(bytes_photo))
+    img_resize = img.resize((600, 600))
+    buf = BytesIO()
+    img_resize.save(buf, format='JPEG')
+    byte_img = buf.getvalue()
+    photo = BytesIO(byte_img)
+    return photo

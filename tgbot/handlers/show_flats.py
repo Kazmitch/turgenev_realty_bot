@@ -1,5 +1,3 @@
-import io
-
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto, InputFile
@@ -9,7 +7,7 @@ from tgbot.keyboards.flat_selection import order_cd
 from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
-from tgbot.utils.images import get_photo_bytes
+from tgbot.utils.images import resize_photo
 from tgbot.utils.offers import get_offers, get_photo_url, get_values
 from tgbot.utils.page import get_page
 
@@ -26,7 +24,7 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         offer = await get_page(offers)
         try:
             photo_url = await get_photo_url(offer, xml_link.type_of_xml)
-            photo = io.BytesIO(await get_photo_bytes(photo_url))
+            photo = await resize_photo(photo_url)
         except KeyError:
             photo = 'realty_bot/media/errors/layout_error.jpg'
         file = InputFile(path_or_bytesio=photo)
@@ -79,7 +77,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     try:
         photo_url = await get_photo_url(offer, xml_link.type_of_xml)
-        photo = io.BytesIO(await get_photo_bytes(photo_url))
+        photo = await resize_photo(photo_url)
     except KeyError:
         photo = 'realty_bot/media/errors/layout_error.jpg'
     file = InputFile(path_or_bytesio=photo)

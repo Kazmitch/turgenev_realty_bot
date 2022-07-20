@@ -15,7 +15,6 @@ async def get_xml(url: str):
 async def get_photo_url(offer: dict, type_xml: str) -> str:
     """Получаем url фотографии."""
     if type_xml == 'yandex':
-        # photo_url = offer.get('image').get('#text')
         photos = offer.get('image')
         if isinstance(photos, list):
             photo_url = photos[0].get('#text')
@@ -46,6 +45,7 @@ async def get_values(offer: dict, type_xml: str) -> dict:
         }
     return values
 
+
 async def get_max_floor_yan(xml: dict) -> int:
     """Получаем максимальный этаж ЖК из фида."""
     max_floor = int(xml['realty-feed']['offer'][0]['floors-total'])
@@ -62,7 +62,9 @@ async def get_offers_yan(url: str, area: str, price: str, year: str, rooms: str)
     good_offers = []
 
     for offer in data['realty-feed']['offer']:
-        if float(offer['area']['value']) >= float(area) and (float(offer['price']['value']) <= float(price) if price != '0000000' else float(offer['price']['value']) >= float(price)):
+        if float(offer['area']['value']) >= float(area) and (
+                float(offer['price']['value']) <= float(price) if price != '0000000' else float(
+                    offer['price']['value']) >= float(price)):
             if year == '0' and int(offer['built-year']) > 0:
                 good_offers.append(offer)
             elif year != '0' and int(offer['built-year']) <= int(year):
@@ -84,7 +86,9 @@ async def get_offers_cian(url: str, area: str, price: str, year: str, rooms: str
     good_offers = []
 
     for offer in data['feed']['object']:
-        if float(offer['TotalArea']) >= float(area) and (float(offer['BargainTerms']['Price']) <= float(price) if price != '0000000' else float(offer['BargainTerms']['Price']) >= float(price)):
+        if float(offer['TotalArea']) >= float(area) and (
+                float(offer['BargainTerms']['Price']) <= float(price) if price != '0000000' else float(
+                offer['BargainTerms']['Price']) >= float(price)):
             if year == '0' and int(offer['Building']['Deadline']['Year']) > 0:
                 good_offers.append(offer)
             elif year != '0' and int(offer['Building']['Deadline']['Year']) <= int(year):
@@ -122,7 +126,6 @@ async def sort_cian_offers(offers: list, type_sort):
 
 async def get_offers(building_name, data: dict = None, sort=None) -> list:
     """Получаем список предложений на основе данных."""
-    # building_name = data.get('building_name')
     area = str(data.get('flat_area'))
     price = str(data.get('flat_price'))
     year = str(data.get('flat_year'))
@@ -137,7 +140,6 @@ async def get_offers(building_name, data: dict = None, sort=None) -> list:
         offers = await get_offers_cian(xml_link.xml_link, area, price, year, rooms)
         if sort is not None:
             offers = await sort_cian_offers(offers, sort)
-
         return offers
 
 
