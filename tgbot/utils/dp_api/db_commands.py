@@ -7,7 +7,7 @@ from django.db.models import Q, QuerySet
 
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
     AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
-    UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo
+    UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus
 
 
 @sync_to_async
@@ -86,6 +86,13 @@ def get_documents(building_name: str) -> QuerySet[Documentation]:
 
 
 @sync_to_async
+def get_corpuses(building_name: str) -> QuerySet[Corpus]:
+    """Получаем query set объектов Corpus по названию ЖК."""
+    corpuses = Corpus.objects.filter(building__latin_name=building_name)
+    return corpuses
+
+
+@sync_to_async
 def get_document_file(document_id: int) -> str:
     """Получаем путь документа по его id."""
     document_path = Documentation.objects.get(id=document_id).document
@@ -111,6 +118,13 @@ def get_gallery_photos(section: str, building_name: str):
     }
     model = models_dict.get(section)
     photo_set = model.objects.filter(building__latin_name=building_name)
+    return photo_set
+
+
+@sync_to_async
+def get_corpus_photos(building_name: str, corpus_id: int) -> QuerySet[ProcessingCorpusPhoto]:
+    """Получаем query set объектов ProcessingCorpusPhoto по названию ЖК и id корпуса."""
+    photo_set = ProcessingCorpusPhoto.objects.filter(building__latin_name=building_name, corpus=corpus_id)
     return photo_set
 
 

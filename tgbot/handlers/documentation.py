@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery, InputFile
 
 from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.building_menu import building
-from tgbot.keyboards.documentation_keyboard import documents_keyboard, documentation_cd, current_declaration_menu
+from tgbot.keyboards.documentation import documents_keyboard, documentation_cd, current_declaration_menu
 from tgbot.utils.dp_api.db_commands import get_document_file
 
 

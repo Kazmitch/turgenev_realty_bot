@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import UserBot, Developer, Profile, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
     ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto, Term, Construction, \
-    SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo
+    SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus
 
 
 @admin.register(Profile)
@@ -89,6 +89,13 @@ class XmlLinkAdmin(admin.ModelAdmin):
     search_fields = ('building', 'type_of_xml')
 
 
+@admin.register(Corpus)
+class CorpusAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'building', 'created_at', 'updated_at')
+    list_filter = ('building',)
+    search_fields = ('building',)
+
+
 @admin.register(Documentation)
 class Documentation(admin.ModelAdmin):
     list_display = ('__str__', 'building', 'created_at', 'updated_at')
@@ -109,8 +116,11 @@ class LocationPhotoAdmin(PhotoBase):
 
 
 @admin.register(ProcessingCorpusPhoto)
-class ProcessingCorpusPhotoAdmin(PhotoBase):
-    pass
+class ProcessingCorpusPhotoAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'corpus', 'display_image', 'created_at', 'updated_at')
+    list_filter = ('building', 'corpus')
+    search_fields = ('building', 'corpus')
+    readonly_fields = ('display_image', 'created_at', 'updated_at')
 
 
 @admin.register(InteriorPhoto)

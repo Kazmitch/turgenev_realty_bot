@@ -3,8 +3,8 @@ from aiogram.utils.callback_data import CallbackData
 
 from tgbot.keyboards.building_menu import menu_button
 
-project_cd = CallbackData('project', 'name', 'section')
-photo_gallery_cd = CallbackData('photo_gallery', 'name', 'section')
+project_cd = CallbackData('project', 'building_name', 'section')
+photo_gallery_cd = CallbackData('photo_gallery', 'building_name', 'section')
 
 
 async def about_project_keyboard(building_name: str) -> InlineKeyboardMarkup:
@@ -15,7 +15,7 @@ async def about_project_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='📷 Фотогалерея',
-                callback_data=project_cd.new(name=building_name, section='photo_gallery')
+                callback_data=project_cd.new(building_name=building_name, section='photo_gallery')
             )
         ]
     ]
@@ -33,31 +33,31 @@ async def photo_gallery_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='📍 Расположение ЖК и инфраструктура',
-                callback_data=photo_gallery_cd.new(name=building_name, section='location')
+                callback_data=photo_gallery_cd.new(building_name=building_name, section='location')
             )
         ],
         [
             InlineKeyboardButton(
                 text='🧱 Строящиеся корпуса',
-                callback_data=photo_gallery_cd.new(name=building_name, section='construction')
+                callback_data=photo_gallery_cd.new(building_name=building_name, section='construction')
             )
         ],
         [
             InlineKeyboardButton(
                 text='🏠 Интерьеры общих зон',
-                callback_data=photo_gallery_cd.new(name=building_name, section='interior')
+                callback_data=photo_gallery_cd.new(building_name=building_name, section='interior')
             )
         ],
         [
             InlineKeyboardButton(
                 text='👀 Шоурум',
-                callback_data=photo_gallery_cd.new(name=building_name, section='showroom')
+                callback_data=photo_gallery_cd.new(building_name=building_name, section='showroom')
             )
         ],
         [
             InlineKeyboardButton(
                 text='🏗 Ход строительства (видео)',
-                callback_data=photo_gallery_cd.new(name=building_name, section='progress_video')
+                callback_data=photo_gallery_cd.new(building_name=building_name, section='progress_video')
             )
         ]
     ]

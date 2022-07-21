@@ -208,6 +208,19 @@ class XmlLink(BaseModel):
         return f"{self.building.name} XML"
 
 
+class Corpus(BaseModel):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name="corpuses", null=True)
+    title = models.CharField(verbose_name="Название корпуса", max_length=32, null=True)
+
+    class Meta:
+        verbose_name = "Корпус"
+        verbose_name_plural = "Корпуса"
+
+    def __str__(self):
+        return f"{self.title}"
+
+
 class SpecialOffer(BaseModel):
     directory = 'photo/special_offer'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
@@ -284,7 +297,8 @@ class LocationPhoto(BaseModel):
 class ProcessingCorpusPhoto(BaseModel):
     directory = 'photo/processing'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
-                                 related_name='corps')
+                                 related_name="corps")
+    corpus = models.ForeignKey(Corpus, on_delete=models.CASCADE, verbose_name="Корпус", related_name="corps", null=True)
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
     description = models.TextField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
                                    max_length=1024, blank=True, null=True)
