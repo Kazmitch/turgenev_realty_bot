@@ -17,8 +17,7 @@ async def start_deep_link(message: Message):
     calltracking = values.split('&')[1].split('=')[1]
     source = values.split('&')[2].split('=')[0]
     source_id = values.split('&')[2].split('=')[1]
-    await create_userbot(message, calltracking, source, source_id)
-    await message.answer(f"Привет, {message.from_user.full_name}!")
+    await create_userbot(message, building_name, calltracking, source, source_id)
     building = await get_building(building_name)
     markup = await main_building_menu(building_name)
     await message.answer(text=f'{building.greeting}', reply_markup=markup)

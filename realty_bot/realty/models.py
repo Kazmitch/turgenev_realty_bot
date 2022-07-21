@@ -37,6 +37,7 @@ class UserBot(BaseModel):
     telegram_first_name = models.CharField(verbose_name="Имя пользователя", max_length=64, blank=True, null=True)
     telegram_last_name = models.CharField(verbose_name="Фамилия пользователя", max_length=64, blank=True, null=True)
     is_admin = models.BooleanField(verbose_name="Администратор", default=False)
+    building_name = models.CharField(verbose_name="Название ЖК", max_length=64, blank=True, null=True)
     calltracking = models.CharField(verbose_name="Название коллтрекинга", max_length=32, blank=True, null=True)
     campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=16, blank=True, null=True)
     site_id = models.CharField(verbose_name="ID сайта", max_length=16, blank=True, null=True)

@@ -9,6 +9,9 @@ contact = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text='Отправить контакт', request_contact=True),
+        ],
+        [
+            KeyboardButton(text='В начало')
         ]
 
     ],
