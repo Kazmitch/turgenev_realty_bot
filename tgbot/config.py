@@ -28,6 +28,7 @@ class Config:
     tg_bot: TgBot
     db: DbConfig
     misc: Miscellaneous
+    influxdb: DbConfig
     redis_host: str = None
 
 
@@ -48,5 +49,11 @@ def load_config(path: str = None):
             database=env.str('POSTGRES_DB')
         ),
         misc=Miscellaneous(),
-        redis_host=env.str('REDIS_HOST')
+        redis_host=env.str('REDIS_HOST'),
+        influxdb=DbConfig(
+            host=env.str('INFLUXDB_HOST'),
+            password=env.str('INFLUXDB_USER_PASSWORD'),
+            user=env.str('INFLUXDB_USER'),
+            database=env.str('INFLUXDB_DB')
+        )
     )

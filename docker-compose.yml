@@ -58,6 +58,26 @@ services:
     networks:
       - realty_db_network
 
+  realty_influxdb:
+    image: influxdb:1.8-alpine
+    restart: always
+    volumes:
+      - /opt/influxdb/realty_tg_bot:/var/lib/influxdb
+    env_file:
+      - '.env'
+    ports:
+      - '8086:8086'
+    networks:
+      - realty_db_network
+
+  realty_grafana:
+    image: grafana/grafana
+    environment:
+      - GF_DATE_FORMATS_DEFAULT_TIMEZONE=browser
+    ports:
+      - '3000:3000'
+    networks:
+      - realty_db_network
 
 networks:
   realty_db_network:

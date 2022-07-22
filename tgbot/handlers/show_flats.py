@@ -6,13 +6,14 @@ from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_flats_
 from tgbot.keyboards.flat_selection import order_cd
 from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.send_contact import ContactStates
+from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
 from tgbot.utils.images import resize_photo
 from tgbot.utils.offers import get_offers, get_photo_url, get_values
 from tgbot.utils.page import get_page
 
 
-async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
+async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_data: dict, influx_client, **kwargs):
     data = await state.get_data()
     building_name = data.get('building_name')
     ordering = callback_data.get('sort')
@@ -43,9 +44,9 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
                 sort=ordering
             )
         )
-        await call.message.edit_reply_markup(reply_markup=None)
         await call.message.delete()
         await ContactStates.building_name.set()
+        await log_stat(influx_client, call.from_user, call.message.date, event='Просмотр квартир')
         await state.update_data(current_flat={'price': offer_values.get("offer_price"),
                                               'area': offer_values.get("offer_area"),
                                               'rooms': offer_values.get("offer_rooms"),
@@ -55,16 +56,17 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         markup = await contact_markup(building_name)
         await call.message.answer(text='К сожалению, не смогли найти квартиры по данным параметрам.\n'
                                        'Давайте поможем вам подобрать', reply_markup=markup)
-        await call.message.edit_reply_markup(reply_markup=None)
         await call.message.delete()
         await ContactStates.building_name.set()
 
 
-async def current_page_error(call: CallbackQuery):
+async def current_page_error(call: CallbackQuery, influx_client):
     await call.answer(cache_time=60)
+    await log_stat(influx_client, call.from_user, call.message.date,
+                   error='Нажатие на текущую страницу при листании квартир')
 
 
-async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data: dict):
+async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data: dict, influx_client, **kwargs):
     data = await state.get_data()
     building_name = data.get('building_name')
     ordering = callback_data.get('sort')
@@ -102,6 +104,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
                                           'area': offer_values.get("offer_area"),
                                           'rooms': offer_values.get("offer_rooms"),
                                           'floor': offer_values.get("offer_floor")})
+    await log_stat(influx_client, call.from_user, call.message.date, event='Листание квартир')
 
 
 def register_show_flats(dp: Dispatcher):

@@ -8,10 +8,11 @@ from realty_bot.realty_bot.utils import correct_phone
 from tgbot.keyboards.building_menu import menu_markup
 from tgbot.keyboards.send_contact import contact, contact_cd
 from tgbot.states.send_contact import ContactStates
+from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import create_requests, create_call_request, get_userbot
 
 
-async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMContext):
+async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMContext, influx_client):
     """Хендлер на кнопку 'Заказать обратный звонок'."""
     await call.answer(cache_time=60)
     building_name = callback_data.get('building_name')
@@ -23,9 +24,10 @@ async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMConte
     await state.update_data(msg_id=msg.message_id)
     await call.message.delete()
     await ContactStates.contact.set()
+    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "Обратный звонок"')
 
 
-async def get_contact(message: Message, state: FSMContext):
+async def get_contact(message: Message, state: FSMContext, influx_client):
     """Хендлер на кнопку 'Отправить контакт'."""
     data = await state.get_data()
     building_name = data.get('building_name')
@@ -51,21 +53,27 @@ async def get_contact(message: Message, state: FSMContext):
             await make_comagic_call_request(call.api_token.access_token, name=telegram_first_name,
                                             phone_number=phone_number,
                                             data=data, source=source, source_id=source_id)
+            await log_stat(influx_client, message.from_user, message.date, event='Отправили контакт в Comagic с site_id')
         elif calltracking == 'comagic' and source == 'campaign_id':
             call = await create_call_request(building_name=building_name, campaign_id=source_id)
             await make_comagic_call_request(call.api_token.access_token, name=telegram_first_name,
                                             phone_number=phone_number,
                                             data=data, source=source, source_id=source_id)
+            await log_stat(influx_client, message.from_user, message.date, event='Отправили контакт в Comagic с campaign_id')
         elif calltracking == 'calltouch' and source == 'site_id':
             call = await create_call_request(building_name=building_name, site_id=source_id)
             await make_calltouch_call_request(call.api_token.access_token, site_id=source_id, name=telegram_first_name,
                                               phone_number=phone_number, data=data)
+            await log_stat(influx_client, message.from_user, message.date,
+                           event='Отправили контакт в Colltouch с site_id')
         await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
         await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
         await create_requests(building_name, message.from_user.id, phone_number, data)
 
     else:
         await message.answer(text="Вы ввели неправильный номер", reply_markup=markup)
+        await log_stat(influx_client, message.from_user, message.date,
+                       event='Ввели неправильный номер')
 
 
 def register_send_contact(dp: Dispatcher):

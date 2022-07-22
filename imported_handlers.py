@@ -12,7 +12,6 @@ from tgbot.handlers.show_flats import register_show_flats
 from tgbot.handlers.show_photo_gallery import register_show_gallery
 from tgbot.handlers.special_offers import register_show_special_offers
 from tgbot.handlers.start import register_start
-from tgbot.handlers.user import register_user
 
 
 def register_all_handlers(dp):
@@ -31,4 +30,3 @@ def register_all_handlers(dp):
     register_construction(dp)
     register_purchase_terms(dp)
     register_admin(dp)
-    register_user(dp)

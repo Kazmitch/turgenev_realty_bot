@@ -4,10 +4,11 @@ from aiogram.types import CallbackQuery, InputFile
 from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.about_project import about_project_keyboard
 from tgbot.keyboards.building_menu import building
+from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import get_developer_description, get_about_project_photo
 
 
-async def project(call: CallbackQuery, callback_data: dict):
+async def project(call: CallbackQuery, callback_data: dict, influx_client):
     """Хендлер на кнопку 'О проекте'"""
     building_name = callback_data.get('name')
     description = await get_developer_description(building_name)
@@ -17,8 +18,8 @@ async def project(call: CallbackQuery, callback_data: dict):
     await call.message.answer_photo(photo=file,
                                     caption=description,
                                     reply_markup=markup)
-    await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
+    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "О проекте"')
 
 
 def register_about_project(dp: Dispatcher):

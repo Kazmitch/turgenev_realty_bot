@@ -5,11 +5,12 @@ from aiogram.types import CallbackQuery, InputFile, InputMediaPhoto
 from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.building_menu import building
 from tgbot.keyboards.dynamics import pagination_construction_call, get_construction_page_keyboard
+from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import get_construction_photos
 from tgbot.utils.page import get_page
 
 
-async def show_construction(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
+async def show_construction(call: CallbackQuery, callback_data: dict, influx_client, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Динамика строительства'"""
     building_name = callback_data.get('name')
     constructs = await get_construction_photos(building_name)
@@ -27,13 +28,16 @@ async def show_construction(call: CallbackQuery, callback_data: dict, state: FSM
     )
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
+    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "Динамика строительства"')
 
 
-async def current_page_error(call: CallbackQuery):
+async def current_page_error(call: CallbackQuery, influx_client):
     await call.answer(cache_time=60)
+    await log_stat(influx_client, call.from_user, call.message.date,
+                   error='Нажатие на текущую страницу при листании в Динамике строительства')
 
 
-async def show_chosen_construction(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
+async def show_chosen_construction(call: CallbackQuery, callback_data: dict, influx_client, state: FSMContext, **kwargs):
     """Отображаем выбранную страницу."""
     building_name = callback_data.get('building_name')
     current_page = int(callback_data.get('page'))
@@ -53,6 +57,7 @@ async def show_chosen_construction(call: CallbackQuery, callback_data: dict, sta
         )
     )
     await state.update_data(section=callback_data.get('section'))
+    await log_stat(influx_client, call.from_user, call.message.date, event='Листание в динамике строительства')
 
 
 def register_construction(dp: Dispatcher):
