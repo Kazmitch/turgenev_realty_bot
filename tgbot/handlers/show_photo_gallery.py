@@ -133,7 +133,7 @@ async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict, stat
 
 async def show_progress_video(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Ход строительства'."""
-    building_name = callback_data.get('name')
+    building_name = callback_data.get('building_name')
     video_progress = await get_progress_video(building_name)
     markup = await video_progress_keyboard(building_name)
     # file = InputFile.from_url(video_progress.video_url)

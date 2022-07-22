@@ -15,7 +15,7 @@ async def video_progress_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup.row(
         InlineKeyboardButton(
             text='🔙 Вернуться',
-            callback_data=project_cd.new(name=building_name, section='photo_gallery')
+            callback_data=project_cd.new(building_name=building_name, section='photo_gallery')
         )
     )
 
