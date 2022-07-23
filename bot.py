@@ -64,7 +64,7 @@ async def main(all_handlers):
         await dp.storage.close()
         await dp.storage.wait_closed()
         await bot.get_session()
-
+        await influx_client.close()
 
 if __name__ == '__main__':
     try:
