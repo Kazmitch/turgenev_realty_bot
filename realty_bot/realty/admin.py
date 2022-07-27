@@ -104,7 +104,7 @@ class Documentation(admin.ModelAdmin):
 
 
 class PhotoBase(admin.ModelAdmin):
-    list_display = ('__str__', 'display_image', 'created_at', 'updated_at')
+    list_display = ('__str__', 'display_image', 'order', 'created_at', 'updated_at')
     list_filter = ('building',)
     search_fields = ('building',)
     readonly_fields = ('display_image', 'created_at', 'updated_at')
@@ -117,7 +117,7 @@ class LocationPhotoAdmin(PhotoBase):
 
 @admin.register(ProcessingCorpusPhoto)
 class ProcessingCorpusPhotoAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'corpus', 'display_image', 'created_at', 'updated_at')
+    list_display = ('__str__', 'corpus', 'display_image', 'order', 'created_at', 'updated_at')
     list_filter = ('building', 'corpus')
     search_fields = ('building', 'corpus')
     readonly_fields = ('display_image', 'created_at', 'updated_at')

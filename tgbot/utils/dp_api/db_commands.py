@@ -117,14 +117,14 @@ def get_gallery_photos(section: str, building_name: str):
         'showroom': ShowRoomPhoto
     }
     model = models_dict.get(section)
-    photo_set = model.objects.filter(building__latin_name=building_name)
+    photo_set = model.objects.filter(building__latin_name=building_name).order_by('order')
     return photo_set
 
 
 @sync_to_async
 def get_corpus_photos(building_name: str, corpus_id: int) -> QuerySet[ProcessingCorpusPhoto]:
     """Получаем query set объектов ProcessingCorpusPhoto по названию ЖК и id корпуса."""
-    photo_set = ProcessingCorpusPhoto.objects.filter(building__latin_name=building_name, corpus=corpus_id)
+    photo_set = ProcessingCorpusPhoto.objects.filter(building__latin_name=building_name, corpus=corpus_id).order_by('order')
     return photo_set
 
 
