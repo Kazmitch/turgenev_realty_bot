@@ -177,7 +177,14 @@ def create_requests(building_name: str, telegram_user_id: int, phone_number: str
 
 
 @sync_to_async
-def create_call_request(building_name: str, site_id: str = None, campaign_id: str = None) -> CallTrackingCampaign:
+def get_call_request(building_name: str, site_id: str = None, campaign_id: str = None) -> CallTrackingCampaign:
     """Получаем объект рекламной кампании."""
     call = CallTrackingCampaign.objects.filter(building__latin_name=building_name, site_id=site_id, campaign_id=campaign_id).first()
     return call
+
+
+@sync_to_async
+def get_start_campaign() -> CallTrackingCampaign:
+    """Получаем объект рекламной кампании с органикой."""
+    campaign = CallTrackingCampaign.objects.filter(start_button=True).first()
+    return campaign

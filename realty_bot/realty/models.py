@@ -551,6 +551,7 @@ class CallTrackingCampaign(BaseModel):
                                   related_name="call_tracking_campaigns", null=True)
     campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=32, blank=True, null=True)
     site_id = models.CharField(verbose_name="ID сайта", max_length=32, blank=True, null=True)
+    start_button = models.BooleanField(verbose_name="Прямой заход в бота", default=False)
 
     class Meta:
         verbose_name = "Рекламная кампания"
@@ -558,6 +559,11 @@ class CallTrackingCampaign(BaseModel):
 
     def __str__(self):
         return f"{self.building.name}"
+
+    def save(self, *args, **kwargs):
+        if self.start_button:
+            CallTrackingCampaign.objects.update(start_button=False)
+        super().save(*args, **kwargs)
 
     @property
     def url_base64_encode(self, **kwargs):

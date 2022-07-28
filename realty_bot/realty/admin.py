@@ -179,7 +179,7 @@ class RequestAdmin(admin.ModelAdmin):
 
 @admin.register(CallTrackingCampaign)
 class CallTrackingCampaignAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'campaign_name', 'call_tracking_name', 'developer', 'url_base64_encode', 'campaign_id', 'site_id', 'created_at', 'updated_at')
+    list_display = ('__str__', 'campaign_name', 'start_button', 'call_tracking_name', 'developer', 'url_base64_encode', 'campaign_id', 'site_id', 'created_at', 'updated_at')
     list_filter = ('developer', 'call_tracking_name')
     search_fields = ('developer', 'call_tracking_name')
     fieldsets = (
@@ -192,8 +192,9 @@ class CallTrackingCampaignAdmin(admin.ModelAdmin):
                        'api_token',
                        'campaign_id',
                        'site_id',
+                       'start_button',
                        'created_at',
-                       'updated_at',
+                       'updated_at'
 )
         }),
     )
