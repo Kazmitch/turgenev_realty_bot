@@ -1,4 +1,4 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.callback_data import CallbackData
 
 
@@ -51,7 +51,7 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                               text='📄 Условия покупки',
                                               callback_data=building.new(name=building_name, section='purchase_terms')
                                           )
-                                      ],
+                                      ]
                                   ])
     return markup
 

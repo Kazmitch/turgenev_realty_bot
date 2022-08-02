@@ -64,17 +64,35 @@ async def get_offers_yan(url: str, area: str, price: str, year: str, rooms: str)
     good_offers = []
 
     for offer in data.get('realty-feed').get('offer'):
-        if float(offer.get('area').get('value').replace(',', '.')) >= float(area) and (
+        if price == '0000000' and year != '0':
+            if int(offer.get('built-year')) <= int(year):
+                if int(offer.get('rooms')) >= int(rooms):
+                    good_offers.append(offer)
+                else:
+                    continue
+            else:
+                continue
+        elif price == '0000000' and rooms != '0':
+            if int(offer.get('rooms')) >= int(rooms):
+                if year == '0':
+                    good_offers.append(offer)
+                else:
+                    continue
+            else:
+                continue
+        else:
+            if float(offer.get('area').get('value').replace(',', '.')) >= float(area) and (
                 float(offer.get('price').get('value')) <= float(price) if price != '0000000' else float(
                     offer.get('price').get('value')) >= float(price)):
-            if year == '0' and int(offer.get('built-year')) > 0:
-                good_offers.append(offer)
-            elif year != '0' and int(offer.get('built-year')) <= int(year):
-                good_offers.append(offer)
-            elif rooms == '0' and int(offer.get('rooms')) >= 1:
-                good_offers.append(offer)
-            elif rooms != '0' and int(offer.get('rooms')) >= int(rooms):
-                good_offers.append(offer)
+                if year == '0' and int(offer.get('built-year')) > 0:
+                    good_offers.append(offer)
+                elif year != '0' and int(offer.get('built-year')) <= int(year):
+                    good_offers.append(offer)
+                elif rooms == '0' and int(offer.get('rooms')) >= 1:
+                    good_offers.append(offer)
+                elif rooms != '0' and int(offer.get('rooms')) >= int(rooms):
+                    good_offers.append(offer)
+
     return good_offers
 
 
@@ -88,17 +106,34 @@ async def get_offers_cian(url: str, area: str, price: str, year: str, rooms: str
     good_offers = []
 
     for offer in data.get('feed').get('object'):
-        if float(offer.get('TotalArea').replace(',', '.')) >= float(area) and (
+        if price == '0000000' and year != '0':
+            if int(offer.get('Building').get('Deadline').get('Year')) <= int(year):
+                if int(offer.get('FlatRoomsCount')) >= int(rooms):
+                    good_offers.append(offer)
+                else:
+                    continue
+            else:
+                continue
+        elif price == '0000000' and rooms != '0':
+            if int(offer.get('FlatRoomsCount')) >= int(rooms):
+                if year == '0':
+                    good_offers.append(offer)
+                else:
+                    continue
+            else:
+                continue
+        else:
+            if float(offer.get('TotalArea').replace(',', '.')) >= float(area) and (
                 float(offer.get('BargainTerms').get('Price')) <= float(price) if price != '0000000' else float(
-                offer.get('BargainTerms').get('Price')) >= float(price)):
-            if year == '0' and int(offer.get('Building').get('Deadline').get('Year')) > 0:
-                good_offers.append(offer)
-            elif year != '0' and int(offer.get('Building').get('Deadline').get('Year')) <= int(year):
-                good_offers.append(offer)
-            elif rooms == '0' and int(offer.get('FlatRoomsCount')) >= 1:
-                good_offers.append(offer)
-            elif rooms != '0' and int(offer.get('FlatRoomsCount')) >= int(rooms):
-                good_offers.append(offer)
+                    offer.get('BargainTerms').get('Price')) >= float(price)):
+                if year == '0' and int(offer.get('Building').get('Deadline').get('Year')) > 0:
+                    good_offers.append(offer)
+                elif year != '0' and int(offer.get('Building').get('Deadline').get('Year')) <= int(year):
+                    good_offers.append(offer)
+                elif rooms == '0' and int(offer.get('FlatRoomsCount')) >= 1:
+                    good_offers.append(offer)
+                elif rooms != '0' and int(offer.get('FlatRoomsCount')) >= int(rooms):
+                    good_offers.append(offer)
     return good_offers
 
 
