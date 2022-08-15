@@ -28,11 +28,10 @@ async def log_stat(user: User, event: str = None, error: str = None):
     }
 
     try:
-        async with InfluxDBClientAsync(url=config.influxdb.url, token=config.influxdb.token, org=config.influxdb.org) as client:
+        async with InfluxDBClientAsync(url=config.influxdb.url,
+                                       token=config.influxdb.token,
+                                       org=config.influxdb.org) as client:
             write_api = client.write_api()
-            ready = await client.ping()
-            print(f"InfluxDB: {ready}")
-            successfully = await write_api.write(bucket=config.influxdb.bucket, record=data)
-            print(f" > successfully: {successfully}")
+            await write_api.write(bucket=config.influxdb.bucket, record=data)
     except InfluxDBError as ex:
         logging.error(f'InfluxDB write error: {ex}')
