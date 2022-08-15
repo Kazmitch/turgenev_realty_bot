@@ -1,4 +1,5 @@
 import base64
+import urllib.parse
 
 
 def user_directory_path(instance, filename):
@@ -14,7 +15,7 @@ def about_project_path(instance, filename):
 def encode_decode_values(value: str):
     """Кодируем и декодируем значение."""
     try:
-        return base64.b64encode(value.encode('UTF-8')).decode('UTF-8')
+        return urllib.parse.quote(base64.b64encode(value.encode('UTF-8')).decode('UTF-8'))
     except AttributeError:
         return None
 

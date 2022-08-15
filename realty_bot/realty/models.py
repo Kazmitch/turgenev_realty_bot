@@ -228,6 +228,7 @@ class SpecialOffer(BaseModel):
     title = models.CharField(verbose_name="Заголовок спецпредложения", max_length=255, null=True)
     description = models.TextField(verbose_name="Описание спецпредложения", null=True)
     photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
+    order = models.FloatField(verbose_name="Порядок", default=10)
 
     class Meta:
         verbose_name = "Спецпредложения"
@@ -274,6 +275,7 @@ class LocationPhoto(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='locations')
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
+    order = models.FloatField(verbose_name="Порядок", default=10)
     description = models.TextField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
                                    max_length=1024, blank=True, null=True)
 
@@ -300,6 +302,7 @@ class ProcessingCorpusPhoto(BaseModel):
                                  related_name="corps")
     corpus = models.ForeignKey(Corpus, on_delete=models.CASCADE, verbose_name="Корпус", related_name="corps", null=True)
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
+    order = models.FloatField(verbose_name="Порядок", default=10)
     description = models.TextField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
                                    max_length=1024, blank=True, null=True)
 
@@ -325,6 +328,7 @@ class InteriorPhoto(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='interiors')
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
+    order = models.FloatField(verbose_name="Порядок", default=10)
     description = models.TextField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
                                    max_length=1024, blank=True, null=True)
 
@@ -350,6 +354,7 @@ class ShowRoomPhoto(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='show_rooms')
     photo = models.ImageField(upload_to=user_directory_path, verbose_name='Фотография')
+    order = models.FloatField(verbose_name="Порядок", default=10)
     description = models.TextField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
                                    max_length=1024, blank=True, null=True)
 
@@ -546,6 +551,7 @@ class CallTrackingCampaign(BaseModel):
                                   related_name="call_tracking_campaigns", null=True)
     campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=32, blank=True, null=True)
     site_id = models.CharField(verbose_name="ID сайта", max_length=32, blank=True, null=True)
+    start_button = models.BooleanField(verbose_name="Прямой заход в бота", default=False)
 
     class Meta:
         verbose_name = "Рекламная кампания"
@@ -553,6 +559,11 @@ class CallTrackingCampaign(BaseModel):
 
     def __str__(self):
         return f"{self.building.name}"
+
+    def save(self, *args, **kwargs):
+        if self.start_button:
+            CallTrackingCampaign.objects.update(start_button=False)
+        super().save(*args, **kwargs)
 
     @property
     def url_base64_encode(self, **kwargs):
