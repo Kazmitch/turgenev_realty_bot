@@ -8,7 +8,7 @@ from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import get_developer_description, get_about_project_photo
 
 
-async def project(call: CallbackQuery, callback_data: dict, influx_client):
+async def project(call: CallbackQuery, callback_data: dict):
     """Хендлер на кнопку 'О проекте'"""
     building_name = callback_data.get('name')
     description = await get_developer_description(building_name)
@@ -19,7 +19,7 @@ async def project(call: CallbackQuery, callback_data: dict, influx_client):
                                     caption=description,
                                     reply_markup=markup)
     await call.message.delete()
-    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "О проекте"')
+    await log_stat(call.from_user, event='Нажатие кнопки "О проекте"')
 
 
 def register_about_project(dp: Dispatcher):

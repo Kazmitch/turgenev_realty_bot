@@ -11,3 +11,4 @@ xmltodict
 Pillow
 CairoSVG
 aioinflux
+influxdb-client

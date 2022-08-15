@@ -9,16 +9,16 @@ from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import get_document_file
 
 
-async def documents(call: CallbackQuery, callback_data: dict, influx_client,  state: FSMContext, **kwargs):
+async def documents(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Документация'."""
     building_name = callback_data.get('name')
     markup = await documents_keyboard(building_name)
     await call.message.answer(text='Проектная декларация', reply_markup=markup)
     await call.message.delete()
-    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "Документация"')
+    await log_stat(call.from_user, event='Нажатие кнопки "Документация"')
 
 
-async def share_document(call: CallbackQuery, callback_data: dict, influx_client, state: FSMContext, **kwargs):
+async def share_document(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на отправку конкретного документа."""
     await call.answer(cache_time=60)
     building_name = callback_data.get('name')
@@ -29,7 +29,7 @@ async def share_document(call: CallbackQuery, callback_data: dict, influx_client
     await call.message.answer_document(file, reply_markup=markup)
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event='Просмотр документа')
+    await log_stat(call.from_user, event='Просмотр документа')
 
 
 def register_documentation(dp: Dispatcher):

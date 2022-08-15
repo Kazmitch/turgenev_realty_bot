@@ -10,7 +10,7 @@ from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import get_special_offer_description
 
 
-async def special_offers(call: CallbackQuery, callback_data: dict, influx_client, state: FSMContext, **kwargs):
+async def special_offers(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Спецпредложения'."""
     building_name = callback_data.get('name')
     markup = await special_offers_keyboard(building_name)
@@ -18,10 +18,10 @@ async def special_offers(call: CallbackQuery, callback_data: dict, influx_client
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "Спецпредложения"')
+    await log_stat(call.from_user, event='Нажатие кнопки "Спецпредложения"')
 
 
-async def show_current_offer(call: CallbackQuery, callback_data: dict, influx_client, state: FSMContext, **kwargs):
+async def show_current_offer(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на показ конкретного предложения."""
     building_name = callback_data.get('name')
     offer_id = int(callback_data.get('offer_id'))
@@ -33,7 +33,7 @@ async def show_current_offer(call: CallbackQuery, callback_data: dict, influx_cl
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'), offer=offer.title)
-    await log_stat(influx_client, call.from_user, call.message.date, event='Просмотр спецпредложения')
+    await log_stat(call.from_user, event='Просмотр спецпредложения')
 
 
 def register_show_special_offers(dp: Dispatcher):

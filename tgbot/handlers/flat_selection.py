@@ -75,14 +75,12 @@ async def flat_selection(call: Union[CallbackQuery, Message], influx_client=None
     if isinstance(call, CallbackQuery):
         await call.message.answer(text=text, reply_markup=markup)
         await call.message.delete()
-        await log_stat(influx_client, call.from_user, call.message.date, event='Ввод параметров квартиры')
     else:
         msg_id = int(data.get('msg_id'))
         message = call
         await message.answer(text=text, reply_markup=markup)
         await message.bot.delete_message(message.chat.id, msg_id)
         await message.delete()
-        await log_stat(influx_client, message.from_user, message.date, event='Ввел параметр квартиры')
 
 
 async def type_params(call: Union[CallbackQuery, Message], state: FSMContext, influx_client=None, error: bool = False,
@@ -134,20 +132,19 @@ async def type_params(call: Union[CallbackQuery, Message], state: FSMContext, in
         await call.message.delete()
     if option == 'flat_area':
         await FlatStates.flat_area.set()
-        await log_stat(influx_client, call.from_user, call.message.date, event='Ввод площади квартиры')
+        await log_stat(call.from_user, event='Ввод площади квартиры')
     if option == 'flat_price':
         await FlatStates.flat_price.set()
-        await log_stat(influx_client, call.from_user, call.message.date, event='Ввод цены квартиры')
+        await log_stat(call.from_user, event='Ввод цены квартиры')
     if option == 'flat_year':
         await FlatStates.flat_year.set()
-        await log_stat(influx_client, call.from_user, call.message.date, event='Ввод года сдачи')
+        await log_stat(call.from_user, event='Ввод года сдачи')
     if option == 'flat_rooms':
         await FlatStates.flat_rooms.set()
-        await log_stat(influx_client, call.from_user, call.message.date, event='Ввод кол-ва комнат квартиры')
+        await log_stat(call.from_user, event='Ввод кол-ва комнат квартиры')
 
 
-async def update_params(message: Union[CallbackQuery, Message], influx_client, state: FSMContext,
-                        callback_data: dict = None,
+async def update_params(message: Union[CallbackQuery, Message], state: FSMContext, callback_data: dict = None,
                         **kwargs):
     """Обновляем введенные данные."""
 
@@ -162,20 +159,18 @@ async def update_params(message: Union[CallbackQuery, Message], influx_client, s
             else:
                 chosen_params = {key: value}
                 await flat_selection(message, state=state, values=chosen_params)
-                await log_stat(influx_client, message.from_user, message.date,
-                               event=f'Ввод параметров: {key} = {value}')
+                await log_stat(message.from_user, event=f'Ввод параметров: {key} = {value}')
         except ValueError:
             await type_params(message, state=state, error=True)
-            await log_stat(influx_client, message.from_user, message.date, error='Неверно значение при вводе параметра')
+            await log_stat(message.from_user, error='Неверно значение при вводе параметра')
     else:
         value = callback_data.get('param')
         chosen_params = {key: value}
         await flat_selection(message, state=state, values=chosen_params)
-        await log_stat(influx_client, message.from_user, message.message.date,
-                       event=f'Ввод параметров: {key} = {value}')
+        await log_stat(message.from_user, event=f'Ввод параметров: {key} = {value}')
 
 
-async def show_flats(call: CallbackQuery, state: FSMContext, influx_client, callback_data: dict, **kwargs):
+async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
     """Предлагаем квартиры на выбор."""
     data = await state.get_data()
     building_name = data.get('building_name')
@@ -194,8 +189,7 @@ async def show_flats(call: CallbackQuery, state: FSMContext, influx_client, call
         await FlatStates.flat_data.set()
         await call.message.delete()
         await state.update_data(section='offers')
-        await log_stat(influx_client, call.from_user, call.message.date,
-                       event='Предложение посмотреть варианты квартир')
+        await log_stat(call.from_user, event='Предложение посмотреть варианты квартир')
     except ValueError:
         markup = await contact_markup(building_name)
         await call.message.answer(text='К сожалению, не смогли найти квартиры по данным параметрам.\n'
@@ -203,8 +197,7 @@ async def show_flats(call: CallbackQuery, state: FSMContext, influx_client, call
         await call.message.edit_reply_markup(reply_markup=None)
         await call.message.delete()
         await ContactStates.building_name.set()
-        await log_stat(influx_client, call.from_user, call.message.date,
-                       error='Не смогли подобрать квартиру по параметрам')
+        await log_stat(call.from_user, error='Не смогли подобрать квартиру по параметрам')
 
 
 def register_selection_flat(dp: Dispatcher):

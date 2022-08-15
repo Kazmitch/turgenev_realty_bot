@@ -6,10 +6,11 @@ from aiogram.dispatcher.filters import CommandStart
 from aiogram.types import Message
 
 from tgbot.keyboards.building_menu import main_building_menu
+from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import get_building, create_userbot, get_start_campaign
 
 
-async def start_deep_link(message: Message, influx_client):
+async def start_deep_link(message: Message):
     """Переход сразу в меню конкретного ЖК."""
     args = message.get_args()
     if args:
@@ -28,7 +29,7 @@ async def start_deep_link(message: Message, influx_client):
     building = await get_building(building_name)
     markup = await main_building_menu(building_name)
     await message.answer(text=f'{building.greeting}', reply_markup=markup)
-    await log_stat(influx_client, message.from_user, message.date, event='Регистрация в боте')
+    await log_stat(message.from_user, event='Регистрация в боте')
 
 
 async def start(message: Message):

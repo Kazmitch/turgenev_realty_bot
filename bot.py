@@ -1,26 +1,23 @@
-import os
-import django
-
 import asyncio
 import logging
+import os
 
+import django
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
-from aioinflux import InfluxDBClient
 
 from tgbot.config import load_config
 from tgbot.filters.admin import AdminFilter
-
-
 # from tgbot.middlewares.db import DbMiddleware
 from tgbot.middlewares.statistics import InfluxMiddleware
+
 
 logger = logging.getLogger(__name__)
 
 
-def register_all_middlewares(dp, influx_client):
-    dp.setup_middleware(InfluxMiddleware(influx_client))
+# def register_all_middlewares(dp):
+    # dp.setup_middleware(InfluxMiddleware(influx_client))
     # dp.setup_middleware(DbMiddleware())
 
 
@@ -47,12 +44,9 @@ async def main(all_handlers):
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     dp = Dispatcher(bot, storage=storage)
 
-    influx_client = InfluxDBClient(host=config.influxdb.host, db=config.influxdb.database,
-                                   username=config.influxdb.user, password=config.influxdb.password)
-
     bot['config'] = config
 
-    register_all_middlewares(dp, influx_client)
+    # register_all_middlewares(dp)
     register_all_filters(dp)
     all_handlers(dp)
     register_all_handlers(dp)
@@ -64,7 +58,7 @@ async def main(all_handlers):
         await dp.storage.close()
         await dp.storage.wait_closed()
         await bot.get_session()
-        await influx_client.close()
+
 
 if __name__ == '__main__':
     try:

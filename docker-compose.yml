@@ -59,10 +59,11 @@ services:
       - realty_db_network
 
   realty_influxdb:
-    image: influxdb:1.8-alpine
+    image: influxdb:latest
     restart: always
     volumes:
-      - /opt/influxdb/realty_tg_bot:/var/lib/influxdb
+      - /opt/influxdb/realty_tg_bot:/var/lib/influxdb2
+#      - /opt/influxdb/realty_tg_bot:/etc/influxdb2
     env_file:
       - '.env'
     ports:

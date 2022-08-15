@@ -11,7 +11,7 @@ from tgbot.utils.news_text import make_news_text
 from tgbot.utils.page import get_page
 
 
-async def show_news(call: CallbackQuery, callback_data: dict, state: FSMContext, influx_client, **kwargs):
+async def show_news(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Новости'"""
     building_name = callback_data.get('name')
     news = await get_news(building_name)
@@ -30,16 +30,15 @@ async def show_news(call: CallbackQuery, callback_data: dict, state: FSMContext,
     )
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "Новости"')
+    await log_stat(call.from_user, event='Нажатие кнопки "Новости"')
 
 
-async def current_page_error(call: CallbackQuery, influx_client):
+async def current_page_error(call: CallbackQuery):
     await call.answer(cache_time=60)
-    await log_stat(influx_client, call.from_user, call.message.date,
-                   error='Нажатие на текущую страницу при листании новостей')
+    await log_stat(call.from_user, error='Нажатие на текущую страницу при листании новостей')
 
 
-async def show_chosen_news(call: CallbackQuery, callback_data: dict, state: FSMContext, influx_client, **kwargs):
+async def show_chosen_news(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Отображаем выбранную страницу."""
     building_name = callback_data.get('building_name')
     current_page = int(callback_data.get('page'))
@@ -60,10 +59,10 @@ async def show_chosen_news(call: CallbackQuery, callback_data: dict, state: FSMC
         )
     )
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event='Листание новостей')
+    await log_stat(call.from_user, event='Листание новостей')
 
 
 def register_news(dp: Dispatcher):
     dp.register_callback_query_handler(show_news, building.filter(section='news'), state='*')
-    dp.register_callback_query_handler(current_page_error, pagination_news_call.filter(page='current_page'))
+    dp.register_callback_query_handler(current_page_error, pagination_news_call.filter(page='current_page'), state='*')
     dp.register_callback_query_handler(show_chosen_news, pagination_news_call.filter(key='news'), state='*')

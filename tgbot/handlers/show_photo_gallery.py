@@ -13,7 +13,7 @@ from tgbot.utils.dp_api.db_commands import get_gallery_photos, get_progress_vide
 from tgbot.utils.page import get_page
 
 
-async def photo_gallery(call: CallbackQuery, callback_data: dict, influx_client):
+async def photo_gallery(call: CallbackQuery, callback_data: dict):
     """Хендлер на кнопку 'Фотогалерея'"""
     building_name = callback_data.get('building_name')
     markup = await photo_gallery_keyboard(building_name)
@@ -21,19 +21,19 @@ async def photo_gallery(call: CallbackQuery, callback_data: dict, influx_client)
                               reply_markup=markup)
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
-    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "Фотогалерея"')
+    await log_stat(call.from_user, event='Нажатие кнопки "Фотогалерея"')
 
 
-async def corpuses(call: CallbackQuery, callback_data: dict, influx_client, state: FSMContext):
+async def corpuses(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """Хендлер на 'Строящиеся корпуса'."""
     building_name = callback_data.get('building_name')
     markup = await corpuses_keyboard(building_name)
     await call.message.answer(text='Корпуса', reply_markup=markup)
     await call.message.delete()
-    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "Строящиеся корпуса"')
+    await log_stat(call.from_user, event='Нажатие кнопки "Строящиеся корпуса"')
 
 
-async def show_corpus_photo(call: CallbackQuery, callback_data: dict, state: FSMContext, influx_client):
+async def show_corpus_photo(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """Хендлер на отображение корпуса."""
     building_name = callback_data.get('building_name')
     section = callback_data.get('section')
@@ -56,10 +56,10 @@ async def show_corpus_photo(call: CallbackQuery, callback_data: dict, state: FSM
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event='Просмотр корпуса')
+    await log_stat(call.from_user, event='Просмотр корпуса')
 
 
-async def show_chosen_corpus_photo(call: CallbackQuery, callback_data: dict, state: FSMContext, influx_client):
+async def show_chosen_corpus_photo(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """Хендлер на отображение нужной страницы."""
     building_name = callback_data.get('building_name')
     section = callback_data.get('section')
@@ -82,10 +82,10 @@ async def show_chosen_corpus_photo(call: CallbackQuery, callback_data: dict, sta
         )
     )
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event='Листание фотографий корпуса')
+    await log_stat(call.from_user, event='Листание фотографий корпуса')
 
 
-async def show_photos(call: CallbackQuery, callback_data: dict, state: FSMContext, influx_client):
+async def show_photos(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """Хендлер на отображение фотографий конкретной категории."""
     building_name = callback_data.get('building_name')
     section = callback_data.get('section')
@@ -106,16 +106,15 @@ async def show_photos(call: CallbackQuery, callback_data: dict, state: FSMContex
     await call.message.edit_reply_markup(reply_markup=None)
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event=f'Просмотр {section}')
+    await log_stat(call.from_user, event=f'Просмотр {section}')
 
 
-async def current_page_error(call: CallbackQuery, influx_client):
+async def current_page_error(call: CallbackQuery):
     await call.answer(cache_time=60)
-    await log_stat(influx_client, call.from_user, call.message.date,
-                   error='Нажатие текущей страницы при просмотре галерее')
+    await log_stat(call.from_user, error='Нажатие текущей страницы при просмотре галерее')
 
 
-async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict, state: FSMContext, influx_client):
+async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict, state: FSMContext):
     """Хендлер на отображение нужной страницы."""
     building_name = callback_data.get('building_name')
     section = callback_data.get('section')
@@ -136,10 +135,10 @@ async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict, stat
         )
     )
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event=f'Листание {section}')
+    await log_stat(call.from_user, event=f'Листание {section}')
 
 
-async def show_progress_video(call: CallbackQuery, callback_data: dict, state: FSMContext, influx_client, **kwargs):
+async def show_progress_video(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
     """Хендлер на кнопку 'Ход строительства'."""
     building_name = callback_data.get('building_name')
     video_progress = await get_progress_video(building_name)
@@ -153,7 +152,7 @@ async def show_progress_video(call: CallbackQuery, callback_data: dict, state: F
     )
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
-    await log_stat(influx_client, call.from_user, call.message.date, event='Нажатие кнопки "Ход строительства"')
+    await log_stat(call.from_user, event='Нажатие кнопки "Ход строительства"')
 
 
 def register_show_gallery(dp: Dispatcher):
@@ -164,5 +163,5 @@ def register_show_gallery(dp: Dispatcher):
     dp.register_callback_query_handler(show_progress_video, photo_gallery_cd.filter(section='progress_video'),
                                        state='*')
     dp.register_callback_query_handler(show_photos, photo_gallery_cd.filter(), state='*')
-    dp.register_callback_query_handler(current_page_error, pagination_gallery_call.filter(page='current_page'))
+    dp.register_callback_query_handler(current_page_error, pagination_gallery_call.filter(page='current_page'), state='*')
     dp.register_callback_query_handler(show_chosen_page_photos, pagination_gallery_call.filter(key='photo'), state='*')

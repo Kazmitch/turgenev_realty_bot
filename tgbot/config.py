@@ -12,6 +12,16 @@ class DbConfig:
 
 
 @dataclass
+class InfluxDbConfig:
+    url: str
+    org: str
+    bucket: str
+    username: str = None
+    password: str = None
+    token: str = None
+
+
+@dataclass
 class TgBot:
     token: str
     admin_ids: list
@@ -28,7 +38,7 @@ class Config:
     tg_bot: TgBot
     db: DbConfig
     misc: Miscellaneous
-    influxdb: DbConfig
+    influxdb: InfluxDbConfig
     redis_host: str = None
 
 
@@ -50,10 +60,12 @@ def load_config(path: str = None):
         ),
         misc=Miscellaneous(),
         redis_host=env.str('REDIS_HOST'),
-        influxdb=DbConfig(
-            host=env.str('INFLUXDB_HOST'),
-            password=env.str('INFLUXDB_USER_PASSWORD'),
-            user=env.str('INFLUXDB_USER'),
-            database=env.str('INFLUXDB_DB')
+        influxdb=InfluxDbConfig(
+            url=env.str('INFLUXDB_INIT_HOST'),
+            org=env.str('INFLUXDB_ORG'),
+            bucket=env.str('INFLUXDB_BUCKET'),
+            username=env.str('INFLUXDB_USERNAME'),
+            password=env.str('INFLUXDB_PASSWORD'),
+            token=env.str('INFLUXDB_TOKEN')
         )
     )
