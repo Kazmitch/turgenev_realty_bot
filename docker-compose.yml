@@ -26,6 +26,8 @@ services:
       - realty_db
       - realty_web
       - realty_redis
+      - realty_grafana
+      - realty_influxdb
     networks:
       - realty_db_network
 
