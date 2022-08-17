@@ -12,7 +12,7 @@ async def log_stat(user: User, event: str = None, error: str = None):
     config = load_config(".env")
 
     data = {
-        "measurement": "realty_bot_statistics",
+        "measurement": config.influxdb.bucket,
         "time": datetime.utcnow(),
         "fields": {"event": 1},
         "tags": {
