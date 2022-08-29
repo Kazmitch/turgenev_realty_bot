@@ -8,9 +8,9 @@ from realty_bot.realty_bot.utils import correct_phone
 from tgbot.keyboards.building_menu import menu_markup
 from tgbot.keyboards.send_contact import contact, contact_cd
 from tgbot.states.send_contact import ContactStates
-from tgbot.utils.dp_api.db_commands import create_requests, get_userbot, get_call_request
 from tgbot.utils.analytics import log_stat
 from tgbot.utils.dp_api.db_commands import create_requests, get_userbot
+from tgbot.utils.dp_api.db_commands import get_call_request
 
 
 async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMContext):
