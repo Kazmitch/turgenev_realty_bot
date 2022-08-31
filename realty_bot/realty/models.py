@@ -489,8 +489,6 @@ class SalesDepartment(BaseModel):
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
                                  related_name='sales_departments')
     description = models.TextField(verbose_name="Дни и время работы офиса продаж")
-    sales_department_phone = models.CharField(verbose_name="Телефон отдела продаж", max_length=32, blank=True,
-                                              null=True, help_text="Пример: +79095432100")
 
     class Meta:
         verbose_name = "Офис продаж"
@@ -551,6 +549,8 @@ class CallTrackingCampaign(BaseModel):
                                   related_name="call_tracking_campaigns", null=True)
     campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=32, blank=True, null=True)
     site_id = models.CharField(verbose_name="ID сайта", max_length=32, blank=True, null=True)
+    phone_number = models.CharField(verbose_name="Подменный номер", max_length=32, blank=True,
+                                              null=True, help_text="Пример: +79095432100")
     start_button = models.BooleanField(verbose_name="Прямой заход в бота", default=False)
 
     class Meta:

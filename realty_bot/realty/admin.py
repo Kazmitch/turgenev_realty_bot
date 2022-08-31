@@ -165,7 +165,7 @@ class ConstructionAdmin(admin.ModelAdmin):
 
 @admin.register(SalesDepartment)
 class SalesDepartmentAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'developer', 'sales_department_phone')
+    list_display = ('__str__', 'developer')
     list_filter = ('building', 'developer')
     search_fields = ('building', 'developer')
 
@@ -179,7 +179,7 @@ class RequestAdmin(admin.ModelAdmin):
 
 @admin.register(CallTrackingCampaign)
 class CallTrackingCampaignAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'campaign_name', 'start_button', 'call_tracking_name', 'developer', 'url_base64_encode', 'campaign_id', 'site_id', 'created_at', 'updated_at')
+    list_display = ('__str__', 'campaign_name', 'start_button', 'call_tracking_name', 'phone_number', 'developer', 'url_base64_encode', 'campaign_id', 'site_id', 'created_at', 'updated_at')
     list_filter = ('developer', 'call_tracking_name')
     search_fields = ('developer', 'call_tracking_name')
     fieldsets = (
@@ -193,6 +193,7 @@ class CallTrackingCampaignAdmin(admin.ModelAdmin):
                        'campaign_id',
                        'site_id',
                        'start_button',
+                       'phone_number',
                        'created_at',
                        'updated_at'
 )
