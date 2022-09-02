@@ -35,7 +35,10 @@ async def make_calltouch_call_request(token: str, site_id: str, name: str, phone
 
     try:
         r = requests.post(url, headers=headers, data=json.dumps(payload))
-        # if r.status_code == '200':
+        if r.status_code == 200:
+            return True
+        else:
+            return False
     except Exception as e:  # requests.exceptions.MissingSchema
         print(f"Не создал заявку, ошибка {e}")
-        return {}
+        return False

@@ -23,6 +23,8 @@ def encode_decode_values(value: str):
 def correct_phone(phone: str):
     """Возвращаем телефон в нужном формате."""
     phone_number = ''.join(n for n in phone if n.isdigit())
+    if not phone_number:
+        return None
     if phone_number[0] == '8':
         phone_number = f'7{phone_number[1:]}'
     if len(phone_number) == 10 and phone_number[0] != '7':

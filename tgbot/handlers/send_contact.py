@@ -51,24 +51,40 @@ async def get_contact(message: Message, state: FSMContext):
         telegram_first_name = message.from_user.first_name
         if calltracking == 'comagic' and source == 'site_id':
             call = await get_call_request(building_name=building_name, site_id=source_id)
-            await make_comagic_call_request(call.api_token.access_token, name=telegram_first_name,
-                                            phone_number=phone_number,
-                                            data=data, source=source, source_id=source_id)
-            await log_stat(message.from_user, event='Отправили контакт в Comagic с site_id')
+            call_request = await make_comagic_call_request(call.api_token.access_token, name=telegram_first_name,
+                                                           phone_number=phone_number,
+                                                           data=data, source=source, source_id=source_id)
+            if call_request:
+                await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
+                await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
+                await create_requests(building_name, message.from_user.id, phone_number, data)
+                await log_stat(message.from_user, event='Отправили контакт в Comagic с site_id')
+            else:
+                await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
         elif calltracking == 'comagic' and source == 'campaign_id':
             call = await get_call_request(building_name=building_name, campaign_id=source_id)
-            await make_comagic_call_request(call.api_token.access_token, name=telegram_first_name,
-                                            phone_number=phone_number,
-                                            data=data, source=source, source_id=source_id)
-            await log_stat(message.from_user, event='Отправили контакт в Comagic с campaign_id')
+            call_request = await make_comagic_call_request(call.api_token.access_token, name=telegram_first_name,
+                                                           phone_number=phone_number,
+                                                           data=data, source=source, source_id=source_id)
+            if call_request:
+                await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
+                await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
+                await create_requests(building_name, message.from_user.id, phone_number, data)
+                await log_stat(message.from_user, event='Отправили контакт в Comagic с site_id')
+            else:
+                await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
         elif calltracking == 'calltouch' and source == 'site_id':
             call = await get_call_request(building_name=building_name, site_id=source_id)
-            await make_calltouch_call_request(call.api_token.access_token, site_id=source_id, name=telegram_first_name,
-                                              phone_number=phone_number, data=data)
-            await log_stat(message.from_user, event='Отправили контакт в Colltouch с site_id')
-        await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
-        await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
-        await create_requests(building_name, message.from_user.id, phone_number, data)
+            call_request = await make_calltouch_call_request(call.api_token.access_token, site_id=source_id,
+                                                             name=telegram_first_name,
+                                                             phone_number=phone_number, data=data)
+            if call_request:
+                await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
+                await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
+                await create_requests(building_name, message.from_user.id, phone_number, data)
+                await log_stat(message.from_user, event='Отправили контакт в Comagic с site_id')
+            else:
+                await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
 
     else:
         await message.answer(text="Вы ввели неправильный номер", reply_markup=markup)

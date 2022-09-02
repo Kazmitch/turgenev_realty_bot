@@ -31,8 +31,10 @@ async def make_comagic_call_request(token: str, name: str, phone_number: str, da
 
     try:
         r = requests.post(url, data=json.dumps(payload))
-        # if r.status_code == '200':
-
+        if r.status_code == 200:
+            return True
+        else:
+            return False
     except Exception as e:  # requests.exceptions.MissingSchema
         print(f"Не создал заявку, ошибка {e}")
-        return {}
+        return False
