@@ -15,10 +15,14 @@ async def make_call(call: CallbackQuery, callback_data: dict, state: FSMContext)
     user = await get_userbot(call.from_user.id)
     source = user.get_source
     source_id = user.get_source_id
-    if source == 'site_id':
-        call_campaign = await get_call_request(building_name=building_name, site_id=source_id)
+    if len(source_id) == 2:
+        call_campaign = await get_call_request(building_name=building_name, site_id=source_id.get('site_id'),
+                                               campaign_id=source_id.get('campaign_id'))
     else:
-        call_campaign = await get_call_request(building_name=building_name, campaign_id=source_id)
+        if source == 'site_id':
+            call_campaign = await get_call_request(building_name=building_name, site_id=source_id)
+        else:
+            call_campaign = await get_call_request(building_name=building_name, campaign_id=source_id)
     phone_number = call_campaign.phone_number
     department_text = sales_department.description
     markup = await menu_markup(building_name)

@@ -43,8 +43,15 @@ class UserBot(BaseModel):
     site_id = models.CharField(verbose_name="ID сайта", max_length=16, blank=True, null=True)
 
     @property
+    def get_calltracking(self):
+        return self.calltracking
+
+    @property
     def get_source_id(self):
-        return self.campaign_id or self.site_id
+        if self.site_id and self.campaign_id:
+            return {'campaign_id': self.campaign_id, 'site_id': self.site_id}
+        else:
+            return self.campaign_id or self.site_id
 
     @property
     def get_source(self):
@@ -567,7 +574,10 @@ class CallTrackingCampaign(BaseModel):
 
     @property
     def url_base64_encode(self, **kwargs):
-        if self.building.latin_name and (self.campaign_id or self.site_id):
+        if self.building.latin_name and (self.campaign_id and self.site_id):
+            encoded_url = encode_decode_values(f'{self.building.latin_name}&ct={self.call_tracking_name}&s_id={self.site_id}&c_id={self.campaign_id}')
+            return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'
+        elif self.building.latin_name and (self.campaign_id or self.site_id):
             if self.campaign_id:
                 encoded_url = encode_decode_values(f'{self.building.latin_name}&ct={self.call_tracking_name}&c_id={self.campaign_id}')
                 return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'

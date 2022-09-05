@@ -11,7 +11,7 @@ from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer,
 
 
 @sync_to_async
-def create_userbot(message: Message, building_name: str, calltracking, source: str, source_id: str):
+def create_userbot(message: Message, building_name: str, calltracking, **kwargs):
     """Создаем пользователя в базе."""
     telegram_id = message.from_user.id
     telegram_username = message.from_user.username
@@ -24,8 +24,8 @@ def create_userbot(message: Message, building_name: str, calltracking, source: s
         telegram_last_name=telegram_last_name,
         building_name=building_name,
         calltracking=calltracking,
-        campaign_id=source_id if source == 'c_id' else None,
-        site_id=source_id if source == 's_id' else None
+        campaign_id=kwargs.get('c_id', None),
+        site_id=kwargs.get('s_id', None)
     )
 
 
