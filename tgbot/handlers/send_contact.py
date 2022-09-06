@@ -49,28 +49,16 @@ async def get_contact(message: Message, state: FSMContext):
         source = user.get_source
         source_id = user.get_source_id
         telegram_first_name = message.from_user.first_name
-        if calltracking == 'comagic' and source == 'site_id':
-            call = await get_call_request(building_name=building_name, site_id=source_id)
+        if calltracking == 'comagic':
+            call = await get_call_request(building_name=building_name, **{source: source_id.get(source)})
             call_request = await make_comagic_call_request(call.api_token.access_token, name=telegram_first_name,
                                                            phone_number=phone_number,
-                                                           data=data, source=source, source_id=source_id)
+                                                           data=data, source=source, source_id=source_id.get(source))
             if call_request:
                 await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
                 await create_requests(building_name, message.from_user.id, phone_number, data)
-                await log_stat(message.from_user, event='Отправили контакт в Comagic с site_id')
-            else:
-                await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
-        elif calltracking == 'comagic' and source == 'campaign_id':
-            call = await get_call_request(building_name=building_name, campaign_id=source_id)
-            call_request = await make_comagic_call_request(call.api_token.access_token, name=telegram_first_name,
-                                                           phone_number=phone_number,
-                                                           data=data, source=source, source_id=source_id)
-            if call_request:
-                await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
-                await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
-                await create_requests(building_name, message.from_user.id, phone_number, data)
-                await log_stat(message.from_user, event='Отправили контакт в Comagic с site_id')
+                await log_stat(message.from_user, event=f'Отправили контакт в Comagic с {source_id}')
             else:
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
         elif calltracking == 'calltouch':
@@ -84,7 +72,7 @@ async def get_contact(message: Message, state: FSMContext):
                 await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
                 await create_requests(building_name, message.from_user.id, phone_number, data)
-                await log_stat(message.from_user, event='Отправили контакт в Comagic с site_id')
+                await log_stat(message.from_user, event=f'Отправили контакт в Calltouch с {source_id}')
             else:
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
 

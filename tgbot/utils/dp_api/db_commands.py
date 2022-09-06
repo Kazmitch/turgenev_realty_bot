@@ -124,7 +124,8 @@ def get_gallery_photos(section: str, building_name: str):
 @sync_to_async
 def get_corpus_photos(building_name: str, corpus_id: int) -> QuerySet[ProcessingCorpusPhoto]:
     """Получаем query set объектов ProcessingCorpusPhoto по названию ЖК и id корпуса."""
-    photo_set = ProcessingCorpusPhoto.objects.filter(building__latin_name=building_name, corpus=corpus_id).order_by('order')
+    photo_set = ProcessingCorpusPhoto.objects.filter(building__latin_name=building_name, corpus=corpus_id).order_by(
+        'order')
     return photo_set
 
 
@@ -177,9 +178,10 @@ def create_requests(building_name: str, telegram_user_id: int, phone_number: str
 
 
 @sync_to_async
-def get_call_request(building_name: str, site_id: str = None, campaign_id: str = None) -> CallTrackingCampaign:
+def get_call_request(building_name: str, **kwargs) -> CallTrackingCampaign:
     """Получаем объект рекламной кампании."""
-    call = CallTrackingCampaign.objects.filter(building__latin_name=building_name, site_id=site_id, campaign_id=campaign_id).first()
+    call = CallTrackingCampaign.objects.filter(building__latin_name=building_name, site_id=kwargs.get('site_id'),
+                                               campaign_id=kwargs.get('campaign_id')).first()
     return call
 
 
