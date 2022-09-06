@@ -51,7 +51,10 @@ class UserBot(BaseModel):
         if self.site_id and self.campaign_id:
             return {'campaign_id': self.campaign_id, 'site_id': self.site_id}
         else:
-            return self.campaign_id or self.site_id
+            if self.campaign_id:
+                return {'campaign_id': self.campaign_id}
+            else:
+                return {'site_id': self.site_id}
 
     @property
     def get_source(self):
@@ -571,6 +574,16 @@ class CallTrackingCampaign(BaseModel):
         if self.start_button:
             CallTrackingCampaign.objects.update(start_button=False)
         super().save(*args, **kwargs)
+
+    @property
+    def get_source_id(self):
+        if self.site_id and self.campaign_id:
+            return {'c_id': self.campaign_id, 's_id': self.site_id}
+        else:
+            if self.campaign_id:
+                return {'c_id': self.campaign_id}
+            else:
+                return {'s_id': self.site_id}
 
     @property
     def url_base64_encode(self, **kwargs):
