@@ -73,9 +73,11 @@ async def get_contact(message: Message, state: FSMContext):
                 await log_stat(message.from_user, event='Отправили контакт в Comagic с site_id')
             else:
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
-        elif calltracking == 'calltouch' and source == 'site_id':
-            call = await get_call_request(building_name=building_name, site_id=source_id)
-            call_request = await make_calltouch_call_request(call.api_token.access_token, site_id=source_id,
+        elif calltracking == 'calltouch':
+            call = await get_call_request(building_name=building_name, site_id=source_id.get('site_id'),
+                                          campaign_id=source_id.get('campaign_id'))
+            call_request = await make_calltouch_call_request(call.api_token.access_token,
+                                                             site_id=source_id.get('site_id'),
                                                              name=telegram_first_name,
                                                              phone_number=phone_number, data=data)
             if call_request:
