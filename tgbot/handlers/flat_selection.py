@@ -23,8 +23,10 @@ async def make_text(building_name: str, chosen_params: dict) -> str:
     low_price = f"{int(min_max_values.get('low_price').split('.')[0]):,}"
     max_area = min_max_values.get('max_area')
     low_area = min_max_values.get('low_area')
-    area = int(chosen_params.get('flat_area'))
-    price = int(chosen_params.get('flat_price'))
+    area = int(chosen_params.get('flat_area')) if chosen_params.get('flat_area') != '0' else None
+    text_area = f'{area} м²' if area else None
+    price = int(chosen_params.get('flat_price')) if chosen_params.get('flat_price') != '0' else None
+    text_price = f'{price} млн руб.' if price else None
     year = int(chosen_params.get('flat_year'))
     rooms = int(chosen_params.get('flat_rooms'))
     text = f'Доступные варианты:\n' \
@@ -32,8 +34,8 @@ async def make_text(building_name: str, chosen_params: dict) -> str:
            f'и по площади от <b>{low_area} м²</b> до <b>{max_area} м²</b>\n' \
            f'\n' \
            f'Выбранные параметры:\n' \
-           f'1️⃣ Общая площадь от: {area if area != 0 else "все варианты"}\n' \
-           f'2️⃣ Цена до: {price if price != 0 else "все варианты"}\n' \
+           f'1️⃣ Общая площадь от: {text_area if text_area else "все варианты"}\n' \
+           f'2️⃣ Цена до: {text_price if text_price else "все варианты"}\n' \
            f'3️⃣ Год сдачи объекта: {year if year != 0 else "все варианты"}\n' \
            f'4️⃣ Количество комнат: {rooms if rooms != 0 else "все варианты"}\n' \
            f'\n' \
