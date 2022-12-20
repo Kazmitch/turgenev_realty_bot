@@ -12,3 +12,4 @@ Pillow
 CairoSVG
 aioinflux
 influxdb-client
+asynch

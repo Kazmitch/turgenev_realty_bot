@@ -6,6 +6,7 @@ from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.building_menu import building
 from tgbot.keyboards.documentation import documents_keyboard, documentation_cd, current_declaration_menu
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_document_file
 
 
@@ -16,6 +17,7 @@ async def documents(call: CallbackQuery, callback_data: dict, state: FSMContext,
     await call.message.answer(text='Проектная декларация', reply_markup=markup)
     await call.message.delete()
     await log_stat(call.from_user, event='Нажатие кнопки "Документация"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "Документация"')
 
 
 async def share_document(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
@@ -30,6 +32,7 @@ async def share_document(call: CallbackQuery, callback_data: dict, state: FSMCon
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event='Просмотр документа')
+    await insert_dict(call.from_user, event='Просмотр документа')
 
 
 def register_documentation(dp: Dispatcher):

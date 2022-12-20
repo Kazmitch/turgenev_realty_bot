@@ -1,7 +1,10 @@
 FROM ubuntu:latest
+ENV TZ=Europe/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update && apt-get install -y \
     python3 python3-pip cron libpangocairo-1.0-0
-ENV PYTHONUNBUFFERED 1
+
+RUN apt-get install -y tzdata
 RUN mkdir /realty_tg_bot
 COPY ./requirements.txt /realty_tg_bot/
 COPY . /realty_tg_bot/

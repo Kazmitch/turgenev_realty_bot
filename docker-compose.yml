@@ -12,6 +12,26 @@ services:
     networks:
       - realty_db_network
 
+
+  realty_clickhouse:
+    image: yandex/clickhouse-server
+    restart: always
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - /opt/clickhouse/log:/var/log/clickhouse-server
+      - /opt/clickhouse/data:/var/lib/clickhouse
+      - /opt/clickhouse/etc/users.xml:/etc/clickhouse-server/users.xml
+      - /opt/clickhouse/etc/config.xml:/etc/clickhouse-server/config.xml
+    networks:
+      - clickhouse_network
+
+
   realty_bot:
     build:
       context: .
@@ -69,7 +89,7 @@ services:
     env_file:
       - '.env'
     ports:
-      - '8086:8086'
+      - '8087:8086'
     networks:
       - realty_db_network
 
@@ -84,4 +104,6 @@ services:
 
 networks:
   realty_db_network:
+    driver: bridge
+  clickhouse_network:
     driver: bridge
