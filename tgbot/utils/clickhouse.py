@@ -7,13 +7,14 @@ from tgbot.config import load_config
 
 
 async def connect_database():
+    config = load_config('.env')
     try:
         conn = await connect(
-            host="realty_clickhouse",
-            port=8123,
-            database="default",
-            user="default",
-            password="",
+            host=config.misc.clickhouse_post,
+            port=config.misc.clickhouse_port,
+            database=config.misc.clickhouse_db,
+            user=config.misc.clickhouse_user,
+            password=config.misc.clickhouse_password,
         )
         return conn
     except Exception as e:
@@ -38,6 +39,7 @@ async def create_table(conn):
                     `created_at`   String
                 )
                 ENGINE = MergeTree
+                ORDER BY created_at
                     """
                                  )
     except Exception as e:
@@ -54,15 +56,15 @@ async def insert_dict(user: User, event: str = None, error: str = None, phone_nu
                 """INSERT INTO big_data.realty_bot(bot_name,telegram_id,telegram_username,telegram_first_name,telegram_last_name,phone_number,intent,error,created_at) VALUES""",
                 [
                     {
-                        "bot_name": config.tg_bot.bot_name,
-                        "telegram_id": user.id,
-                        "telegram_username": user.username,
-                        "telegram_first_name": user.first_name,
-                        "telegram_last_name": user.last_name,
-                        "phone_number": phone_number,
-                        "intent": event,
-                        "error": error,
-                        "created_at": datetime.utcnow()
+                        "bot_name": str(config.tg_bot.bot_name),
+                        "telegram_id": str(user.id),
+                        "telegram_username": str(user.username),
+                        "telegram_first_name": str(user.first_name),
+                        "telegram_last_name": str(user.last_name),
+                        "phone_number": str(phone_number),
+                        "intent": str(event),
+                        "error": str(error),
+                        "created_at": datetime.utcnow().strftime("%m.%d.%Y %H:%M:%S")
                     }
                 ],
             )
