@@ -31,6 +31,7 @@ async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMConte
 async def get_contact(message: Message, state: FSMContext):
     """Хендлер на кнопку 'Отправить контакт'."""
     data = await state.get_data()
+    data['telegram_id'] = message.from_user.id
     building_name = data.get('building_name')
     markup = await menu_markup(building_name)
     if message.contact:

@@ -1,9 +1,18 @@
 import json
+import logging
 import random
 
 from datetime import datetime
 
 import requests
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler(f"{__name__}.log")
+formatter = logging.Formatter("%(name)s - %(asctime)s - %(levelname)s - %(message)s", datefmt='%d.%m.%Y %H:%M:%S')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 
 async def make_comagic_call_request(token: str, name: str, phone_number: str, data: dict, source: str, source_id: str = None, **kwargs):
@@ -32,8 +41,10 @@ async def make_comagic_call_request(token: str, name: str, phone_number: str, da
     try:
         r = requests.post(url, data=json.dumps(payload))
         if r.status_code == 200:
+            logger.info(f'{r.status_code} Создана заявка с {data}')
             return True
         else:
+            logger.error(f'{r.status_code} Не удалось создать заявку с {data}')
             return False
     except Exception as e:  # requests.exceptions.MissingSchema
         print(f"Не создал заявку, ошибка {e}")
