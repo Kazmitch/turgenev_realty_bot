@@ -29,7 +29,7 @@ services:
       - /opt/clickhouse/etc/users.xml:/etc/clickhouse-server/users.xml
       - /opt/clickhouse/etc/config.xml:/etc/clickhouse-server/config.xml
     networks:
-      - clickhouse_network
+      - realty_db_network
 
 
   realty_bot:
@@ -104,6 +104,4 @@ services:
 
 networks:
   realty_db_network:
-    driver: bridge
-  clickhouse_network:
     driver: bridge

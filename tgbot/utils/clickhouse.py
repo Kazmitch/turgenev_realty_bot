@@ -9,8 +9,8 @@ from tgbot.config import load_config
 async def connect_database():
     try:
         conn = await connect(
-            host="http://localhost",
-            port=9000,
+            host="realty_clickhouse",
+            port=8123,
             database="default",
             user="default",
             password="",
