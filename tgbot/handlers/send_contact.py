@@ -31,15 +31,14 @@ async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMConte
 async def get_contact(message: Message, state: FSMContext):
     """Хендлер на кнопку 'Отправить контакт'."""
     data = await state.get_data()
-    data['telegram_id'] = message.from_user.id
     building_name = data.get('building_name')
     markup = await menu_markup(building_name)
     if message.contact:
-        await state.update_data(contact_user=message.contact.phone_number)
+        await state.update_data(contact_user=message.contact.phone_number, telegram_id=message.from_user.id)
         phone = message.contact.phone_number
         phone_number = ''.join(e for e in phone if e.isdigit())
     else:
-        await state.update_data(contact_user=message.text)
+        await state.update_data(contact_user=message.text, telegram_id=message.from_user.id)
         phone = message.text
         phone_number = correct_phone(phone)
     if phone_number:

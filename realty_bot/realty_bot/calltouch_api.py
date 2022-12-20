@@ -9,7 +9,7 @@ import requests
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler(f"logs/{__name__}.log")
+handler = logging.FileHandler(f"logs/calltouch_api.log")
 formatter = logging.Formatter("%(name)s - %(asctime)s - %(levelname)s - %(message)s", datefmt='%d.%m.%Y %H:%M:%S')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
@@ -45,11 +45,11 @@ async def make_calltouch_call_request(token: str, site_id: str, name: str, phone
     try:
         r = requests.post(url, headers=headers, data=json.dumps(payload))
         if r.status_code == 200:
-            logger.info(f'{r.status_code} Создана заявка с {data}')
+            logger.info(f'Статус ответа: {r.status_code}. Создана заявка с {data}')
             return True
         else:
-            logger.error(f'{r.status_code} Не удалось создать заявку с {data}')
+            logger.error(f'Статус ответа: {r.status_code}. Не удалось создать заявку с {data}')
             return False
     except Exception as e:  # requests.exceptions.MissingSchema
-        print(f"Не создал заявку, ошибка {e}")
+        logger.exception(f'Не удалось создать заявку.')
         return False
