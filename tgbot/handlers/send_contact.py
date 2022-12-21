@@ -60,6 +60,7 @@ async def get_contact(message: Message, state: FSMContext):
                 await create_requests(building_name, message.from_user.id, phone_number, data)
                 await log_stat(message.from_user, event=f'Отправили контакт в Comagic с {source_id}')
             else:
+                await message.answer(text='Упс(', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
         elif calltracking == 'calltouch':
             call = await get_call_request(building_name=building_name, site_id=source_id.get('site_id'),
@@ -82,6 +83,7 @@ async def get_contact(message: Message, state: FSMContext):
                 await create_requests(building_name, message.from_user.id, phone_number, data)
                 await log_stat(message.from_user, event=f'Отправили контакт в Calltouch с {source_id}')
             else:
+                await message.answer(text='Упс(', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
 
     else:
