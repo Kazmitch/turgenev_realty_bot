@@ -6,7 +6,7 @@ from datetime import datetime
 import requests
 
 
-async def make_calltouch_call_request(token: str, site_id: str, name: str, phone_number: str, data: dict):
+async def make_calltouch_call_request(token: str, site_id: str, source: str, name: str, phone_number: str, data: dict):
     """Отправляем заявку в Calltoch."""
     url = 'https://api.calltouch.ru/lead-service/v1/api/request/create'
 
@@ -22,7 +22,7 @@ async def make_calltouch_call_request(token: str, site_id: str, name: str, phone
             [
                 {
                     "requestNumber": query_id,
-                    "subject": "Телеграм бот",
+                    "subject": source,
                     "requestDate": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
                     "phoneNumber": phone_number,
                     "fio": name,
@@ -44,7 +44,7 @@ async def make_calltouch_call_request(token: str, site_id: str, name: str, phone
         return False
 
 
-async def make_calltouch_callback_request(token: str, route_key: str, name: str, phone_number: str, data: dict):
+async def make_calltouch_callback_request(token: str, route_key: str, source: str, name: str, phone_number: str, data: dict):
     """Отправляем звонок на перезвон в Calltoch."""
     url = 'https://api.calltouch.ru/widget-service/v1/api/widget-request/user-form/create'
 
@@ -63,11 +63,9 @@ async def make_calltouch_callback_request(token: str, route_key: str, name: str,
              "value": f"{data}"}
         ],
         "scheduleTime": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
-        "utmSource": "Телеграм Бот",
-        "utmMedium": "Телеграм Бот",
-        "utmCampaign": "Телеграм Бот",
-        "utmContent": "Телеграм Бот",
-        "utmTerm": "Телеграм Бот",
+        "utmSource": source,
+        "utmMedium": source,
+        "utmCampaign": source
     }
 
     try:

@@ -69,12 +69,13 @@ async def get_contact(message: Message, state: FSMContext):
                 call_request = await make_calltouch_callback_request(call.api_token.access_token,
                                                                      name=telegram_first_name,
                                                                      route_key=call.route_key,
+                                                                     source=call.campaign_id,
                                                                      phone_number=phone_number,
-                                                                     data=data
-                                                                     )
+                                                                     data=data)
             else:
                 call_request = await make_calltouch_call_request(call.api_token.access_token,
                                                                  site_id=source_id.get('site_id'),
+                                                                 source=call.campaign_id,
                                                                  name=telegram_first_name,
                                                                  phone_number=phone_number, data=data)
             if call_request:
