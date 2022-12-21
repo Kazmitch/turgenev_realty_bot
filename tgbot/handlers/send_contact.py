@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, ContentType
 
-from realty_bot.realty_bot.calltouch_api import make_calltouch_call_request
+from realty_bot.realty_bot.calltouch_api import make_calltouch_call_request, make_calltouch_callback_request
 from realty_bot.realty_bot.comagic_api import make_comagic_call_request
 from realty_bot.realty_bot.utils import correct_phone
 from tgbot.keyboards.building_menu import menu_markup
@@ -64,10 +64,18 @@ async def get_contact(message: Message, state: FSMContext):
         elif calltracking == 'calltouch':
             call = await get_call_request(building_name=building_name, site_id=source_id.get('site_id'),
                                           campaign_id=source_id.get('campaign_id'))
-            call_request = await make_calltouch_call_request(call.api_token.access_token,
-                                                             site_id=source_id.get('site_id'),
-                                                             name=telegram_first_name,
-                                                             phone_number=phone_number, data=data)
+            if call.route_key:
+                call_request = await make_calltouch_callback_request(call.api_token.access_token,
+                                                                     name=telegram_first_name,
+                                                                     route_key=call.route_key,
+                                                                     phone_number=phone_number,
+                                                                     data=data
+                                                                     )
+            else:
+                call_request = await make_calltouch_call_request(call.api_token.access_token,
+                                                                 site_id=source_id.get('site_id'),
+                                                                 name=telegram_first_name,
+                                                                 phone_number=phone_number, data=data)
             if call_request:
                 await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
