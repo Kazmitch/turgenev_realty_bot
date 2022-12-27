@@ -12,6 +12,7 @@ from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.flat_selection import FlatStates
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.offers import get_all_offers
 
 
@@ -192,6 +193,7 @@ async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict
         await call.message.delete()
         await state.update_data(section='offers')
         await log_stat(call.from_user, event='Предложение посмотреть варианты квартир')
+        await insert_dict(call.from_user, event='Предложение посмотреть варианты квартир')
     except ValueError:
         markup = await contact_markup(building_name)
         await call.message.answer(text='К сожалению, не смогли найти квартиры по данным параметрам.\n'
@@ -200,6 +202,7 @@ async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict
         await call.message.delete()
         await ContactStates.building_name.set()
         await log_stat(call.from_user, error='Не смогли подобрать квартиру по параметрам')
+        await insert_dict(call.from_user, error='Не смогли подобрать квартиру по параметрам')
 
 
 def register_selection_flat(dp: Dispatcher):

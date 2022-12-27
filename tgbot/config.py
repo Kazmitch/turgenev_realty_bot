@@ -26,11 +26,16 @@ class TgBot:
     token: str
     admin_ids: list
     use_redis: bool
+    bot_name: str
 
 
 @dataclass
 class Miscellaneous:
-    other_params: str = None
+    clickhouse_post: str
+    clickhouse_port: str
+    clickhouse_user: str
+    clickhouse_password: str
+    clickhouse_db: str
 
 
 @dataclass
@@ -51,6 +56,7 @@ def load_config(path: str = None):
             token=env.str("BOT_TOKEN"),
             admin_ids=list(map(int, env.list("ADMINS"))),
             use_redis=env.bool("USE_REDIS"),
+            bot_name=env.str("BOT_NAME")
         ),
         db=DbConfig(
             host=env.str('DB_HOST'),
@@ -58,7 +64,13 @@ def load_config(path: str = None):
             user=env.str('POSTGRES_USER'),
             database=env.str('POSTGRES_DB')
         ),
-        misc=Miscellaneous(),
+        misc=Miscellaneous(
+            clickhouse_post=env.str('CLICKHOUSE_HOST'),
+            clickhouse_port=env.str('CLICKHOUSE_PORT'),
+            clickhouse_user=env.str('CLICKHOUSE_USER'),
+            clickhouse_password=env.str('CLICKHOUSE_PASSWORD'),
+            clickhouse_db=env.str('CLICKHOUSE_DB')
+        ),
         redis_host=env.str('REDIS_HOST'),
         influxdb=InfluxDbConfig(
             url=env.str('INFLUXDB_HOST'),

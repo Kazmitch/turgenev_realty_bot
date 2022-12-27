@@ -9,6 +9,7 @@ from tgbot.keyboards.building_menu import menu_markup
 from tgbot.keyboards.send_contact import contact, contact_cd
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import create_requests, get_userbot
 from tgbot.utils.dp_api.db_commands import get_call_request
 
@@ -59,6 +60,7 @@ async def get_contact(message: Message, state: FSMContext):
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
                 await create_requests(building_name, message.from_user.id, phone_number, data)
                 await log_stat(message.from_user, event=f'Отправили контакт в Comagic с {source_id}')
+                await insert_dict(message.from_user, event=f'Отправили контакт в Comagic с {source_id}')
             else:
                 await message.answer(text='Упс(', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
@@ -83,6 +85,7 @@ async def get_contact(message: Message, state: FSMContext):
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
                 await create_requests(building_name, message.from_user.id, phone_number, data)
                 await log_stat(message.from_user, event=f'Отправили контакт в Calltouch с {source_id}')
+                await insert_dict(message.from_user, event=f'Отправили контакт в Calltouch с {source_id}')
             else:
                 await message.answer(text='Упс(', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
@@ -90,6 +93,7 @@ async def get_contact(message: Message, state: FSMContext):
     else:
         await message.answer(text="Вы ввели неправильный номер", reply_markup=markup)
         await log_stat(message.from_user, event='Ввели неправильный номер')
+        await insert_dict(message.from_user, event='Ввели неправильный номер')
 
 
 def register_send_contact(dp: Dispatcher):

@@ -7,6 +7,7 @@ from tgbot.keyboards.flat_selection import order_cd
 from tgbot.keyboards.send_contact import contact_markup
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
 from tgbot.utils.images import resize_photo
 from tgbot.utils.offers import get_offers, get_photo_url, get_values
@@ -47,6 +48,7 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         await call.message.delete()
         await ContactStates.building_name.set()
         await log_stat(call.from_user, event='Просмотр квартир')
+        await insert_dict(call.from_user, event='Просмотр квартир')
         await state.update_data(current_flat={'price': offer_values.get("offer_price"),
                                               'area': offer_values.get("offer_area"),
                                               'rooms': offer_values.get("offer_rooms"),
@@ -104,6 +106,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
                                           'rooms': offer_values.get("offer_rooms"),
                                           'floor': offer_values.get("offer_floor")})
     await log_stat(call.from_user, event='Листание квартир')
+    await insert_dict(call.from_user, event='Листание квартир')
 
 
 def register_show_flats(dp: Dispatcher):

@@ -6,6 +6,7 @@ from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.building_menu import building
 from tgbot.keyboards.dynamics import pagination_construction_call, get_construction_page_keyboard
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_construction_photos
 from tgbot.utils.page import get_page
 
@@ -29,11 +30,13 @@ async def show_construction(call: CallbackQuery, callback_data: dict, state: FSM
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event='Нажатие кнопки "Динамика строительства"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "Динамика строительства"')
 
 
 async def current_page_error(call: CallbackQuery):
     await call.answer(cache_time=60)
     await log_stat(call.from_user, error='Нажатие на текущую страницу при листании в Динамике строительства')
+    await insert_dict(call.from_user, error='Нажатие на текущую страницу при листании в Динамике строительства')
 
 
 async def show_chosen_construction(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
@@ -57,6 +60,7 @@ async def show_chosen_construction(call: CallbackQuery, callback_data: dict, sta
     )
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event='Листание в динамике строительства')
+    await insert_dict(call.from_user, event='Листание в динамике строительства')
 
 
 def register_construction(dp: Dispatcher):
