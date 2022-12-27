@@ -2,13 +2,14 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, ContentType
 
-from realty_bot.realty_bot.calltouch_api import make_calltouch_call_request
+from realty_bot.realty_bot.calltouch_api import make_calltouch_call_request, make_calltouch_callback_request
 from realty_bot.realty_bot.comagic_api import make_comagic_call_request
 from realty_bot.realty_bot.utils import correct_phone
 from tgbot.keyboards.building_menu import menu_markup
 from tgbot.keyboards.send_contact import contact, contact_cd
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import create_requests, get_userbot
 from tgbot.utils.dp_api.db_commands import get_call_request
 
@@ -59,26 +60,40 @@ async def get_contact(message: Message, state: FSMContext):
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
                 await create_requests(building_name, message.from_user.id, phone_number, data)
                 await log_stat(message.from_user, event=f'Отправили контакт в Comagic с {source_id}')
+                await insert_dict(message.from_user, event=f'Отправили контакт в Comagic с {source_id}')
             else:
+                await message.answer(text='Упс(', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
         elif calltracking == 'calltouch':
             call = await get_call_request(building_name=building_name, site_id=source_id.get('site_id'),
                                           campaign_id=source_id.get('campaign_id'))
-            call_request = await make_calltouch_call_request(call.api_token.access_token,
-                                                             site_id=source_id.get('site_id'),
-                                                             name=telegram_first_name,
-                                                             phone_number=phone_number, data=data)
+            if call.route_key:
+                call_request = await make_calltouch_callback_request(call.api_token.access_token,
+                                                                     name=telegram_first_name,
+                                                                     route_key=call.route_key,
+                                                                     source=call.campaign_id,
+                                                                     phone_number=phone_number,
+                                                                     data=data)
+            else:
+                call_request = await make_calltouch_call_request(call.api_token.access_token,
+                                                                 site_id=source_id.get('site_id'),
+                                                                 source=call.campaign_id,
+                                                                 name=telegram_first_name,
+                                                                 phone_number=phone_number, data=data)
             if call_request:
                 await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
                 await create_requests(building_name, message.from_user.id, phone_number, data)
                 await log_stat(message.from_user, event=f'Отправили контакт в Calltouch с {source_id}')
+                await insert_dict(message.from_user, event=f'Отправили контакт в Calltouch с {source_id}')
             else:
+                await message.answer(text='Упс(', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text="Что-то пошло не так, попробуйте еще раз.", reply_markup=markup)
 
     else:
         await message.answer(text="Вы ввели неправильный номер", reply_markup=markup)
         await log_stat(message.from_user, event='Ввели неправильный номер')
+        await insert_dict(message.from_user, event='Ввели неправильный номер')
 
 
 def register_send_contact(dp: Dispatcher):

@@ -9,6 +9,7 @@ from tgbot.keyboards.photo_gallery_pagination import get_photos_keyboard, pagina
     get_corpus_photos_keyboard, pagination_corpus
 from tgbot.keyboards.progress_video import video_progress_keyboard
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_gallery_photos, get_progress_video, get_corpus_photos
 from tgbot.utils.page import get_page
 
@@ -21,6 +22,7 @@ async def photo_gallery(call: CallbackQuery, callback_data: dict):
                               reply_markup=markup)
     await call.message.delete()
     await log_stat(call.from_user, event='Нажатие кнопки "Фотогалерея"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "Фотогалерея"')
 
 
 async def corpuses(call: CallbackQuery, callback_data: dict, state: FSMContext):
@@ -30,6 +32,7 @@ async def corpuses(call: CallbackQuery, callback_data: dict, state: FSMContext):
     await call.message.answer(text='Корпуса', reply_markup=markup)
     await call.message.delete()
     await log_stat(call.from_user, event='Нажатие кнопки "Строящиеся корпуса"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "Строящиеся корпуса"')
 
 
 async def show_corpus_photo(call: CallbackQuery, callback_data: dict, state: FSMContext):
@@ -56,6 +59,7 @@ async def show_corpus_photo(call: CallbackQuery, callback_data: dict, state: FSM
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event='Просмотр корпуса')
+    await insert_dict(call.from_user, event='Просмотр корпуса')
 
 
 async def show_chosen_corpus_photo(call: CallbackQuery, callback_data: dict, state: FSMContext):
@@ -82,6 +86,7 @@ async def show_chosen_corpus_photo(call: CallbackQuery, callback_data: dict, sta
     )
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event='Листание фотографий корпуса')
+    await insert_dict(call.from_user, event='Листание фотографий корпуса')
 
 
 async def show_photos(call: CallbackQuery, callback_data: dict, state: FSMContext):
@@ -106,11 +111,13 @@ async def show_photos(call: CallbackQuery, callback_data: dict, state: FSMContex
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event=f'Просмотр {section}')
+    await insert_dict(call.from_user, event=f'Просмотр {section}')
 
 
 async def current_page_error(call: CallbackQuery):
     await call.answer(cache_time=60)
     await log_stat(call.from_user, error='Нажатие текущей страницы при просмотре галерее')
+    await insert_dict(call.from_user, error='Нажатие текущей страницы при просмотре галерее')
 
 
 async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict, state: FSMContext):
@@ -135,6 +142,7 @@ async def show_chosen_page_photos(call: CallbackQuery, callback_data: dict, stat
     )
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event=f'Листание {section}')
+    await insert_dict(call.from_user, event=f'Листание {section}')
 
 
 async def show_progress_video(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
@@ -152,6 +160,7 @@ async def show_progress_video(call: CallbackQuery, callback_data: dict, state: F
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event='Нажатие кнопки "Ход строительства"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "Ход строительства"')
 
 
 def register_show_gallery(dp: Dispatcher):

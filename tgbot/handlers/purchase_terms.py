@@ -5,6 +5,7 @@ from aiogram.types import CallbackQuery
 from tgbot.keyboards.building_menu import building
 from tgbot.keyboards.purchase_terms import purchase_terms_keyboard, term_keyboard, purchase_terms_cd
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.terms import make_term_text
 
 
@@ -15,6 +16,7 @@ async def terms(call: CallbackQuery, callback_data: dict, **kwargs):
     await call.message.answer(text='Варианты приобретения', reply_markup=markup)
     await call.message.delete()
     await log_stat(call.from_user, event='Нажатие кнопки "Условия покупки"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "Условия покупки"')
 
 
 async def show_term(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
@@ -27,6 +29,7 @@ async def show_term(call: CallbackQuery, callback_data: dict, state: FSMContext,
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'), term=callback_data.get('term'))
     await log_stat(call.from_user, event='Вывод условий покупки')
+    await insert_dict(call.from_user, event='Вывод условий покупки')
 
 
 def register_purchase_terms(dp: Dispatcher):

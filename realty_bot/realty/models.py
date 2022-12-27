@@ -559,8 +559,10 @@ class CallTrackingCampaign(BaseModel):
                                   related_name="call_tracking_campaigns", null=True)
     campaign_id = models.CharField(verbose_name="ID рекламной кампании", max_length=32, blank=True, null=True)
     site_id = models.CharField(verbose_name="ID сайта", max_length=32, blank=True, null=True)
+    route_key = models.CharField(verbose_name="Ключ виджета 'Форма на сайте'", max_length=32, blank=True, null=True,
+                                 help_text="Используется для обратного перезвона в Calltouch")
     phone_number = models.CharField(verbose_name="Подменный номер", max_length=32, blank=True,
-                                              null=True, help_text="Пример: +79095432100")
+                                    null=True, help_text="Пример: +79095432100")
     start_button = models.BooleanField(verbose_name="Прямой заход в бота", default=False)
 
     class Meta:

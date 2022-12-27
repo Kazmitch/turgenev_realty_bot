@@ -5,6 +5,7 @@ from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.about_project import about_project_keyboard
 from tgbot.keyboards.building_menu import building
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_developer_description, get_about_project_photo
 
 
@@ -20,6 +21,7 @@ async def project(call: CallbackQuery, callback_data: dict):
                                     reply_markup=markup)
     await call.message.delete()
     await log_stat(call.from_user, event='Нажатие кнопки "О проекте"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "О проекте"')
 
 
 def register_about_project(dp: Dispatcher):

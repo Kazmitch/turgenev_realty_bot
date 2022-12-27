@@ -39,7 +39,7 @@ async def make_comagic_call_request(token: str, name: str, phone_number: str, da
     }
 
     try:
-        r = requests.post(url, data=json.dumps(payload))
+        r = requests.post(url, json=payload)
         if r.status_code == 200:
             logger2.info(f'Статус ответа: {r.status_code}. Создана заявка с {data}')
             return True

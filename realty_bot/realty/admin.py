@@ -192,6 +192,7 @@ class CallTrackingCampaignAdmin(admin.ModelAdmin):
                        'api_token',
                        'campaign_id',
                        'site_id',
+                       'route_key',
                        'start_button',
                        'phone_number',
                        'created_at',

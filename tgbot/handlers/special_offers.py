@@ -7,6 +7,7 @@ from realty_bot.realty_bot.settings import MEDIA_ROOT
 from tgbot.keyboards.building_menu import building
 from tgbot.keyboards.special_offers import special_offers_keyboard, special_offer_cd, current_offer_menu
 from tgbot.utils.analytics import log_stat
+from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_special_offer_description
 
 
@@ -19,6 +20,7 @@ async def special_offers(call: CallbackQuery, callback_data: dict, state: FSMCon
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'))
     await log_stat(call.from_user, event='Нажатие кнопки "Спецпредложения"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "Спецпредложения"')
 
 
 async def show_current_offer(call: CallbackQuery, callback_data: dict, state: FSMContext, **kwargs):
@@ -34,6 +36,7 @@ async def show_current_offer(call: CallbackQuery, callback_data: dict, state: FS
     await call.message.delete()
     await state.update_data(section=callback_data.get('section'), offer=offer.title)
     await log_stat(call.from_user, event='Просмотр спецпредложения')
+    await insert_dict(call.from_user, event='Просмотр спецпредложения')
 
 
 def register_show_special_offers(dp: Dispatcher):
