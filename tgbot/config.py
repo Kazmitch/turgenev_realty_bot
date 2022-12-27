@@ -36,6 +36,8 @@ class Miscellaneous:
     clickhouse_user: str
     clickhouse_password: str
     clickhouse_db: str
+    bot_sender_token: str
+    chat_info: str
 
 
 @dataclass
@@ -69,7 +71,9 @@ def load_config(path: str = None):
             clickhouse_port=env.str('CLICKHOUSE_PORT'),
             clickhouse_user=env.str('CLICKHOUSE_USER'),
             clickhouse_password=env.str('CLICKHOUSE_PASSWORD'),
-            clickhouse_db=env.str('CLICKHOUSE_DB')
+            clickhouse_db=env.str('CLICKHOUSE_DB'),
+            bot_sender_token=env.str('BOT_SENDER_TOKEN'),
+            chat_info=env.str('CHAT_INFO')
         ),
         redis_host=env.str('REDIS_HOST'),
         influxdb=InfluxDbConfig(
