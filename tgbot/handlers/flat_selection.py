@@ -136,15 +136,19 @@ async def type_params(call: Union[CallbackQuery, Message], state: FSMContext, in
     if option == 'flat_area':
         await FlatStates.flat_area.set()
         await log_stat(call.from_user, event='Ввод площади квартиры')
+        await insert_dict(call.from_user, event='Ввод площади квартиры')
     if option == 'flat_price':
         await FlatStates.flat_price.set()
         await log_stat(call.from_user, event='Ввод цены квартиры')
+        await insert_dict(call.from_user, event='Ввод цены квартиры')
     if option == 'flat_year':
         await FlatStates.flat_year.set()
         await log_stat(call.from_user, event='Ввод года сдачи')
+        await insert_dict(call.from_user, event='Ввод года сдачи')
     if option == 'flat_rooms':
         await FlatStates.flat_rooms.set()
         await log_stat(call.from_user, event='Ввод кол-ва комнат квартиры')
+        await insert_dict(call.from_user, event='Ввод кол-ва комнат квартиры')
 
 
 async def update_params(message: Union[CallbackQuery, Message], state: FSMContext, callback_data: dict = None,
@@ -171,6 +175,7 @@ async def update_params(message: Union[CallbackQuery, Message], state: FSMContex
         chosen_params = {key: value}
         await flat_selection(message, state=state, values=chosen_params)
         await log_stat(message.from_user, event=f'Ввод параметров: {key} = {value}')
+        await insert_dict(message.from_user, event=f'Ввод параметров: {key} = {value}')
 
 
 async def show_flats(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
