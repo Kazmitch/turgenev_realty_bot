@@ -64,7 +64,7 @@ async def insert_dict(user: User, event: str = None, error: str = None, phone_nu
                         "phone_number": str(phone_number),
                         "intent": str(event),
                         "error": str(error),
-                        "created_at": datetime.utcnow().strftime("%m.%d.%Y %H:%M:%S")
+                        "created_at": datetime.now().strftime("%m.%d.%Y %H:%M:%S")
                     }
                 ],
             )
