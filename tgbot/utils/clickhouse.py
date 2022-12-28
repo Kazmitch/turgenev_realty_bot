@@ -62,8 +62,8 @@ async def insert_dict(user: User, event: str = None, error: str = None, phone_nu
                         "telegram_first_name": str(user.first_name),
                         "telegram_last_name": str(user.last_name),
                         "phone_number": str(phone_number),
-                        "intent": str(event),
-                        "error": str(error),
+                        "intent": event,
+                        "error": error,
                         "created_at": datetime.now().strftime("%m.%d.%Y %H:%M:%S")
                     }
                 ],
