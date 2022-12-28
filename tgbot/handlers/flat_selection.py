@@ -167,9 +167,11 @@ async def update_params(message: Union[CallbackQuery, Message], state: FSMContex
                 chosen_params = {key: value}
                 await flat_selection(message, state=state, values=chosen_params)
                 await log_stat(message.from_user, event=f'Ввод параметров: {key} = {value}')
+                await insert_dict(message.from_user, event=f'Ввод параметров: {key} = {value}')
         except ValueError:
             await type_params(message, state=state, error=True)
             await log_stat(message.from_user, error='Неверно значение при вводе параметра')
+            await insert_dict(message.from_user, error='Неверно значение при вводе параметра')
     else:
         value = callback_data.get('param')
         chosen_params = {key: value}
