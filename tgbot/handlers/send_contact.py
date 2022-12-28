@@ -27,6 +27,7 @@ async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMConte
     await call.message.delete()
     await ContactStates.contact.set()
     await log_stat(call.from_user, event='Нажатие кнопки "Обратный звонок"')
+    await insert_dict(call.from_user, event='Нажатие кнопки "Обратный звонок"')
 
 
 async def get_contact(message: Message, state: FSMContext):
