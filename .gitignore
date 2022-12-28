@@ -133,3 +133,5 @@ dmypy.json
 !**/migrations/__init__.py
 /photo/*
 **/media/*
+logs/*
+!logs/__init__.py
