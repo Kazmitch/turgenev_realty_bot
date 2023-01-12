@@ -17,10 +17,12 @@ async def business_life(call: CallbackQuery, callback_data: dict):
     photo = await get_business_life_photo(building_name)
     file_photo = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
     markup = await business_life_keyboard(building_name)
-    await call.message.answer_video(video=file_video)
-    await call.message.answer_photo(photo=file_photo,
-                                    caption=photo.description,
+    await call.message.answer_video(video=file_video,
+                                    caption=video.description,
                                     reply_markup=markup)
+    # await call.message.answer_photo(photo=file_photo,
+    #                                 caption=photo.description,
+    #                                 reply_markup=markup)
     await call.message.delete()
     await log_stat(call.from_user, event='Нажатие кнопки "Апартаменты для бизнеса и жизни"')
     await insert_dict(call.from_user, event='Нажатие кнопки "Апартаменты для бизнеса и жизни"')

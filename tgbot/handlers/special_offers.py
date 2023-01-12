@@ -8,9 +8,9 @@ from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_sales_department, get_userbot, get_call_request
 
 
-async def special_offers(call: CallbackQuery, callback_data: dict, state: FSMContext):
+async def special_offers(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=60)
-    building_name = callback_data.get('building_name')
+    building_name = (callback_data.get('building_name') or callback_data.get('name'))
     user = await get_userbot(call.from_user.id)
     source_id = user.get_source_id
     if len(source_id) == 2:

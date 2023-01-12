@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
-from tgbot.keyboards.building_menu import menu_button, building
+from tgbot.keyboards.building_menu import menu_button, building, special_offer_button
 from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
@@ -13,15 +13,7 @@ async def purchase_terms_keyboard(building_name: str) -> InlineKeyboardMarkup:
 
     markup = InlineKeyboardMarkup(row_width=1)
 
-    markup.inline_keyboard = [
-        [
-            InlineKeyboardButton(
-                text='🎁 Получить персональное предложение',
-                callback_data=building.new(name=building_name, section='offers')
-            )
-        ]
-    ]
-
+    markup.row(await special_offer_button(building_name))
     markup.row(await call_button(building_name))
     # markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
