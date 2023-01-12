@@ -301,7 +301,7 @@ class AboutProjectVideo(BaseModel):
     def display_video(self):
         html = '<a href="{video}"><video src="{video}" width="320" height="240"></a>'
         if self.video:
-            return format_html(html, img=self.video.url)
+            return format_html(html, video=self.video.url)
         return format_html('<strong>There is no video for this entry.<strong>')
 
     display_video.short_description = 'Видео'
