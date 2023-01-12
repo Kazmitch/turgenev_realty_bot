@@ -39,12 +39,12 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       [
                                           InlineKeyboardButton(
                                               text='🎁 Получить персональное предложение',
-                                              callback_data=contact_cd.new(building_name=building_name)
+                                              callback_data=building.new(name=building_name, section='offers')
                                           )
                                       ]
                                   ])
     markup.row(await call_button(building_name))
-    markup.row(await contact_button(building_name))
+    # markup.row(await contact_button(building_name))
     return markup
 
 
