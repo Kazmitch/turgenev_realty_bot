@@ -1,8 +1,9 @@
 from django.contrib import admin
 
 from .models import UserBot, Developer, Profile, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
-    ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectPhoto, Term, Construction, \
-    SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus
+    ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectVideo, Term, Construction, \
+    SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus, \
+    AnnouncementVideo, AboutProjectPhoto, BusinessLifePhoto
 
 
 @admin.register(Profile)
@@ -110,6 +111,27 @@ class PhotoBase(admin.ModelAdmin):
     readonly_fields = ('display_image', 'created_at', 'updated_at')
 
 
+@admin.register(AnnouncementVideo)
+class AnnouncementVideoAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'display_video', 'created_at', 'updated_at')
+    list_filter = ('building',)
+    search_fields = ('building',)
+    readonly_fields = ('display_video', 'created_at', 'updated_at')
+
+
+@admin.register(BusinessLifePhoto)
+class BusinessLifePhotoAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'display_image', 'created_at', 'updated_at')
+    list_filter = ('building',)
+    search_fields = ('building',)
+    readonly_fields = ('display_image', 'created_at', 'updated_at')
+
+
+@admin.register(AboutProjectPhoto)
+class AboutProjectPhotoAdmin(PhotoBase):
+    pass
+
+
 @admin.register(LocationPhoto)
 class LocationPhotoAdmin(PhotoBase):
     pass
@@ -141,12 +163,12 @@ class ProgressVideoAdmin(admin.ModelAdmin):
     readonly_fields = ('display_video', 'created_at', 'updated_at')
 
 
-@admin.register(AboutProjectPhoto)
-class AboutProjectPhotoAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'display_image', 'created_at', 'updated_at')
-    list_filter = ('developer',)
-    search_fields = ('developer',)
-    readonly_fields = ('display_image', 'created_at', 'updated_at')
+@admin.register(AboutProjectVideo)
+class AboutProjectVideoAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'display_video', 'created_at', 'updated_at')
+    list_filter = ('building',)
+    search_fields = ('building',)
+    readonly_fields = ('display_video', 'created_at', 'updated_at')
 
 
 @admin.register(Term)

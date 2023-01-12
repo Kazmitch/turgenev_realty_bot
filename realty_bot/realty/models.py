@@ -257,18 +257,96 @@ class SpecialOffer(BaseModel):
     display_image.short_description = 'Изображение'
 
 
+class AnnouncementVideo(BaseModel):
+    directory = 'video/announcement'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='announcements')
+    video = models.FileField(upload_to=user_directory_path, verbose_name='Видео')
+    description = models.TextField(verbose_name="Описание видео", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Анонс"
+        verbose_name_plural = "Анонсы"
+
+    def __str__(self):
+        return f"{self.building.name}"
+
+    @cached_property
+    def display_video(self):
+        html = '<a href="{video}"><video src="{video}" width="320" height="240"></a>'
+        if self.video:
+            return format_html(html, video=self.video.url)
+        return format_html('<strong>There is no video for this entry.<strong>')
+
+    display_video.short_description = 'Видео'
+
+
+class AboutProjectVideo(BaseModel):
+    directory = 'video/about_project'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='about_project_videos')
+    video = models.FileField(upload_to=user_directory_path, verbose_name='Видео')
+    description = models.TextField(verbose_name="Описание видео", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "О проекте Видео"
+        verbose_name_plural = "О проекте Видео"
+
+    def __str__(self):
+        return f"{self.building.name}"
+
+    @cached_property
+    def display_video(self):
+        html = '<a href="{video}"><video src="{video}" width="320" height="240"></a>'
+        if self.video:
+            return format_html(html, img=self.video.url)
+        return format_html('<strong>There is no video for this entry.<strong>')
+
+    display_video.short_description = 'Видео'
+
+
+class BusinessLifePhoto(BaseModel):
+    directory = 'photo/business_life'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='business_life_photos')
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
+    description = models.TextField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Для бизнеса и жизни Фото"
+        verbose_name_plural = "Для бизнеса и жизни Фото"
+
+    def __str__(self):
+        return f"{self.building.name}"
+
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
+
+
 class AboutProjectPhoto(BaseModel):
     directory = 'photo/about_project'
-    developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик",
-                                  related_name="about_projects")
-    photo = models.ImageField(upload_to=about_project_path, verbose_name="Фотография")
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='about_project_photos')
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
+    order = models.FloatField(verbose_name="Порядок", default=10)
+    description = models.TextField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
 
     class Meta:
         verbose_name = "О проекте Фото"
         verbose_name_plural = "О проекте Фото"
 
     def __str__(self):
-        return f"{self.developer.developer_name}"
+        return f"{self.building.name}"
 
     @cached_property
     def display_image(self):
@@ -445,7 +523,7 @@ class Bank(models.TextChoices):
 
 
 class Term(BaseModel):
-    directory = 'documents/term'
+    directory = 'photo/term'
     bank = models.CharField(verbose_name="Банк", max_length=64, choices=Bank.choices, null=True, blank=True)
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE, verbose_name="Застройщик", related_name="terms")
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
@@ -460,6 +538,8 @@ class Term(BaseModel):
     title = models.CharField(verbose_name="Условие", max_length=255)
     description = models.TextField(verbose_name="Описание условия")
     document = models.FileField(upload_to=user_directory_path, verbose_name='Документ', blank=True)
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография", blank=True, null=True)
+    header_photo = models.BooleanField(verbose_name="Использовать для заголовка раздела", default=False)
 
     class Meta:
         verbose_name = "Условие"
@@ -467,6 +547,15 @@ class Term(BaseModel):
 
     def __str__(self):
         return f"{self.title}"
+
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
 
 
 class Construction(BasePublication):

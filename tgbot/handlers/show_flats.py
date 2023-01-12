@@ -2,9 +2,9 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto, InputFile
 
+from tgbot.keyboards.building_menu import contact_markup
 from tgbot.keyboards.flat_pagination import get_page_keyboard, pagination_flats_call
-from tgbot.keyboards.flat_selection import order_cd
-from tgbot.keyboards.send_contact import contact_markup
+from tgbot.keyboards.flat_selection import flat_selection_cd
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.analytics import log_stat
 from tgbot.utils.clickhouse import insert_dict
@@ -17,9 +17,9 @@ from tgbot.utils.page import get_page
 async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
     data = await state.get_data()
     building_name = data.get('building_name')
-    ordering = callback_data.get('sort')
-    flat_params = data.get('params')
-    offers = await get_offers(building_name, flat_params, ordering)
+    ordering = 'price_low_to_high'
+    rooms = callback_data.get('option')
+    offers = await get_offers(building_name, rooms, ordering)
     xml_link = await get_xml_link_by_name(building_name)
     if offers:
         max_pages = len(offers)
@@ -42,7 +42,8 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
                 key='flat',
                 max_pages=max_pages,
                 building_name=building_name,
-                sort=ordering
+                sort=ordering,
+                rooms=rooms
             )
         )
         await call.message.delete()
@@ -65,14 +66,15 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
 async def current_page_error(call: CallbackQuery):
     await call.answer(cache_time=60)
     await log_stat(call.from_user, error='Нажатие на текущую страницу при листании квартир')
+    await insert_dict(call.from_user, error='Нажатие на текущую страницу при листании квартир')
 
 
 async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
     data = await state.get_data()
     building_name = data.get('building_name')
-    ordering = callback_data.get('sort')
-    flat_params = data.get('params')
-    offers = await get_offers(building_name, flat_params, ordering)
+    ordering = 'price_low_to_high'
+    rooms = callback_data.get('rooms')
+    offers = await get_offers(building_name, rooms, ordering)
     current_page = int(callback_data.get('page'))
     offer = await get_page(offers, page=current_page)
     xml_link = await get_xml_link_by_name(building_name)
@@ -97,7 +99,8 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
             key='flat',
             max_pages=max_pages,
             page=current_page,
-            sort=ordering
+            sort=ordering,
+            rooms=rooms
         )
     )
     await ContactStates.building_name.set()
@@ -110,6 +113,6 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
 
 
 def register_show_flats(dp: Dispatcher):
-    dp.register_callback_query_handler(show_chosen_flats, order_cd.filter(), state='*')
+    dp.register_callback_query_handler(show_chosen_flats, flat_selection_cd.filter(), state='*')
     dp.register_callback_query_handler(current_page_error, pagination_flats_call.filter(page='current_page'), state='*')
     dp.register_callback_query_handler(show_chosen_page, pagination_flats_call.filter(key='flat'), state='*')

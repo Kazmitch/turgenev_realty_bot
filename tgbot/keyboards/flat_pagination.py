@@ -5,10 +5,10 @@ from tgbot.keyboards.building_menu import menu_button
 from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
-pagination_flats_call = CallbackData("paginator_flats", "key", "page", "sort")
+pagination_flats_call = CallbackData("paginator_flats", "key", "page", "sort", "rooms")
 
 
-async def get_page_keyboard(max_pages: int, building_name: str, sort: str, key="flat", page: int = 1):
+async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms: str, key="flat", page: int = 1):
     # Клавиатура будет выглядеть вот так:
     # |<< | <5> | >>|
 
@@ -25,14 +25,14 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, key="
         markup.insert(
             InlineKeyboardButton(
                 text=previous_page_text,
-                callback_data=pagination_flats_call.new(key=key, page=previous_page, sort=sort)
+                callback_data=pagination_flats_call.new(key=key, page=previous_page, sort=sort, rooms=rooms)
             )
         )
 
     markup.insert(
         InlineKeyboardButton(
             text=current_page_text,
-            callback_data=pagination_flats_call.new(key=key, page="current_page", sort=sort)
+            callback_data=pagination_flats_call.new(key=key, page="current_page", sort=sort, rooms=rooms)
         )
     )
 
@@ -40,7 +40,7 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, key="
         markup.insert(
             InlineKeyboardButton(
                 text=next_page_text,
-                callback_data=pagination_flats_call.new(key=key, page=next_page, sort=sort)
+                callback_data=pagination_flats_call.new(key=key, page=next_page, sort=sort, rooms=rooms)
             )
         )
 

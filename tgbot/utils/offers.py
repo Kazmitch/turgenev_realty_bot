@@ -54,86 +54,52 @@ async def get_max_floor_yan(xml: dict) -> int:
     return max_floor
 
 
-async def get_offers_yan(url: str, area: str, price: str, year: str, rooms: str):
+async def get_offers_yan(url: str, rooms: str):
     """Отбираем лоты по критериям из фида Яндекс."""
     xml = await get_xml(url)
     data = xmltodict.parse(xml)
 
-    price = f'{price}000000'
-
     good_offers = []
 
     for offer in data.get('realty-feed').get('offer'):
-        if price == '0000000' and year != '0':
-            if int(offer.get('built-year')) <= int(year):
-                if int(offer.get('rooms')) >= int(rooms):
-                    good_offers.append(offer)
-                else:
-                    continue
-            else:
+
+        if rooms == 'studio':
+            if offer.get('studio'):
+                good_offers.append(offer)
                 continue
-        elif price == '0000000' and rooms != '0':
-            if int(offer.get('rooms')) >= int(rooms):
-                if year == '0':
-                    good_offers.append(offer)
-                else:
-                    continue
             else:
                 continue
         else:
-            if float(offer.get('area').get('value').replace(',', '.')) >= float(area) and (
-                float(offer.get('price').get('value')) <= float(price) if price != '0000000' else float(
-                    offer.get('price').get('value')) >= float(price)):
-                if year == '0' and int(offer.get('built-year')) > 0:
+            if offer.get('rooms'):
+                if int(offer.get('rooms')) == int(rooms):
                     good_offers.append(offer)
-                elif year != '0' and int(offer.get('built-year')) <= int(year):
-                    good_offers.append(offer)
-                elif rooms == '0' and int(offer.get('rooms')) >= 1:
-                    good_offers.append(offer)
-                elif rooms != '0' and int(offer.get('rooms')) >= int(rooms):
-                    good_offers.append(offer)
-
+                    continue
+                else:
+                    continue
+            else:
+                continue
     return good_offers
 
 
-async def get_offers_cian(url: str, area: str, price: str, year: str, rooms: str):
+async def get_offers_cian(url: str, rooms: str):
     """Отбираем лоты по критериям из фида Cian."""
     xml = await get_xml(url)
     data = xmltodict.parse(xml)
 
-    price = f'{price}000000'
-
     good_offers = []
 
     for offer in data.get('feed').get('object'):
-        if price == '0000000' and year != '0':
-            if int(offer.get('Building').get('Deadline').get('Year')) <= int(year):
-                if int(offer.get('FlatRoomsCount')) >= int(rooms):
-                    good_offers.append(offer)
-                else:
-                    continue
-            else:
-                continue
-        elif price == '0000000' and rooms != '0':
-            if int(offer.get('FlatRoomsCount')) >= int(rooms):
-                if year == '0':
-                    good_offers.append(offer)
-                else:
-                    continue
+
+        if rooms == 'studio':
+            if int(offer.get('FlatRoomsCount')) == 9:
+                good_offers.append(offer)
             else:
                 continue
         else:
-            if float(offer.get('TotalArea').replace(',', '.')) >= float(area) and (
-                float(offer.get('BargainTerms').get('Price')) <= float(price) if price != '0000000' else float(
-                    offer.get('BargainTerms').get('Price')) >= float(price)):
-                if year == '0' and int(offer.get('Building').get('Deadline').get('Year')) > 0:
-                    good_offers.append(offer)
-                elif year != '0' and int(offer.get('Building').get('Deadline').get('Year')) <= int(year):
-                    good_offers.append(offer)
-                elif rooms == '0' and int(offer.get('FlatRoomsCount')) >= 1:
-                    good_offers.append(offer)
-                elif rooms != '0' and int(offer.get('FlatRoomsCount')) >= int(rooms):
-                    good_offers.append(offer)
+            if int(offer.get('FlatRoomsCount')) == int(rooms):
+                good_offers.append(offer)
+            else:
+                continue
     return good_offers
 
 
@@ -161,20 +127,16 @@ async def sort_cian_offers(offers: list, type_sort):
     return offers
 
 
-async def get_offers(building_name, data: dict = None, sort=None) -> list:
+async def get_offers(building_name, rooms: str, sort: str) -> list:
     """Получаем список предложений на основе данных."""
-    area = str(data.get('flat_area'))
-    price = str(data.get('flat_price'))
-    year = str(data.get('flat_year'))
-    rooms = str(data.get('flat_rooms'))
     xml_link = await get_xml_link_by_name(building_name)
     if xml_link.type_of_xml == 'yandex':
-        offers = await get_offers_yan(xml_link.xml_link, area, price, year, rooms)
+        offers = await get_offers_yan(xml_link.xml_link, rooms)
         if sort is not None:
             offers = await sort_yan_offers(offers, sort)
         return offers
     elif xml_link.type_of_xml == 'cian':
-        offers = await get_offers_cian(xml_link.xml_link, area, price, year, rooms)
+        offers = await get_offers_cian(xml_link.xml_link, rooms)
         if sort is not None:
             offers = await sort_cian_offers(offers, sort)
         return offers

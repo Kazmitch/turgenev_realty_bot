@@ -1,18 +1,18 @@
 version: '3'
 services:
-  realty_db:
+  hill8_realty_db:
     image: postgres:14
     restart: always
     env_file:
       - '.env'
     volumes:
-      - /opt/postgres/realty_bot:/var/lib/postgresql/data/
+      - /opt/postgres/hill8_realty_bot:/var/lib/postgresql/data/
     ports:
-      - '5459:5432'
+      - '5477:5432'
     networks:
-      - realty_db_network
+      - hill8_realty_db_network
 
-  realty_bot:
+  hill8_realty_bot:
     build:
       context: .
     restart: always
@@ -20,68 +20,68 @@ services:
     env_file:
       - '.env'
     volumes:
-      - .:/realty_tg_bot
-#      - ./telegram_bot/logs:/var/logs
+      - .:/hill8_realty_bot
+#      - ./hill8_realty_bot/logs:/var/logs
     depends_on:
-      - realty_db
-      - realty_web
-      - realty_redis
-      - realty_grafana
-      - realty_influxdb
+      - hill8_realty_db
+      - hill8_realty_web
+      - hill8_realty_redis
+      - hill8_realty_grafana
+      - hill8_realty_influxdb
     networks:
-      - realty_db_network
+      - hill8_realty_db_network
 
-  realty_web:
+  hill8_realty_web:
     build:
       context: .
-    image: realty_web
+    image: hill8_realty_web
     restart: always
     command: ./run_web.sh
     env_file:
       - '.env'
     volumes:
-      - .:/realty_tg_bot
+      - .:/hill8_realty_bot
     depends_on:
-      - realty_db
+      - hill8_realty_db
     ports:
-      - '8383:8000'
+      - '8401:8000'
     networks:
-      - realty_db_network
+      - hill8_realty_db_network
 
-  realty_redis:
+  hill8_realty_redis:
     image: redis:7.0.2
     restart: always
     ports:
-      - '6379:6379'
+      - '6397:6379'
     command: redis-server
     volumes:
       - /var/lib/redis:/var/lib/redis
       - ./redis.conf:/var/lib/redis/redis.conf
     networks:
-      - realty_db_network
+      - hill8_realty_db_network
 
-  realty_influxdb:
+  hill8_realty_influxdb:
     image: influxdb:latest
     restart: always
     volumes:
-      - /opt/influxdb/realty_tg_bot:/var/lib/influxdb2
-#      - /opt/influxdb/realty_tg_bot:/etc/influxdb2
+      - /opt/influxdb/hill8_realty_bot:/var/lib/influxdb2
+#      - /opt/influxdb/hill8_realty_bot:/etc/influxdb2
     env_file:
       - '.env'
     ports:
-      - '8086:8086'
+      - '8107:8086'
     networks:
-      - realty_db_network
+      - hill8_realty_db_network
 
-  realty_grafana:
+  hill8_realty_grafana:
     image: grafana/grafana
     environment:
       - GF_DATE_FORMATS_DEFAULT_TIMEZONE=browser
     ports:
-      - '3000:3000'
+      - '3027:3000'
     networks:
-      - realty_db_network
+      - hill8_realty_db_network
 
 networks:
-  realty_db_network:
+  hill8_realty_db_network:
     driver: bridge

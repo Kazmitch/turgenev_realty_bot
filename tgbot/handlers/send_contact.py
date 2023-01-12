@@ -19,6 +19,7 @@ async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMConte
     await call.answer(cache_time=60)
     building_name = callback_data.get('building_name')
     await state.update_data(building_name=building_name)
+    await call.message.answer(text='Получите персональное предложение в офисе продаж Hill8.')
     msg = await call.message.answer(
         text=f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
              f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',

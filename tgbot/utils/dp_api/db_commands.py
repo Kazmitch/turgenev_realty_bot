@@ -7,7 +7,8 @@ from django.db.models import Q, QuerySet
 
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
     AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
-    UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus
+    UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus, \
+    AnnouncementVideo, AboutProjectVideo, BusinessLifePhoto
 
 
 @sync_to_async
@@ -100,11 +101,31 @@ def get_document_file(document_id: int) -> str:
 
 
 @sync_to_async
-def get_about_project_photo(building_name: str) -> str:
-    """Получаем путь фотографии О Проекте."""
-    name = Developer.objects.filter(buildings__latin_name=building_name).first().latin_name
-    path = AboutProjectPhoto.objects.filter(developer__latin_name=name).first().photo.name
-    return path
+def get_announcement(building_name: str) -> QuerySet[AnnouncementVideo]:
+    """Получаем query set объекта AnnouncementVideo."""
+    announcement = AnnouncementVideo.objects.filter(building__latin_name=building_name).first()
+    return announcement
+
+
+@sync_to_async
+def get_business_life_photo(building_name: str):
+    """Получаем объект BusinessLifePhoto."""
+    photo = BusinessLifePhoto.objects.filter(building__latin_name=building_name).first()
+    return photo
+
+
+@sync_to_async
+def get_about_project_photos(building_name: str) -> QuerySet[AboutProjectPhoto]:
+    """Получаем query set объекта AboutProjectPhoto."""
+    photo = AboutProjectPhoto.objects.filter(building__latin_name=building_name).order_by('order')
+    return photo
+
+
+@sync_to_async
+def get_about_project_video(building_name: str) -> str:
+    """Получаем объект AboutProjectVideo."""
+    video = AboutProjectVideo.objects.filter(building__latin_name=building_name).first()
+    return video
 
 
 @sync_to_async
@@ -134,6 +155,13 @@ def get_progress_video(building_name: str) -> ProgressVideo:
     """Получаем объект ProgressVideo по названию ЖК."""
     video_progress = ProgressVideo.objects.filter(building__latin_name=building_name).first()
     return video_progress
+
+
+@sync_to_async
+def get_term_photo(building_name: str) -> Corpus:
+    """Получаем объект Corpus, в котором присутствует фотография."""
+    term_photo = Term.objects.filter(building__latin_name=building_name, header_photo=True).first()
+    return term_photo
 
 
 @sync_to_async

@@ -2,6 +2,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
 from tgbot.keyboards.building_menu import menu_button
+from tgbot.keyboards.make_call import call_button
+from tgbot.keyboards.send_contact import contact_cd, contact_button
 
 project_cd = CallbackData('project', 'building_name', 'section')
 photo_gallery_cd = CallbackData('photo_gallery', 'building_name', 'section')
@@ -14,12 +16,14 @@ async def about_project_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup.inline_keyboard = [
         [
             InlineKeyboardButton(
-                text='📷 Фотогалерея',
-                callback_data=project_cd.new(building_name=building_name, section='photo_gallery')
+                text='Получить персональное предложение',
+                callback_data=contact_cd.new(building_name=building_name)
             )
         ]
     ]
 
+    markup.row(await call_button(building_name))
+    markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
     return markup
