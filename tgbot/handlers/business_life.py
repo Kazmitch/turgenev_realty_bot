@@ -15,7 +15,7 @@ async def business_life(call: CallbackQuery, callback_data: dict):
     video = await get_about_project_video(building_name)
     file_video = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{video.video.name}')
     photo = await get_business_life_photo(building_name)
-    file_photo = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
+    # file_photo = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
     markup = await business_life_keyboard(building_name)
     await call.message.answer_video(video=file_video,
                                     caption=video.description,
