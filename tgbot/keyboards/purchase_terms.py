@@ -14,7 +14,7 @@ async def purchase_terms_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup(row_width=1)
 
     markup.row(await special_offer_button(building_name))
-    markup.row(await call_button(building_name))
+    # markup.row(await call_button(building_name))
     # markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 

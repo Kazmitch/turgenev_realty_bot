@@ -14,7 +14,7 @@ async def about_project_keyboard(building_name: str) -> InlineKeyboardMarkup:
 
     markup.row(await special_offer_button(building_name))
 
-    markup.row(await call_button(building_name))
+    # markup.row(await call_button(building_name))
     # markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 

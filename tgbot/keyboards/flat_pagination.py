@@ -44,7 +44,7 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
             )
         )
     markup.row(await special_offer_button(building_name))
-    markup.row(await call_button(building_name))
+    # markup.row(await call_button(building_name))
     markup.row(
         InlineKeyboardButton(
             text='🔙 Вернуться',

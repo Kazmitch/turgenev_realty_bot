@@ -43,7 +43,7 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                           )
                                       ]
                                   ])
-    markup.row(await call_button(building_name))
+    # markup.row(await call_button(building_name))
     # markup.row(await contact_button(building_name))
     return markup
 
