@@ -8,7 +8,7 @@ from tgbot.config import load_config
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler(f"/home/vitamin/m108/realty_telegram_bot/logs/mailing.log")
+handler = logging.FileHandler(f"logs/mailing.log")
 formatter = logging.Formatter("%(name)s - %(asctime)s - %(levelname)s - %(message)s", datefmt='%d.%m.%Y %H:%M:%S')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
