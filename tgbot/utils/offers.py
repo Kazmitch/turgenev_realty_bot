@@ -17,7 +17,7 @@ async def get_photo_url(offer: dict, type_xml: str) -> str:
     if type_xml == 'yandex':
         photos = offer.get('image')
         if isinstance(photos, list):
-            photo_url = photos[0].get('#text')
+            photo_url = photos[0]
             return photo_url
         elif isinstance(photos, dict):
             photo_url = photos.get('#text')
