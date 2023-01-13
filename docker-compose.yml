@@ -6,9 +6,9 @@ services:
     env_file:
       - '.env'
     volumes:
-      - /opt/postgres/realty_bot:/var/lib/postgresql/data/
+      - /opt/postgres/realty_tg_bot:/var/lib/postgresql/data/
     ports:
-      - '5459:5432'
+      - '5532:5432'
     networks:
       - realty_db_network
 
@@ -21,7 +21,7 @@ services:
       - '.env'
     volumes:
       - .:/realty_tg_bot
-#      - ./telegram_bot/logs:/var/logs
+#      - ./realty_tg_bot/logs:/var/logs
     depends_on:
       - realty_db
       - realty_web
@@ -44,7 +44,7 @@ services:
     depends_on:
       - realty_db
     ports:
-      - '8383:8000'
+      - '8900:8000'
     networks:
       - realty_db_network
 
@@ -52,7 +52,7 @@ services:
     image: redis:7.0.2
     restart: always
     ports:
-      - '6379:6379'
+      - '6479:6379'
     command: redis-server
     volumes:
       - /var/lib/redis:/var/lib/redis
@@ -69,7 +69,7 @@ services:
     env_file:
       - '.env'
     ports:
-      - '8086:8086'
+      - '8186:8086'
     networks:
       - realty_db_network
 
@@ -78,7 +78,7 @@ services:
     environment:
       - GF_DATE_FORMATS_DEFAULT_TIMEZONE=browser
     ports:
-      - '3000:3000'
+      - '3100:3000'
     networks:
       - realty_db_network
 
