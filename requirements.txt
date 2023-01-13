@@ -1,5 +1,6 @@
 aiogram
 aioredis
+redis
 environs
 Django
 psycopg2-binary
