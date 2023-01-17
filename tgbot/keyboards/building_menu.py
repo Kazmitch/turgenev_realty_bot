@@ -38,7 +38,7 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='% Получить скидку 25%',
+                                              text='🎁 Получить скидку 25%',
                                               callback_data=building.new(name=building_name, section='offers')
                                           )
                                       ]
@@ -50,7 +50,7 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
 
 async def special_offer_button(building_name: str):
     callback_data = building.new(name=building_name, section='offers')
-    offer = InlineKeyboardButton(text='% Получить скидку 25%', callback_data=callback_data)
+    offer = InlineKeyboardButton(text='🎁 Получить скидку 25%', callback_data=callback_data)
     return offer
 
 
