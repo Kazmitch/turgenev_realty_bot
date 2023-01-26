@@ -131,7 +131,7 @@ class Building(BaseModel):
     address = models.OneToOneField(Address, verbose_name="Адрес", on_delete=models.CASCADE, null=True)
     developer = models.ForeignKey(Developer, verbose_name="Застройщик", related_name="buildings",
                                   on_delete=models.CASCADE, null=True)
-    greeting = models.TextField(verbose_name="Фраза приветствия")
+    greeting = models.TextField(verbose_name="Фраза приветствия", null=True)
     building_description = models.TextField(verbose_name="Описание ЖК", blank=True)
     floors_total = models.CharField(verbose_name="Количество этажей", max_length=32)
     built_year = models.DateField(verbose_name="Год сдачи (год постройки)")
