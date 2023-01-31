@@ -25,7 +25,8 @@ async def special_offers(call: CallbackQuery, callback_data: dict):
     department_text = sales_department.description
     phone_number = call_campaign.phone_number
     markup = await menu_markup(building_name)
-    await call.message.answer(text=f'Персональное предложение доступно в офисе продаж Hill8.\n\n'
+    await call.message.answer(text=f'Готовые апартаменты со скидкой до 25%.\n'
+                                   f'Персональное предложение доступно в офисе продаж Hill8.\n\n'
                                    f'Позвоните по номеру: {phone_number}\n'
                                    f'{department_text}', reply_markup=markup)
     await call.message.delete()
