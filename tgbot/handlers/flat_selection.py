@@ -17,7 +17,7 @@ async def make_text(building_name: str) -> str:
     max_area = min_max_values.get('max_area')
     low_area = min_max_values.get('low_area')
     text = f'Доступные апартаменты:\n' \
-           f'по цене от <b>{low_price[:-5]} до <b>{max_price[:-5]}\n' \
+           f'по цене от <b>{low_price[:-5]} до <b>{max_price[:-5]}</b>\n' \
            f'и по площади от <b>{low_area} м²</b> до <b>{max_area} м²</b>\n'
     return text
 
