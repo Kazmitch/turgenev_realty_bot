@@ -130,9 +130,9 @@ async def sort_cian_offers(offers: list, type_sort):
     return offers
 
 
-async def get_offers(building_name, rooms: str, sort: str) -> list:
+async def get_offers(building_name, rooms: str, sort: str, xml_id: int) -> list:
     """Получаем список предложений на основе данных."""
-    xml_link = await get_xml_link_by_name(building_name)
+    xml_link = await get_xml_link_by_name(building_name, xml_id)
     if xml_link.type_of_xml == 'yandex':
         offers = await get_offers_yan(xml_link.xml_link, rooms)
         if sort is not None:
@@ -177,9 +177,9 @@ async def get_max_and_low_values_cian(offers: list = None, params: dict = None, 
     return values
 
 
-async def get_all_offers(building_name: str, params: dict = None):
+async def get_all_offers(building_name: str, xml_id: int, params: dict = None):
     """Получаем значения всех возможных вариантов."""
-    xml_link = await get_xml_link_by_name(building_name)
+    xml_link = await get_xml_link_by_name(building_name, xml_id)
     xml = await get_xml(xml_link.xml_link)
     data = xmltodict.parse(xml)
     if xml_link.type_of_xml == 'yandex':

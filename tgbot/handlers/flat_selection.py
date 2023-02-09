@@ -11,7 +11,7 @@ from tgbot.utils.offers import get_all_offers
 
 async def make_text(building_name: str) -> str:
     """Формируем текст."""
-    min_max_values = await get_all_offers(building_name)
+    min_max_values = await get_all_offers(building_name, xml_id=2)
     max_price = f"{int(min_max_values.get('max_price').split('.')[0]):,}"
     low_price = f"{int(min_max_values.get('low_price').split('.')[0]):,}"
     max_area = min_max_values.get('max_area')

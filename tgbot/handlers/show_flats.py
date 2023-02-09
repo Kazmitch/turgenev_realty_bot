@@ -19,8 +19,8 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
     building_name = data.get('building_name')
     ordering = 'price_low_to_high'
     rooms = callback_data.get('option')
-    offers = await get_offers(building_name, rooms, ordering)
-    xml_link = await get_xml_link_by_name(building_name)
+    offers = await get_offers(building_name, rooms, ordering, xml_id=1)
+    xml_link = await get_xml_link_by_name(building_name, xml_id=1)
     if offers:
         max_pages = len(offers)
         offer = await get_page(offers)
@@ -74,10 +74,10 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     building_name = data.get('building_name')
     ordering = 'price_low_to_high'
     rooms = callback_data.get('rooms')
-    offers = await get_offers(building_name, rooms, ordering)
+    offers = await get_offers(building_name, rooms, ordering, xml_id=1)
     current_page = int(callback_data.get('page'))
     offer = await get_page(offers, page=current_page)
-    xml_link = await get_xml_link_by_name(building_name)
+    xml_link = await get_xml_link_by_name(building_name, xml_id=1)
     offer_values = await get_values(offer, xml_link.type_of_xml)
     price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     try:
