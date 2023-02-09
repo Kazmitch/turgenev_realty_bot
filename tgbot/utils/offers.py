@@ -145,9 +145,9 @@ async def get_offers(building_name, rooms: str, sort: str, xml_id: int) -> list:
         return offers
 
 
-async def get_max_and_low_values_yan(offers: list = None, params: dict = None, building_name: str = None) -> dict:
+async def get_max_and_low_values_yan(offers: list = None, params: dict = None, building_name: str = None, xml_id: int = None) -> dict:
     if params:
-        offers = await get_offers(building_name, params)
+        offers = await get_offers(building_name, params, xml_id=xml_id)
     max_price_offer = max(offers, key=lambda d: float(d.get('price').get('value')))
     low_price_offer = min(offers, key=lambda d: float(d.get('price').get('value')))
     max_area_offer = max(offers, key=lambda d: float(d.get('area').get('value').replace(',', '.')))
@@ -161,9 +161,9 @@ async def get_max_and_low_values_yan(offers: list = None, params: dict = None, b
     return values
 
 
-async def get_max_and_low_values_cian(offers: list = None, params: dict = None, building_name: str = None) -> dict:
+async def get_max_and_low_values_cian(offers: list = None, params: dict = None, building_name: str = None, xml_id: int = None) -> dict:
     if params:
-        offers = await get_offers(building_name, params)
+        offers = await get_offers(building_name, params, xml_id=xml_id)
     max_price_offer = max(offers, key=lambda d: float(d.get('BargainTerms').get('Price')))
     low_price_offer = min(offers, key=lambda d: float(d.get('BargainTerms').get('Price')))
     max_area_offer = max(offers, key=lambda d: float(d.get('TotalArea').replace(',', '.')))
@@ -184,9 +184,9 @@ async def get_all_offers(building_name: str, xml_id: int, params: dict = None):
     data = xmltodict.parse(xml)
     if xml_link.type_of_xml == 'yandex':
         offers = data.get('realty-feed').get('offer')
-        values = await get_max_and_low_values_yan(offers, params, building_name)
+        values = await get_max_and_low_values_yan(offers, params, building_name, xml_id)
         return values
     elif xml_link.type_of_xml == 'cian':
         offers = data.get('feed').get('object')
-        values = await get_max_and_low_values_cian(offers, params, building_name)
+        values = await get_max_and_low_values_cian(offers, params, building_name, xml_id)
         return values
