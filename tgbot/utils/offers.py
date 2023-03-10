@@ -151,16 +151,16 @@ async def get_offers(building_name, rooms: str, sort: str) -> list:
         return offers
 
 
-async def get_max_and_low_values_yan(offers: list = None, params: dict = None, building_name: str = None, xml_id: int = None) -> dict:
+async def get_max_and_low_values_yan(offers: list = None, params: dict = None, building_name: str = None) -> dict:
     if params:
         offers = await get_offers(building_name, params)
-    max_price_offer = max(offers, key=lambda d: float(d.get('price').get('value')))
-    low_price_offer = min(offers, key=lambda d: float(d.get('price').get('value')))
+    # max_price_offer = max(offers, key=lambda d: float(d.get('price').get('value')))
+    # low_price_offer = min(offers, key=lambda d: float(d.get('price').get('value')))
     max_area_offer = max(offers, key=lambda d: float(d.get('area').get('value').replace(',', '.')))
     low_area_offer = min(offers, key=lambda d: float(d.get('area').get('value').replace(',', '.')))
     values = {
-        'max_price': max_price_offer.get('price').get('value'),
-        'low_price': low_price_offer.get('price').get('value'),
+        # 'max_price': max_price_offer.get('price').get('value'),
+        # 'low_price': low_price_offer.get('price').get('value'),
         'max_area': max_area_offer.get('area').get('value').replace(',', '.'),
         'low_area': low_area_offer.get('area').get('value').replace(',', '.'),
     }
@@ -169,7 +169,7 @@ async def get_max_and_low_values_yan(offers: list = None, params: dict = None, b
 
 async def get_max_and_low_values_cian(offers: list = None, params: dict = None, building_name: str = None, xml_id: int = None) -> dict:
     if params:
-        offers = await get_offers(building_name, params, xml_id=xml_id)
+        offers = await get_offers(building_name, params)
     max_price_offer = max(offers, key=lambda d: float(d.get('BargainTerms').get('Price')))
     low_price_offer = min(offers, key=lambda d: float(d.get('BargainTerms').get('Price')))
     max_area_offer = max(offers, key=lambda d: float(d.get('TotalArea').replace(',', '.')))

@@ -12,13 +12,12 @@ from tgbot.utils.offers import get_all_offers
 async def make_text(building_name: str) -> str:
     """Формируем текст."""
     min_max_values = await get_all_offers(building_name)
-    max_price = f"{int(min_max_values.get('max_price').split('.')[0]):,}"
-    low_price = f"{int(min_max_values.get('low_price').split('.')[0]):,}"
+    # max_price = f"{int(min_max_values.get('max_price').split('.')[0]):,}"
+    # low_price = f"{int(min_max_values.get('low_price').split('.')[0]):,}"
     max_area = min_max_values.get('max_area')
     low_area = min_max_values.get('low_area')
-    text = f'Доступные апартаменты:\n' \
-           f'по цене от <b>{low_price[:-5]}</b> до <b>{max_price[:-5]}</b>\n' \
-           f'и по площади от <b>{low_area} м²</b> до <b>{max_area} м²</b>\n'
+    text = f'Доступные варианты квартир:\n' \
+           f'по площади от <b>{low_area} м²</b> до <b>{max_area} м²</b>\n'
     return text
 
 
