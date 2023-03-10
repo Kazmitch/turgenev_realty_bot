@@ -74,7 +74,13 @@ async def get_offers_yan(url: str, rooms: str):
                 continue
         else:
             if offer.get('rooms'):
-                if int(offer.get('rooms')) == int(rooms):
+                if 3 <= int(offer.get('rooms')) <= 4 and int(rooms) == 3:
+                    good_offers.append(offer)
+                    continue
+                elif int(offer.get('rooms')) == int(rooms):
+                    good_offers.append(offer)
+                    continue
+                elif int(offer.get('rooms')) == 5 and int(rooms) == 5:
                     good_offers.append(offer)
                     continue
                 else:

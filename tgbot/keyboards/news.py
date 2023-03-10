@@ -44,7 +44,7 @@ async def get_news_page_keyboard(max_pages: int, building_name: str, key="news",
             )
         )
     markup.row(await call_button(building_name))
-    markup.row(await contact_button(building_name))
+    # markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
     return markup

@@ -24,11 +24,8 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
     if offers:
         max_pages = len(offers)
         offer = await get_page(offers)
-        try:
-            photo_url = await get_photo_url(offer, xml_link.type_of_xml)
-            photo = await resize_photo(photo_url)
-        except KeyError:
-            photo = 'realty_bot/media/errors/layout_error.jpg'
+        photo_url = await get_photo_url(offer, xml_link.type_of_xml)
+        photo = await resize_photo(photo_url)
         file = InputFile(path_or_bytesio=photo)
         offer_values = await get_values(offer, xml_link.type_of_xml)
         price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
@@ -80,11 +77,8 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     xml_link = await get_xml_link_by_name(building_name, xml_id=1)
     offer_values = await get_values(offer, xml_link.type_of_xml)
     price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
-    try:
-        photo_url = await get_photo_url(offer, xml_link.type_of_xml)
-        photo = await resize_photo(photo_url)
-    except KeyError:
-        photo = 'realty_bot/media/errors/layout_error.jpg'
+    photo_url = await get_photo_url(offer, xml_link.type_of_xml)
+    photo = await resize_photo(photo_url)
     file = InputFile(path_or_bytesio=photo)
     media = InputMediaPhoto(media=file,
                             caption=f'Стоимость: <b>{price} руб.</b>\n'

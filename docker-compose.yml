@@ -1,18 +1,18 @@
 version: '3'
 services:
-  hill8_realty_db:
+  turgenev_realty_db:
     image: postgres:14
     restart: always
     env_file:
       - '.env'
     volumes:
-      - /opt/postgres/hill8_realty_bot:/var/lib/postgresql/data/
+      - /opt/postgres/turgenev_realty_bot:/var/lib/postgresql/data/
     ports:
-      - '5477:5432'
+      - '5484:5432'
     networks:
-      - hill8_realty_db_network
+      - turgenev_realty_db_network
 
-  hill8_realty_bot:
+  turgenev_realty_bot:
     build:
       context: .
     restart: always
@@ -20,68 +20,68 @@ services:
     env_file:
       - '.env'
     volumes:
-      - .:/hill8_realty_bot
-#      - ./hill8_realty_bot/logs:/var/logs
+      - .:/turgenev_realty_bot
+#      - ./turgenev_realty_bot/logs:/var/logs
     depends_on:
-      - hill8_realty_db
-      - hill8_realty_web
-      - hill8_realty_redis
-      - hill8_realty_grafana
-      - hill8_realty_influxdb
+      - turgenev_realty_db
+      - turgenev_realty_web
+      - turgenev_realty_redis
+      - turgenev_realty_grafana
+      - turgenev_realty_influxdb
     networks:
-      - hill8_realty_db_network
+      - turgenev_realty_db_network
 
-  hill8_realty_web:
+  turgenev_realty_web:
     build:
       context: .
-    image: hill8_realty_web
+    image: turgenev_realty_web
     restart: always
     command: ./run_web.sh
     env_file:
       - '.env'
     volumes:
-      - .:/hill8_realty_bot
+      - .:/turgenev_realty_bot
     depends_on:
-      - hill8_realty_db
+      - turgenev_realty_db
     ports:
-      - '8401:8000'
+      - '8408:8000'
     networks:
-      - hill8_realty_db_network
+      - turgenev_realty_db_network
 
-  hill8_realty_redis:
+  turgenev_realty_redis:
     image: redis:7.0.2
     restart: always
     ports:
-      - '6397:6379'
+      - '6404:6379'
     command: redis-server
     volumes:
       - /var/lib/redis:/var/lib/redis
       - ./redis.conf:/var/lib/redis/redis.conf
     networks:
-      - hill8_realty_db_network
+      - turgenev_realty_db_network
 
-  hill8_realty_influxdb:
+  turgenev_realty_influxdb:
     image: influxdb:latest
     restart: always
     volumes:
-      - /opt/influxdb/hill8_realty_bot:/var/lib/influxdb2
-#      - /opt/influxdb/hill8_realty_bot:/etc/influxdb2
+      - /opt/influxdb/turgenev_realty_bot:/var/lib/influxdb2
+#      - /opt/influxdb/turgenev_realty_bot:/etc/influxdb2
     env_file:
       - '.env'
     ports:
-      - '8107:8086'
+      - '8114:8086'
     networks:
-      - hill8_realty_db_network
+      - turgenev_realty_db_network
 
-  hill8_realty_grafana:
+  turgenev_realty_grafana:
     image: grafana/grafana
     environment:
       - GF_DATE_FORMATS_DEFAULT_TIMEZONE=browser
     ports:
-      - '3027:3000'
+      - '3034:3000'
     networks:
-      - hill8_realty_db_network
+      - turgenev_realty_db_network
 
 networks:
-  hill8_realty_db_network:
+  turgenev_realty_db_network:
     driver: bridge

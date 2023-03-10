@@ -61,7 +61,7 @@ async def get_photos_keyboard(max_pages: int, building_name: str, section, key="
     )
 
     markup.row(await call_button(building_name))
-    markup.row(await contact_button(building_name))
+    # markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
     return markup
@@ -118,7 +118,7 @@ async def get_corpus_photos_keyboard(max_pages: int, building_name: str, section
     )
 
     markup.row(await call_button(building_name))
-    markup.row(await contact_button(building_name))
+    # markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
     return markup

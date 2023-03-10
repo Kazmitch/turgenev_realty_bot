@@ -282,6 +282,31 @@ class AnnouncementVideo(BaseModel):
     display_video.short_description = 'Видео'
 
 
+class PersonalOfferPhoto(BaseModel):
+    directory = 'photo/personal_offer'
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
+                                 related_name='personal_offer_photos')
+    photo = models.ImageField(upload_to=user_directory_path, verbose_name="Фотография")
+    description = models.TextField(verbose_name="Описание фотографии", help_text="Не больше 1024 символов",
+                                   max_length=1024, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Персональное предложение Фото"
+        verbose_name_plural = "Персональное предложение Фото"
+
+    def __str__(self):
+        return f"{self.building.name}"
+
+    @cached_property
+    def display_image(self):
+        html = '<a href="{img}"><img src="{img}" width="100" height="100"></a>'
+        if self.photo:
+            return format_html(html, img=self.photo.url)
+        return format_html('<strong>There is no image for this entry.<strong>')
+
+    display_image.short_description = 'Изображение'
+
+
 class AboutProjectVideo(BaseModel):
     directory = 'video/about_project'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",

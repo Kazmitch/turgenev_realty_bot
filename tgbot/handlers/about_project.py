@@ -16,17 +16,11 @@ async def project(call: CallbackQuery, callback_data: dict):
     album = MediaGroup()
     for photo in photo_set:
         file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
-        album.attach_photo(file)
+        description = photo.description if photo.description else None
+        album.attach_photo(file, caption=description)
     markup = await about_project_keyboard(building_name)
     await call.message.answer_media_group(album)
-    text = """HILL8 находится на первой линии проспекта Мира в двух минутах пешком от метро «Алексеевская», в Останкинском районе, с удобным выездом на крупные магистрали.\n
-Архитектура визуального комфорта, которая задает новую планку качества в мировом девелопменте:
-- Юрcкий мрамор, окна в пол, французские балконы, открытые террасы, современное инженерное и технологическое наполнение.
-- Поэтажное функциональное зонирование многофункционального комплекса HILL8. Распределение потоков посетителей и жильцов
-- Элегантное внутреннее убранство лобби и мест общего пользования от дизайнера Карима Рашида
-- Высота потолков не менее 3,0 м
-- Функциональность планировочных решений"""
-    await call.message.answer(text=text, reply_markup=markup)
+    await call.message.answer(text='Свяжитесь с нами для более подробной информации', reply_markup=markup)
     await log_stat(call.from_user, event='Нажатие кнопки "О проекте"')
     await insert_dict(call.from_user, event='Нажатие кнопки "О проекте"')
 

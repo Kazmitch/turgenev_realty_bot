@@ -8,7 +8,7 @@ from django.db.models import Q, QuerySet
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
     AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
     UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus, \
-    AnnouncementVideo, AboutProjectVideo, BusinessLifePhoto
+    AnnouncementVideo, AboutProjectVideo, BusinessLifePhoto, PersonalOfferPhoto
 
 
 @sync_to_async
@@ -113,6 +113,12 @@ def get_business_life_photo(building_name: str):
     photo = BusinessLifePhoto.objects.filter(building__latin_name=building_name).first()
     return photo
 
+
+@sync_to_async
+def get_personal_offer_photo(building_name: str):
+    """Получить объект PersonalOfferPhoto."""
+    photo = PersonalOfferPhoto.objects.filter(building__latin_name=building_name).first()
+    return photo
 
 @sync_to_async
 def get_about_project_photos(building_name: str) -> QuerySet[AboutProjectPhoto]:

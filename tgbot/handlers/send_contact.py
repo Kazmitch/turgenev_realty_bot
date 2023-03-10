@@ -1,16 +1,17 @@
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, ContentType
+from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, ContentType, InputFile
 
 from realty_bot.realty_bot.calltouch_api import make_calltouch_call_request, make_calltouch_callback_request
 from realty_bot.realty_bot.comagic_api import make_comagic_call_request
+from realty_bot.realty_bot.settings import MEDIA_ROOT
 from realty_bot.realty_bot.utils import correct_phone
 from tgbot.keyboards.building_menu import menu_markup
 from tgbot.keyboards.send_contact import contact, contact_cd
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.analytics import log_stat
 from tgbot.utils.clickhouse import insert_dict
-from tgbot.utils.dp_api.db_commands import create_requests, get_userbot
+from tgbot.utils.dp_api.db_commands import create_requests, get_userbot, get_personal_offer_photo
 from tgbot.utils.dp_api.db_commands import get_call_request
 
 
@@ -19,9 +20,12 @@ async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMConte
     await call.answer(cache_time=60)
     building_name = callback_data.get('building_name')
     await state.update_data(building_name=building_name)
-    msg = await call.message.answer(
-        text=f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
-             f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',
+    photo = await get_personal_offer_photo(building_name)
+    file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
+    msg = await call.message.answer_photo(
+        photo=file,
+        caption=f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
+                f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',
         reply_markup=contact)
     await state.update_data(msg_id=msg.message_id)
     await call.message.delete()
