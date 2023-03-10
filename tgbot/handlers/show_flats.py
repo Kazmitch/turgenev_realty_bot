@@ -19,8 +19,8 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
     building_name = data.get('building_name')
     ordering = 'price_low_to_high'
     rooms = callback_data.get('option')
-    offers = await get_offers(building_name, rooms, ordering, xml_id=1)
-    xml_link = await get_xml_link_by_name(building_name, xml_id=1)
+    offers = await get_offers(building_name, rooms, ordering)
+    xml_link = await get_xml_link_by_name(building_name)
     if offers:
         max_pages = len(offers)
         offer = await get_page(offers)
@@ -33,7 +33,7 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
             photo=file,
             caption=f'Стоимость: <b>{price} руб.</b>\n'
                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
-                    # f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
+                    f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>',
             reply_markup=await get_page_keyboard(
                 key='flat',
@@ -71,10 +71,10 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     building_name = data.get('building_name')
     ordering = 'price_low_to_high'
     rooms = callback_data.get('rooms')
-    offers = await get_offers(building_name, rooms, ordering, xml_id=1)
+    offers = await get_offers(building_name, rooms, ordering)
     current_page = int(callback_data.get('page'))
     offer = await get_page(offers, page=current_page)
-    xml_link = await get_xml_link_by_name(building_name, xml_id=1)
+    xml_link = await get_xml_link_by_name(building_name)
     offer_values = await get_values(offer, xml_link.type_of_xml)
     price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     photo_url = await get_photo_url(offer, xml_link.type_of_xml)
@@ -83,7 +83,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     media = InputMediaPhoto(media=file,
                             caption=f'Стоимость: <b>{price} руб.</b>\n'
                                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
-                                    # f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
+                                    f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>')
     max_pages = len(offers)
     await call.message.edit_media(

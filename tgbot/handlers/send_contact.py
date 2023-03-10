@@ -24,7 +24,8 @@ async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMConte
     file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
     msg = await call.message.answer_photo(
         photo=file,
-        caption=f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
+        caption=f'Получите персональное предложение в офисе продаж Turgenev!\n'
+                f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
                 f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',
         reply_markup=contact)
     await state.update_data(msg_id=msg.message_id)
