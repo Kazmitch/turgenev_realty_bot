@@ -17,7 +17,7 @@ from tgbot.utils.page import get_page
 async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
     data = await state.get_data()
     building_name = data.get('building_name')
-    ordering = 'price_low_to_high'
+    ordering = 'area_low_to_high'
     rooms = callback_data.get('option')
     offers = await get_offers(building_name, rooms, ordering)
     xml_link = await get_xml_link_by_name(building_name)
@@ -68,7 +68,7 @@ async def current_page_error(call: CallbackQuery):
 async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data: dict, **kwargs):
     data = await state.get_data()
     building_name = data.get('building_name')
-    ordering = 'price_low_to_high'
+    ordering = 'area_low_to_high'
     rooms = callback_data.get('rooms')
     offers = await get_offers(building_name, rooms, ordering)
     current_page = int(callback_data.get('page'))
