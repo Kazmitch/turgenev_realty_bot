@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import UserBot, Developer, Profile, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
     ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectVideo, Term, Construction, \
     SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus, \
-    AnnouncementVideo, AboutProjectPhoto, BusinessLifePhoto
+    AnnouncementVideo, AboutProjectPhoto, BusinessLifePhoto, PersonalOfferPhoto
 
 
 @admin.register(Profile)
@@ -121,6 +121,14 @@ class AnnouncementVideoAdmin(admin.ModelAdmin):
 
 @admin.register(BusinessLifePhoto)
 class BusinessLifePhotoAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'display_image', 'created_at', 'updated_at')
+    list_filter = ('building',)
+    search_fields = ('building',)
+    readonly_fields = ('display_image', 'created_at', 'updated_at')
+
+
+@admin.register(PersonalOfferPhoto)
+class PersonalOfferPhotoAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'display_image', 'created_at', 'updated_at')
     list_filter = ('building',)
     search_fields = ('building',)
