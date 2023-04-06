@@ -1,3 +1,5 @@
+from io import BytesIO
+
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto, InputFile
@@ -26,7 +28,7 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         offer = await get_page(offers)
         photo_url = await get_photo_url(offer, xml_link.type_of_xml)
         # photo = await resize_photo(photo_url)
-        bytes_photo = await get_photo_bytes(photo_url)
+        bytes_photo = BytesIO(await get_photo_bytes(photo_url))
         file = InputFile(path_or_bytesio=bytes_photo)
         offer_values = await get_values(offer, xml_link.type_of_xml)
         # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
@@ -79,7 +81,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     photo_url = await get_photo_url(offer, xml_link.type_of_xml)
     # photo = await resize_photo(photo_url)
-    bytes_photo = await get_photo_bytes(photo_url)
+    bytes_photo = BytesIO(await get_photo_bytes(photo_url))
     file = InputFile(path_or_bytesio=bytes_photo)
     media = InputMediaPhoto(media=file,
                             caption=f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
