@@ -9,7 +9,7 @@ from tgbot.states.send_contact import ContactStates
 from tgbot.utils.analytics import log_stat
 from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_xml_link_by_name
-from tgbot.utils.images import resize_photo
+from tgbot.utils.images import resize_photo, get_photo_bytes
 from tgbot.utils.offers import get_offers, get_photo_url, get_values
 from tgbot.utils.page import get_page
 
@@ -26,11 +26,12 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         offer = await get_page(offers)
         photo_url = await get_photo_url(offer, xml_link.type_of_xml)
         # photo = await resize_photo(photo_url)
-        # file = InputFile(path_or_bytesio=photo_url)
+        bytes_photo = await get_photo_bytes(photo_url)
+        file = InputFile(path_or_bytesio=bytes_photo)
         offer_values = await get_values(offer, xml_link.type_of_xml)
         # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
         await call.message.answer_photo(
-            photo=photo_url,
+            photo=file,
             caption=f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>',
@@ -78,8 +79,9 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     photo_url = await get_photo_url(offer, xml_link.type_of_xml)
     # photo = await resize_photo(photo_url)
-    # file = InputFile(path_or_bytesio=photo_url)
-    media = InputMediaPhoto(media=photo_url,
+    bytes_photo = await get_photo_bytes(photo_url)
+    file = InputFile(path_or_bytesio=bytes_photo)
+    media = InputMediaPhoto(media=file,
                             caption=f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>')
