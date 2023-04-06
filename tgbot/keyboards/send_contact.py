@@ -19,14 +19,19 @@ contact = ReplyKeyboardMarkup(
 
 
 async def count_rooms_or_skip(building_name: str):
+    markup = InlineKeyboardMarkup(row_width=1)
     callback_data = contact_cd.new(building_name=building_name)
-    request_contact_button = InlineKeyboardButton(text="🟤 Пропустить",
-                                                  callback_data=callback_data)
-    return request_contact_button
+    markup.inline_keyboard = [
+        [
+            InlineKeyboardButton(text="🟤 Пропустить",
+                                 callback_data=callback_data)
+        ]
+    ]
+    return markup
 
 
 async def contact_button(building_name: str):
     callback_data = count_rooms_cd.new(building_name=building_name)
     personal_offer = InlineKeyboardButton(text="🟤 Получить персональное предложение",
-                                                  callback_data=callback_data)
+                                          callback_data=callback_data)
     return personal_offer
