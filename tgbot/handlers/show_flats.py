@@ -25,8 +25,8 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         max_pages = len(offers)
         offer = await get_page(offers)
         photo_url = await get_photo_url(offer, xml_link.type_of_xml)
-        photo = await resize_photo(photo_url)
-        file = InputFile(path_or_bytesio=photo)
+        # photo = await resize_photo(photo_url)
+        file = InputFile(path_or_bytesio=photo_url)
         offer_values = await get_values(offer, xml_link.type_of_xml)
         # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
         await call.message.answer_photo(
@@ -77,8 +77,8 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     offer_values = await get_values(offer, xml_link.type_of_xml)
     # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     photo_url = await get_photo_url(offer, xml_link.type_of_xml)
-    photo = await resize_photo(photo_url)
-    file = InputFile(path_or_bytesio=photo)
+    # photo = await resize_photo(photo_url)
+    file = InputFile(path_or_bytesio=photo_url)
     media = InputMediaPhoto(media=file,
                             caption=f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
