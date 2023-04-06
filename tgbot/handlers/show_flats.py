@@ -78,7 +78,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     photo_url = await get_photo_url(offer, xml_link.type_of_xml)
     # photo = await resize_photo(photo_url)
-    file = InputFile(path_or_bytesio=photo_url)
+    # file = InputFile(path_or_bytesio=photo_url)
     media = InputMediaPhoto(media=photo_url,
                             caption=f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
