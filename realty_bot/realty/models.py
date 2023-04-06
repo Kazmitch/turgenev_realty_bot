@@ -386,7 +386,7 @@ class AboutProjectPhoto(BaseModel):
 class AboutProjectPresentation(BaseModel):
     directory = 'presentation/about_project'
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name="Жилой комплекс",
-                                 related_name='documentations')
+                                 related_name='presentations')
     title = models.CharField(verbose_name="Название презентации", max_length=255, null=True)
     document = models.FileField(upload_to=user_directory_path, verbose_name='Документ')
     order = models.FloatField(verbose_name="Порядок", default=10)
