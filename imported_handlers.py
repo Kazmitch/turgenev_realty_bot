@@ -1,4 +1,5 @@
 from tgbot.handlers.about_project import register_about_project
+from tgbot.handlers.about_project_presentation import register_presentation
 from tgbot.handlers.admin import register_admin
 from tgbot.handlers.business_life import register_business_life
 from tgbot.handlers.documentation import register_documentation
@@ -27,6 +28,7 @@ def register_all_handlers(dp):
     register_selection_flat(dp)
     register_show_flats(dp)
     register_show_special_offers(dp)
+    register_presentation(dp)
     register_documentation(dp)
     register_news(dp)
     register_construction(dp)

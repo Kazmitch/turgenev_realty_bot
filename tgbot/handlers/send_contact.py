@@ -1,3 +1,5 @@
+from typing import Union
+
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, ContentType, InputFile
@@ -7,7 +9,8 @@ from realty_bot.realty_bot.comagic_api import make_comagic_call_request
 from realty_bot.realty_bot.settings import MEDIA_ROOT
 from realty_bot.realty_bot.utils import correct_phone
 from tgbot.keyboards.building_menu import menu_markup
-from tgbot.keyboards.send_contact import contact, contact_cd
+from tgbot.keyboards.send_contact import contact, contact_cd, count_rooms_cd, count_rooms_or_skip
+from tgbot.states.count_rooms import CountRoomsStates
 from tgbot.states.send_contact import ContactStates
 from tgbot.utils.analytics import log_stat
 from tgbot.utils.clickhouse import insert_dict
@@ -15,24 +18,57 @@ from tgbot.utils.dp_api.db_commands import create_requests, get_userbot, get_per
 from tgbot.utils.dp_api.db_commands import get_call_request
 
 
-async def send_contact(call: CallbackQuery, callback_data: dict, state: FSMContext):
-    """Хендлер на кнопку 'Заказать обратный звонок'."""
+async def write_rooms_count(call: CallbackQuery, callback_data: dict, state: FSMContext):
+    """Хендлер на кнопку 'Получить персональное предложение'."""
     await call.answer(cache_time=60)
     building_name = callback_data.get('building_name')
     await state.update_data(building_name=building_name)
-    photo = await get_personal_offer_photo(building_name)
-    file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
-    msg = await call.message.answer_photo(
-        photo=file,
-        caption=f'Получите персональное предложение в офисе продаж Turgenev!\n'
-                f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
-                f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',
-        reply_markup=contact)
-    await state.update_data(msg_id=msg.message_id)
+    markup = await count_rooms_or_skip(building_name)
+    await call.message.answer(text='Укажите желаемое количество комнат. Можете написать или пропустить этот шаг.',
+                              reply_markup=markup)
     await call.message.delete()
-    await ContactStates.contact.set()
+    await CountRoomsStates.count.set()
     await log_stat(call.from_user, event='Нажатие кнопки "Обратный звонок"')
     await insert_dict(call.from_user, event='Нажатие кнопки "Обратный звонок"')
+
+
+async def send_contact(message: Union[CallbackQuery, Message], state: FSMContext, callback_data: dict = None):
+    """Хендлер на кнопку 'Заказать обратный звонок'."""
+    if isinstance(message, CallbackQuery):
+        call = message
+        await call.answer(cache_time=60)
+        building_name = callback_data.get('building_name')
+        await state.update_data(building_name=building_name)
+        photo = await get_personal_offer_photo(building_name)
+        file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
+        msg = await call.message.answer_photo(
+            photo=file,
+            caption=f'Получите персональное предложение в офисе продаж Turgenev!\n'
+                    f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
+                    f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',
+            reply_markup=contact)
+        await state.update_data(msg_id=msg.message_id)
+        await call.message.delete()
+        await ContactStates.contact.set()
+        await log_stat(call.from_user, event='Ввод количества комнат')
+        await insert_dict(call.from_user, event='Ввод количества комнат')
+    else:
+        data = await state.get_data()
+        rooms_text = message.text
+        building_name = data.get('building_name')
+        await state.update_data(rooms_count=rooms_text)
+        photo = await get_personal_offer_photo(building_name)
+        file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
+        msg = await message.answer_photo(
+            photo=file,
+            caption=f'Получите персональное предложение в офисе продаж Turgenev!\n'
+                    f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
+                    f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',
+            reply_markup=contact)
+        await state.update_data(msg_id=msg.message_id)
+        await ContactStates.contact.set()
+        await log_stat(message.from_user, event='Ввод количества комнат')
+        await insert_dict(message.from_user, event='Ввод количества комнат')
 
 
 async def get_contact(message: Message, state: FSMContext):
@@ -105,6 +141,8 @@ async def get_contact(message: Message, state: FSMContext):
 
 
 def register_send_contact(dp: Dispatcher):
-    dp.register_callback_query_handler(send_contact, contact_cd.filter(), state='*')
+    dp.register_callback_query_handler(write_rooms_count, count_rooms_cd.filter(), state='*')
+    dp.register_callback_query_handler(send_contact, contact_cd.filter(), state=CountRoomsStates.count)
+    dp.register_message_handler(send_contact, state=CountRoomsStates.count)
     dp.register_message_handler(get_contact, content_types=[ContentType.CONTACT, ContentType.TEXT],
                                 state=ContactStates.contact)

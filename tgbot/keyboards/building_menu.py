@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
+from tgbot.keyboards.flat_selection import flat_selection_cd
 from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button, contact_cd
 
@@ -20,16 +21,24 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       # ],
                                       [
                                           InlineKeyboardButton(
-                                              text='🟫 Подобрать квартиру',
+                                              text='🟤 О проекте',
+                                              callback_data=building.new(name=building_name, section='project')
+                                          )
+                                      ],
+                                      [
+                                          InlineKeyboardButton(
+                                              text='🟤 Подобрать квартиру',
                                               callback_data=building.new(name=building_name, section='flats')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='🟫 О проекте',
-                                              callback_data=building.new(name=building_name, section='project')
+                                              text='🟤 Подобрать пентхаус',
+                                              callback_data=flat_selection_cd.new(building_name=building_name,
+                                                                                  option='5')
                                           )
-                                      ]
+                                      ],
+
                                       # [
                                       #     InlineKeyboardButton(
                                       #         text='📄 Условия покупки',
@@ -44,7 +53,7 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
 
 async def menu_button(building_name: str):
     callback_data = menu_cd.new(name=building_name)
-    menu = InlineKeyboardButton(text="🟫 В начало", callback_data=callback_data)
+    menu = InlineKeyboardButton(text="🟤 В начало", callback_data=callback_data)
     return menu
 
 

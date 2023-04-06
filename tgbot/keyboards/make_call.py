@@ -7,5 +7,5 @@ call_cd = CallbackData('call', 'building_name')
 
 async def call_button(building_name: str):
     callback_data = call_cd.new(building_name=building_name)
-    call = InlineKeyboardButton(text="🟫 Позвонить в отдел продаж", callback_data=callback_data)
+    call = InlineKeyboardButton(text="🟤 Позвонить в отдел продаж", callback_data=callback_data)
     return call
