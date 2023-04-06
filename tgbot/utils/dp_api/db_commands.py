@@ -137,7 +137,7 @@ def get_about_project_presentations(building_name: str) -> QuerySet[AboutProject
 @sync_to_async
 def get_presentation_file(presentation_id: int) -> str:
     """Получаем путь документа по его id."""
-    presentation = AboutProjectPresentation.objects.filter(id=presentation_id)
+    presentation = AboutProjectPresentation.objects.filter(id=presentation_id).first()
     return presentation
 
 
