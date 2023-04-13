@@ -10,7 +10,7 @@ async def current_presentation_keyboard(building_name: str) -> InlineKeyboardMar
     markup = InlineKeyboardMarkup(row_width=1)
     markup.row(
         InlineKeyboardButton(
-            text='🟤 Вернуться',
+            text='🟫 Вернуться',
             callback_data=building.new(name=building_name, section='project')
         )
     )

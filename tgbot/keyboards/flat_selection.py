@@ -40,7 +40,7 @@ async def flat_selection_keyboard(building_name: str) -> InlineKeyboardMarkup:
     markup.row(await contact_button(building_name))
     markup.row(
         InlineKeyboardButton(
-            text='🟤 В начало',
+            text='🟫 В начало',
             callback_data=menu_cd.new(name=building_name)
         )
     )

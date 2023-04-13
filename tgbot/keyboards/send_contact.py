@@ -23,7 +23,7 @@ async def count_rooms_or_skip(building_name: str):
     callback_data = contact_cd.new(building_name=building_name)
     markup.inline_keyboard = [
         [
-            InlineKeyboardButton(text="🟤 Пропустить",
+            InlineKeyboardButton(text="🟫 Пропустить",
                                  callback_data=callback_data)
         ]
     ]
@@ -32,6 +32,6 @@ async def count_rooms_or_skip(building_name: str):
 
 async def contact_button(building_name: str):
     callback_data = count_rooms_cd.new(building_name=building_name)
-    personal_offer = InlineKeyboardButton(text="🟤 Получить персональное предложение",
+    personal_offer = InlineKeyboardButton(text="🟫 Получить персональное предложение",
                                           callback_data=callback_data)
     return personal_offer
