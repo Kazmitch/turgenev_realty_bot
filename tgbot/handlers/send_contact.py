@@ -43,7 +43,7 @@ async def send_contact(message: Union[CallbackQuery, Message], state: FSMContext
         file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
         msg = await call.message.answer_photo(
             photo=file,
-            caption=f'Получите персональное предложение в офисе продаж Turgenev!\n'
+            caption=f'Получите персональное предложение в офисе продаж TURGENEV!\n'
                     f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
                     f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',
             reply_markup=contact)
@@ -61,7 +61,7 @@ async def send_contact(message: Union[CallbackQuery, Message], state: FSMContext
         file = InputFile(path_or_bytesio=f'{MEDIA_ROOT}{photo.photo.name}')
         msg = await message.answer_photo(
             photo=file,
-            caption=f'Получите персональное предложение в офисе продаж Turgenev!\n'
+            caption=f'Получите персональное предложение в офисе продаж TURGENEV!\n'
                     f'Оставьте номер, мы свяжемся с вами и предложим варианты квартир под ваш запрос.\n'
                     f'Нажмите кнопку «Отправить контакт» или введите номер вручную, в формате <b>79091234567</b>',
             reply_markup=contact)
