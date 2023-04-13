@@ -21,21 +21,24 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       # ],
                                       [
                                           InlineKeyboardButton(
-                                              text='<div align="left">🟫 О проекте</div>',
-                                              callback_data=building.new(name=building_name, section='project')
+                                              text='🟫 О проекте',
+                                              callback_data=building.new(name=building_name, section='project'),
+                                              text_align='left'
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='<div align="left">🟫 Подобрать квартиру</div>',
-                                              callback_data=building.new(name=building_name, section='flats')
+                                              text='🟫 Подобрать квартиру',
+                                              callback_data=building.new(name=building_name, section='flats'),
+                                              text_align='left'
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='<div align="left">🟫 Подобрать пентхаус</div>',
+                                              text='🟫 Подобрать пентхаус',
                                               callback_data=flat_selection_cd.new(building_name=building_name,
-                                                                                  option='5')
+                                                                                  option='5'),
+                                              text_align='left'
                                           )
                                       ],
 
