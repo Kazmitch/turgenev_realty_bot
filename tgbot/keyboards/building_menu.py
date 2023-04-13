@@ -21,19 +21,19 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       # ],
                                       [
                                           InlineKeyboardButton(
-                                              text='<code>🟫 О проекте</code>',
+                                              text='<div align="left">🟫 О проекте</div>',
                                               callback_data=building.new(name=building_name, section='project')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='<code>🟫 Подобрать квартиру</code>',
+                                              text='<div align="left">🟫 Подобрать квартиру</div>',
                                               callback_data=building.new(name=building_name, section='flats')
                                           )
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='<code>🟫 Подобрать пентхаус</code>',
+                                              text='<div align="left">🟫 Подобрать пентхаус</div>',
                                               callback_data=flat_selection_cd.new(building_name=building_name,
                                                                                   option='5')
                                           )
