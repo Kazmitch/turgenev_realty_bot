@@ -11,44 +11,62 @@ menu_cd = CallbackData('menu', 'name')
 
 async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
     """Создаем клавиатуру для выбранного ЖК."""
+
+    button_1 = InlineKeyboardButton(
+        text="🟫 О проекте",
+        callback_data=building.new(name=building_name, section="project"),
+    )
+    button_2 = InlineKeyboardButton(
+        text="🟫 Подобрать квартиру",
+        callback_data=building.new(name=building_name, section="flats"),
+    )
+    button_3 = InlineKeyboardButton(
+        text="🟫 Подобрать пентхаус",
+        callback_data=flat_selection_cd.new(
+            building_name=building_name, option="5"
+        ),
+    )
     markup = InlineKeyboardMarkup(row_width=2,
                                   inline_keyboard=[
-                                      # [
-                                      #     InlineKeyboardButton(
-                                      #         text='🏢 Квартиры для жизни и инвестиций',
-                                      #         callback_data=building.new(name=building_name, section='business_life')
-                                      #     )
-                                      # ],
-                                      [
-                                          InlineKeyboardButton(
-                                              text='🟫 О проекте',
-                                              callback_data=building.new(name=building_name, section='project'),
-                                              text_align='left'
-                                          )
-                                      ],
-                                      [
-                                          InlineKeyboardButton(
-                                              text='🟫 Подобрать квартиру',
-                                              callback_data=building.new(name=building_name, section='flats'),
-                                              text_align='left'
-                                          )
-                                      ],
-                                      [
-                                          InlineKeyboardButton(
-                                              text='🟫 Подобрать пентхаус',
-                                              callback_data=flat_selection_cd.new(building_name=building_name,
-                                                                                  option='5'),
-                                              text_align='left'
-                                          )
-                                      ],
-
-                                      # [
-                                      #     InlineKeyboardButton(
-                                      #         text='📄 Условия покупки',
-                                      #         callback_data=building.new(name=building_name, section='purchase_terms')
-                                      #     )
-                                      # ]
+                                      [button_1],
+                                      [button_2],
+                                      [button_3],
                                   ])
+    # markup = InlineKeyboardMarkup(row_width=2,
+    #                               inline_keyboard=[
+    #                                   # [
+    #                                   #     InlineKeyboardButton(
+    #                                   #         text='🏢 Квартиры для жизни и инвестиций',
+    #                                   #         callback_data=building.new(name=building_name, section='business_life')
+    #                                   #     )
+    #                                   # ],
+    #                                   [
+    #                                       InlineKeyboardButton(
+    #                                           text='🟫 О проекте',
+    #                                           callback_data=building.new(name=building_name, section='project')
+    #                                       )
+    #                                   ],
+    #                                   [
+    #                                       InlineKeyboardButton(
+    #                                           text='🟫 Подобрать квартиру',
+    #                                           callback_data=building.new(name=building_name, section='flats')
+    #                                       )
+    #                                   ],
+    #                                   [
+    #                                       InlineKeyboardButton(
+    #                                           text='🟫 Подобрать пентхаус',
+    #                                           callback_data=flat_selection_cd.new(building_name=building_name,
+    #                                                                               option='5')
+    #                                       )
+    #                                   ],
+    #
+    #                                   # [
+    #                                   #     InlineKeyboardButton(
+    #                                   #         text='📄 Условия покупки',
+    #                                   #         callback_data=building.new(name=building_name, section='purchase_terms')
+    #                                   #     )
+    #                                   # ]
+    #                               ])
     markup.row(await call_button(building_name))
     markup.row(await contact_button(building_name))
     return markup
