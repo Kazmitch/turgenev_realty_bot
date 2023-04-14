@@ -54,7 +54,6 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n\n'
                     f'{plans if plans else ""}',
             reply_markup=await get_page_keyboard(
-                key='flat',
                 max_pages=max_pages,
                 building_name=building_name,
                 sort=ordering,
@@ -125,7 +124,6 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
         media=media,
         reply_markup=await get_page_keyboard(
             building_name=building_name,
-            key='flat',
             max_pages=max_pages,
             page=current_page,
             sort=ordering,
@@ -145,4 +143,4 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
 def register_show_flats(dp: Dispatcher):
     dp.register_callback_query_handler(show_chosen_flats, flat_selection_cd.filter(), state='*')
     dp.register_callback_query_handler(current_page_error, pagination_flats_call.filter(page='current_page'), state='*')
-    dp.register_callback_query_handler(show_chosen_page, pagination_flats_call.filter(key='flat'), state='*')
+    dp.register_callback_query_handler(show_chosen_page, pagination_flats_call.filter(), state='*')
