@@ -19,6 +19,7 @@ from tgbot.utils.page import get_page
 async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_data: dict):
     data = await state.get_data()
     building_name = data.get('building_name') or callback_data.get('building_name')
+    print(building_name)
     ordering = 'area_low_to_high'
     rooms = callback_data.get('option')
     offers = await get_offers(building_name, rooms, ordering)
