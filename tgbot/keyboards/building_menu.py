@@ -1,12 +1,12 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
+from tgbot.keyboards.flat_selection import flat_selection_cd
 from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
 building = CallbackData('building', 'name', 'section')
 menu_cd = CallbackData('menu', 'name')
-flat_selection_cd = CallbackData('selection', 'building_name', 'option')
 
 
 async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
