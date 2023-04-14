@@ -8,8 +8,8 @@ from tgbot.keyboards.send_contact import contact_button
 pagination_flats_call = CallbackData("paginator_flats", "key", "page", "sort", "rooms", "building_name")
 
 
-async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms: str, key="flat", page: int = 1,
-                            space=None):
+async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms: str, space: bool, key="flat",
+                            page: int = 1):
     # Клавиатура будет выглядеть вот так:
     # |<< | <5> | >>|
 
