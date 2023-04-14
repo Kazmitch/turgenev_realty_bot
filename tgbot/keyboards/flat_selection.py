@@ -17,21 +17,21 @@ async def flat_selection_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='1 спальня',
-                callback_data=flat_selection_cd.new(building_name=building_name, option='1', space=True)
+                callback_data=flat_selection_cd.new(building_name=building_name, option='1', space=1)
             ),
             InlineKeyboardButton(
                 text='2 спальни',
-                callback_data=flat_selection_cd.new(building_name=building_name, option='2', space=True)
+                callback_data=flat_selection_cd.new(building_name=building_name, option='2', space=1)
             )
         ],
         [
             InlineKeyboardButton(
                 text='3 спальни и более',
-                callback_data=flat_selection_cd.new(building_name=building_name, option='3', space=True)
+                callback_data=flat_selection_cd.new(building_name=building_name, option='3', space=1)
             ),
             InlineKeyboardButton(
                 text='Пентхаусы',
-                callback_data=flat_selection_cd.new(building_name=building_name, option='5', space=True)
+                callback_data=flat_selection_cd.new(building_name=building_name, option='5', space=1)
             )
         ]
     ]

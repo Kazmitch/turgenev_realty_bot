@@ -36,7 +36,7 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                           InlineKeyboardButton(
                                               text='🟫 Подобрать пентхаус',
                                               callback_data=flat_selection_cd.new(building_name=building_name,
-                                                                                  option='5', space=False)
+                                                                                  option='5', space=0)
                                           )
                                       ],
 

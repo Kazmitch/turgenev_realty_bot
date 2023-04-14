@@ -8,7 +8,7 @@ from tgbot.keyboards.send_contact import contact_button
 pagination_flats_call = CallbackData("paginator_flats", "page", "sort", "rooms", "building_name", "space")
 
 
-async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms: str, space: bool, page: int = 1):
+async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms: str, space: int, page: int = 1):
     # Клавиатура будет выглядеть вот так:
     # |<< | <5> | >>|
 
@@ -47,7 +47,7 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
             )
         )
     markup.row(await call_button(building_name))
-    if space:
+    if bool(int(space)):
         markup.row(
             InlineKeyboardButton(
                 text='🟫 Вернуться',
