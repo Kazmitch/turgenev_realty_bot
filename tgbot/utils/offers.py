@@ -135,7 +135,6 @@ async def sort_cian_offers(offers: list, type_sort):
 async def get_offers(building_name, rooms: str, sort: str) -> list:
     """Получаем список предложений на основе данных."""
     xml_link = await get_xml_link_by_name(building_name)
-    print(xml_link, xml_link.type_of_xml)
     if xml_link.type_of_xml == 'yandex':
         offers = await get_offers_yan(xml_link.xml_link, rooms)
         if sort is not None:

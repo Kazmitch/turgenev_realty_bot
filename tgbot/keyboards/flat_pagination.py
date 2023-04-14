@@ -5,10 +5,11 @@ from tgbot.keyboards.building_menu import menu_button, building
 from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
-pagination_flats_call = CallbackData("paginator_flats", "key", "page", "sort", "rooms")
+pagination_flats_call = CallbackData("paginator_flats", "key", "page", "sort", "rooms", "building_name")
 
 
-async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms: str, key="flat", page: int = 1):
+async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms: str, key="flat", page: int = 1,
+                            space=None):
     # Клавиатура будет выглядеть вот так:
     # |<< | <5> | >>|
 
@@ -25,14 +26,16 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
         markup.insert(
             InlineKeyboardButton(
                 text=previous_page_text,
-                callback_data=pagination_flats_call.new(key=key, page=previous_page, sort=sort, rooms=rooms)
+                callback_data=pagination_flats_call.new(key=key, page=previous_page, sort=sort, rooms=rooms,
+                                                        building_name=building_name)
             )
         )
 
     markup.insert(
         InlineKeyboardButton(
             text=current_page_text,
-            callback_data=pagination_flats_call.new(key=key, page="current_page", sort=sort, rooms=rooms)
+            callback_data=pagination_flats_call.new(key=key, page="current_page", sort=sort, rooms=rooms,
+                                                    building_name=building_name)
         )
     )
 
@@ -40,16 +43,18 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
         markup.insert(
             InlineKeyboardButton(
                 text=next_page_text,
-                callback_data=pagination_flats_call.new(key=key, page=next_page, sort=sort, rooms=rooms)
+                callback_data=pagination_flats_call.new(key=key, page=next_page, sort=sort, rooms=rooms,
+                                                        building_name=building_name)
             )
         )
     markup.row(await call_button(building_name))
-    markup.row(
-        InlineKeyboardButton(
-            text='🟫 Вернуться',
-            callback_data=building.new(name=building_name, section='flats')
+    if space:
+        markup.row(
+            InlineKeyboardButton(
+                text='🟫 Вернуться',
+                callback_data=building.new(name=building_name, section='flats')
+            )
         )
-    )
     markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 

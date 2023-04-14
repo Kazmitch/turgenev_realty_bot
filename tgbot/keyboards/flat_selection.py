@@ -4,7 +4,7 @@ from aiogram.utils.callback_data import CallbackData
 from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
-flat_selection_cd = CallbackData('selection', 'building_name', 'option')
+flat_selection_cd = CallbackData('selection', 'building_name', 'option', 'space')
 menu_cd = CallbackData('menu', 'name')
 
 
@@ -17,21 +17,21 @@ async def flat_selection_keyboard(building_name: str) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text='1 спальня',
-                callback_data=flat_selection_cd.new(building_name=building_name, option='1')
+                callback_data=flat_selection_cd.new(building_name=building_name, option='1', space=True)
             ),
             InlineKeyboardButton(
                 text='2 спальни',
-                callback_data=flat_selection_cd.new(building_name=building_name, option='2')
+                callback_data=flat_selection_cd.new(building_name=building_name, option='2', space=True)
             )
         ],
         [
             InlineKeyboardButton(
                 text='3 спальни и более',
-                callback_data=flat_selection_cd.new(building_name=building_name, option='3')
+                callback_data=flat_selection_cd.new(building_name=building_name, option='3', space=True)
             ),
             InlineKeyboardButton(
                 text='Пентхаусы',
-                callback_data=flat_selection_cd.new(building_name=building_name, option='5')
+                callback_data=flat_selection_cd.new(building_name=building_name, option='5', space=True)
             )
         ]
     ]
