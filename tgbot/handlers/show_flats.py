@@ -86,6 +86,7 @@ async def current_page_error(call: CallbackQuery):
 async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data: dict):
     data = await state.get_data()
     building_name = data.get('building_name') or callback_data.get('building_name')
+    print(building_name)
     ordering = 'area_low_to_high'
     rooms = callback_data.get('rooms')
     offers = await get_offers(building_name, rooms, ordering)
