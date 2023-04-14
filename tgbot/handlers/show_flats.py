@@ -22,6 +22,7 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
     ordering = 'area_low_to_high'
     rooms = callback_data.get('option')
     space = callback_data.get('space')
+    print(space, type(space))
     offers = await get_offers(building_name, rooms, ordering)
     xml_link = await get_xml_link_by_name(building_name)
     plans = None
@@ -90,6 +91,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     ordering = 'area_low_to_high'
     rooms = callback_data.get('rooms')
     space = callback_data.get('space')
+    print(space, type(space))
     offers = await get_offers(building_name, rooms, ordering)
     current_page = int(callback_data.get('page'))
     offer = await get_page(offers, page=current_page)
