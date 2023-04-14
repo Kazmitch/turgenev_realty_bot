@@ -5,7 +5,7 @@ from tgbot.keyboards.building_menu import menu_button, building
 from tgbot.keyboards.make_call import call_button
 from tgbot.keyboards.send_contact import contact_button
 
-pagination_flats_call = CallbackData("paginator_flats", "key", "page", "sort", "rooms", "building_name")
+pagination_flats_call = CallbackData("paginator_flats", "key", "page", "sort", "rooms", "building_name", "space")
 
 
 async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms: str, space: bool, key="flat",
@@ -27,7 +27,7 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
             InlineKeyboardButton(
                 text=previous_page_text,
                 callback_data=pagination_flats_call.new(key=key, page=previous_page, sort=sort, rooms=rooms,
-                                                        building_name=building_name)
+                                                        building_name=building_name, space=space)
             )
         )
 
@@ -35,7 +35,7 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
         InlineKeyboardButton(
             text=current_page_text,
             callback_data=pagination_flats_call.new(key=key, page="current_page", sort=sort, rooms=rooms,
-                                                    building_name=building_name)
+                                                    building_name=building_name, space=space)
         )
     )
 
@@ -44,7 +44,7 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
             InlineKeyboardButton(
                 text=next_page_text,
                 callback_data=pagination_flats_call.new(key=key, page=next_page, sort=sort, rooms=rooms,
-                                                        building_name=building_name)
+                                                        building_name=building_name, space=space)
             )
         )
     markup.row(await call_button(building_name))
