@@ -23,8 +23,9 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       # ],
                                       [
                                           InlineKeyboardButton(
-                                              text='🟫 О проекте&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
-                                              callback_data=building.new(name=building_name, section='project')
+                                              text='🟫 О проекте',
+                                              callback_data=building.new(name=building_name, section='project'),
+                                              align='left'
                                           )
                                       ],
                                       [
