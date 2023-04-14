@@ -36,6 +36,7 @@ async def get_values(offer: dict, type_xml: str) -> dict:
             'offer_price': offer.get('price').get('value'),
             'offer_rooms': offer.get('rooms'),
             'offer_floor': offer.get('floor'),
+            'offer_section': offer.get('building-section')
         }
     else:
         values = {

@@ -51,7 +51,8 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
             caption=f'Стоимость: <b>{price} руб.</b>\n'
                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
-                    f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n\n'
+                    f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n'
+                    f'Секция: <b>{offer_values.get("offer_section")}</b>\n\n'
                     f'{plans if plans else ""}',
             reply_markup=await get_page_keyboard(
                 max_pages=max_pages,
@@ -117,7 +118,8 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
                             caption=f'Стоимость: <b>{price} руб.</b>\n'
                                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
-                                    f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n\n'
+                                    f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n'
+                                    f'Секция: <b>{offer_values.get("offer_section")}</b>\n\n'
                                     f'{plans if plans else ""}')
     max_pages = len(offers)
     await call.message.edit_media(
