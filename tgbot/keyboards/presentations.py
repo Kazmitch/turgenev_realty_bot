@@ -13,7 +13,7 @@ presentation_cd = CallbackData('presentation', 'building_name', 'pres_id')
 
 async def presentation_keyboard(building_name: str) -> InlineKeyboardMarkup:
     """Создаем клавиатуру на кнопку 'О проекте'."""
-    markup = InlineKeyboardMarkup(row_width=2)
+    markup = InlineKeyboardMarkup(row_width=1)
 
     presentations = await get_about_project_presentations(building_name)
 
