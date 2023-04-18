@@ -35,18 +35,25 @@ async def main_building_menu(building_name: str) -> InlineKeyboardMarkup:
                                       ],
                                       [
                                           InlineKeyboardButton(
-                                              text='🟫 Подобрать квартиру',
+                                              text='🟫 Выбрать квартиру',
                                               callback_data=building.new(name=building_name, section='flats')
                                           ),
 
                                           InlineKeyboardButton(
-                                              text='🟫 Подобрать пентхаус',
+                                              text='🟫 Выбрать пентхаус',
                                               callback_data=flat_selection_cd.new(building_name=building_name,
                                                                                   option='5', space=0)
                                           ),
                                       ],
                                       [
-                                          await call_button(building_name),
+                                          InlineKeyboardButton(
+                                              text='🟫 Схема проезда',
+                                              callback_data=building.new(name=building_name, section='maps')
+                                          ),
+                                          await call_button(building_name)
+
+                                      ],
+                                      [
                                           await contact_button(building_name)
                                       ]
 

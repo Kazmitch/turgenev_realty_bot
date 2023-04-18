@@ -6,6 +6,7 @@ from tgbot.handlers.documentation import register_documentation
 from tgbot.handlers.dynamics import register_construction
 from tgbot.handlers.flat_selection import register_selection_flat
 from tgbot.handlers.make_call import register_make_call
+from tgbot.handlers.maps import register_maps
 from tgbot.handlers.menu import register_menu
 from tgbot.handlers.news import register_news
 from tgbot.handlers.presentations import register_presentations
@@ -26,6 +27,7 @@ def register_all_handlers(dp):
     register_business_life(dp)
     register_about_project(dp)
     register_presentations(dp)
+    register_maps(dp)
     register_show_gallery(dp)
     register_selection_flat(dp)
     register_show_flats(dp)
