@@ -47,7 +47,7 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
             )
         )
 
-    markup.insert(
+    markup.row(
         await call_button(building_name)
     )
 
