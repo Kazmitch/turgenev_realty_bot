@@ -27,7 +27,7 @@ async def presentation_keyboard(building_name: str) -> InlineKeyboardMarkup:
             )
         )
 
-    markup.insert(await call_button(building_name))
+    markup.row(await call_button(building_name))
     markup.insert(await contact_button(building_name))
     markup.insert(await menu_button(building_name))
 
