@@ -54,17 +54,15 @@ async def get_page_keyboard(max_pages: int, building_name: str, sort: str, rooms
     markup.insert(
         await contact_button(building_name)
     )
-
-    markup.row(
-        InlineKeyboardButton(
-            text='🟫 Вернуться',
-            callback_data=building.new(
-                name=building_name, section='flats'
-            ),
+    if bool(space):
+        markup.row(
+            InlineKeyboardButton(
+                text='🟫 Вернуться',
+                callback_data=building.new(
+                    name=building_name, section='flats'
+                )
+            )
         )
-        if bool(space)
-        else None
-    )
 
     markup.insert(
         await menu_button(building_name)
