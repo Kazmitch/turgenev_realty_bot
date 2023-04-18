@@ -48,7 +48,8 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
         await call.message.answer_photo(
             photo=file,
-            caption=f'Стоимость: <b>{price} руб.</b>\n'
+            caption=f'Тип: <b>{offer_values.get("offer_type_of_flat")}</b>\n'
+                    f'Стоимость: <b>{price} руб.</b>\n'
                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n'
@@ -115,7 +116,8 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
                 f'<a href="{photo_plan3}">Планировка</a>\n'
     file = InputFile(path_or_bytesio=bytes_photo)
     media = InputMediaPhoto(media=file,
-                            caption=f'Стоимость: <b>{price} руб.</b>\n'
+                            caption=f'Тип: <b>{offer_values.get("offer_type_of_flat")}</b>\n'
+                                    f'Стоимость: <b>{price} руб.</b>\n'
                                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n'

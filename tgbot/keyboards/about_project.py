@@ -13,22 +13,14 @@ presentation_cd = CallbackData('presentation', 'building_name', 'pres_id')
 
 async def about_project_keyboard(building_name: str) -> InlineKeyboardMarkup:
     """Создаем клавиатуру на кнопку 'О проекте'."""
-    markup = InlineKeyboardMarkup(row_width=1)
+    markup = InlineKeyboardMarkup(row_width=2,
+                                  inline_keyboard=[
+        [
+            await call_button(building_name),
+            await contact_button(building_name)
+        ]
+    ])
 
-    presentations = await get_about_project_presentations(building_name)
-
-    for presentation in presentations:
-        button_text = presentation.title
-
-        markup.insert(
-            InlineKeyboardButton(
-                text=button_text,
-                callback_data=presentation_cd.new(building_name=building_name, pres_id=presentation.id)
-            )
-        )
-
-    markup.row(await call_button(building_name))
-    markup.row(await contact_button(building_name))
     markup.row(await menu_button(building_name))
 
     return markup

@@ -1,5 +1,4 @@
 from aiogram import Dispatcher
-from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
 from tgbot.keyboards.building_menu import menu_markup
@@ -9,7 +8,7 @@ from tgbot.utils.clickhouse import insert_dict
 from tgbot.utils.dp_api.db_commands import get_sales_department, get_userbot, get_call_request
 
 
-async def make_call(call: CallbackQuery, callback_data: dict, state: FSMContext):
+async def make_call(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=60)
     building_name = callback_data.get('building_name')
     sales_department = await get_sales_department(building_name)
@@ -27,7 +26,7 @@ async def make_call(call: CallbackQuery, callback_data: dict, state: FSMContext)
     phone_number = call_campaign.phone_number
     department_text = sales_department.description
     markup = await menu_markup(building_name)
-    await call.message.answer(text=f'{department_text}\n\nТелефон отдела продаж:\n{phone_number}', reply_markup=markup)
+    await call.message.answer(text=f'Телефон отдела продаж:\n{phone_number}\n\n{department_text}', reply_markup=markup)
     await call.message.delete()
     await log_stat(call.from_user, event='Нажатие кнопки "Связаться с отделом продаж"')
     await insert_dict(call.from_user, event='Нажатие кнопки "Связаться с отделом продаж"')

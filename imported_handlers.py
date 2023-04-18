@@ -8,6 +8,7 @@ from tgbot.handlers.flat_selection import register_selection_flat
 from tgbot.handlers.make_call import register_make_call
 from tgbot.handlers.menu import register_menu
 from tgbot.handlers.news import register_news
+from tgbot.handlers.presentations import register_presentations
 from tgbot.handlers.purchase_terms import register_purchase_terms
 from tgbot.handlers.send_contact import register_send_contact
 from tgbot.handlers.show_flats import register_show_flats
@@ -24,6 +25,7 @@ def register_all_handlers(dp):
     register_send_contact(dp)
     register_business_life(dp)
     register_about_project(dp)
+    register_presentations(dp)
     register_show_gallery(dp)
     register_selection_flat(dp)
     register_show_flats(dp)
