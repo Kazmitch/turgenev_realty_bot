@@ -13,7 +13,7 @@ async def maps(call: CallbackQuery, callback_data: dict):
     """Хендлер на кнопку 'О проекте'"""
     building_name = callback_data.get('name')
     text = '<b>Офис продаж:\n' \
-           '</b><b><a href="https://yandex.ru/maps/-/CCU8JZd4wA">Схема проезда</a></b>' \
+           '</b><b><a href="https://yandex.ru/maps/-/CCU8JZd4wA">Схема проезда</a></b>\n\n' \
            '<b>Клубный дом TURGENEV:</b>\n' \
            '<b><a href="https://yandex.ru/maps/-/CCU8REghLA">Схема проезда</a></b>'
     await call.message.answer(text=text, reply_markup=await menu_markup(building_name))
