@@ -26,7 +26,8 @@ async def make_call(call: CallbackQuery, callback_data: dict):
     phone_number = call_campaign.phone_number
     department_text = sales_department.description
     markup = await menu_markup(building_name)
-    await call.message.answer(text=f'Телефон отдела продаж:\n{phone_number}\n\n{department_text}', reply_markup=markup)
+    await call.message.answer(text=f'Телефон отдела продаж:\n<b>{phone_number}</b>\n\n{department_text}',
+                              reply_markup=markup)
     await call.message.delete()
     await log_stat(call.from_user, event='Нажатие кнопки "Связаться с отделом продаж"')
     await insert_dict(call.from_user, event='Нажатие кнопки "Связаться с отделом продаж"')

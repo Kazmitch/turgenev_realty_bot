@@ -45,11 +45,10 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
                     f'<a href="{photo_plan3}">Планировка</a>\n'
         file = InputFile(path_or_bytesio=bytes_photo)
         offer_values = await get_values(offer, xml_link.type_of_xml)
-        price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
+        # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
         await call.message.answer_photo(
             photo=file,
             caption=f'Тип: <b>{offer_values.get("offer_type_of_flat")}</b>\n'
-                    f'Стоимость: <b>{price} руб.</b>\n'
                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n'
@@ -97,7 +96,7 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     offer = await get_page(offers, page=current_page)
     xml_link = await get_xml_link_by_name(building_name)
     offer_values = await get_values(offer, xml_link.type_of_xml)
-    price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
+    # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
     photos = await get_photo_url(offer, xml_link.type_of_xml)
     plans = None
     if len(photos) == 1:
@@ -117,7 +116,6 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     file = InputFile(path_or_bytesio=bytes_photo)
     media = InputMediaPhoto(media=file,
                             caption=f'Тип: <b>{offer_values.get("offer_type_of_flat")}</b>\n'
-                                    f'Стоимость: <b>{price} руб.</b>\n'
                                     f'Площадь: <b>{offer_values.get("offer_area")} м²</b>\n'
                                     f'Комнат: <b>{offer_values.get("offer_rooms") if offer_values.get("offer_rooms") else "Не указано"}</b>\n'
                                     f'Этаж: <b>{offer_values.get("offer_floor")}</b>\n'

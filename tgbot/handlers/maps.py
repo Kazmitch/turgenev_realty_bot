@@ -12,10 +12,7 @@ from tgbot.utils.dp_api.db_commands import get_about_project_photos
 async def maps(call: CallbackQuery, callback_data: dict):
     """Хендлер на кнопку 'О проекте'"""
     building_name = callback_data.get('name')
-    text = '<b>Офис продаж:\n' \
-           '</b><b><a href="https://yandex.ru/maps/-/CCU8JZd4wA">Схема проезда</a></b>\n\n' \
-           '<b>Клубный дом TURGENEV:</b>\n' \
-           '<b><a href="https://yandex.ru/maps/-/CCU8REghLA">Схема проезда</a></b>'
+    text = '<b><a href="https://yandex.ru/maps/213/moscow/?from=api-maps&ll=37.635749%2C55.769049&origin=jsapi_2_1_79&pt=37.635539%2C55.769297~37.638521%2C55.769383&z=16">Схема проезда</a></b>'
     await call.message.answer(text=text, reply_markup=await menu_markup(building_name))
     await log_stat(call.from_user, event='Нажатие кнопки "О проекте"')
     await insert_dict(call.from_user, event='Нажатие кнопки "О проекте"')
