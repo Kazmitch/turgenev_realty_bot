@@ -107,10 +107,8 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
         bytes_photo = BytesIO(await get_photo_bytes(photos[0]))
         photo_plan1 = photos[1]
         photo_plan2 = photos[2]
-        photo_plan3 = photos[3]
         plans = f'<a href="{photo_plan1}">Планировка</a>\n' \
-                f'<a href="{photo_plan2}">Планировка</a>\n' \
-                f'<a href="{photo_plan3}">Планировка</a>\n'
+                f'<a href="{photo_plan2}">Планировка</a>\n'
     file = InputFile(path_or_bytesio=bytes_photo)
     media = InputMediaPhoto(media=file,
                             caption=f'Тип: <b>{offer_values.get("offer_type_of_flat")}</b>\n'
