@@ -34,13 +34,20 @@ async def show_chosen_flats(call: CallbackQuery, state: FSMContext, callback_dat
         elif len(photos) == 2:
             bytes_photo = BytesIO(await get_photo_bytes(photos[0]))
             photo_plan = photos[1]
-            plans = f'<a href="{photo_plan}">Планировка</a>'
+            if rooms == '5':
+                plans = f'<a href="{photo_plan}">Планировка (терраса на кровле)</a>'
+            else:
+                plans = f'<a href="{photo_plan}">Планировка</a>'
         else:
             bytes_photo = BytesIO(await get_photo_bytes(photos[0]))
             photo_plan1 = photos[1]
             photo_plan2 = photos[2]
-            plans = f'<a href="{photo_plan1}">Планировка</a>\n' \
-                    f'<a href="{photo_plan2}">Планировка</a>\n'
+            if rooms == '5':
+                plans = f'<a href="{photo_plan1}">Планировка (уровень 2/ 8 этаж)</a>\n' \
+                        f'<a href="{photo_plan2}">Планировка (терраса на кровле)</a>\n'
+            else:
+                plans = f'<a href="{photo_plan1}">Планировка</a>\n' \
+                        f'<a href="{photo_plan2}">Планировка</a>\n'
         file = InputFile(path_or_bytesio=bytes_photo)
         offer_values = await get_values(offer, xml_link.type_of_xml)
         # price = f'{int(offer_values.get("offer_price").split(".")[0]):_}'.replace('_', ' ')
@@ -102,13 +109,20 @@ async def show_chosen_page(call: CallbackQuery, state: FSMContext, callback_data
     elif len(photos) == 2:
         bytes_photo = BytesIO(await get_photo_bytes(photos[0]))
         photo_plan = photos[1]
-        plans = f'<a href="{photo_plan}">Планировка</a>'
+        if rooms == '5':
+            plans = f'<a href="{photo_plan}">Планировка (терраса на кровле)</a>'
+        else:
+            plans = f'<a href="{photo_plan}">Планировка</a>'
     else:
         bytes_photo = BytesIO(await get_photo_bytes(photos[0]))
         photo_plan1 = photos[1]
         photo_plan2 = photos[2]
-        plans = f'<a href="{photo_plan1}">Планировка</a>\n' \
-                f'<a href="{photo_plan2}">Планировка</a>\n'
+        if rooms == '5':
+            plans = f'<a href="{photo_plan1}">Планировка (уровень 2/ 8 этаж)</a>\n' \
+                    f'<a href="{photo_plan2}">Планировка (терраса на кровле)</a>\n'
+        else:
+            plans = f'<a href="{photo_plan1}">Планировка</a>\n' \
+                    f'<a href="{photo_plan2}">Планировка</a>\n'
     file = InputFile(path_or_bytesio=bytes_photo)
     media = InputMediaPhoto(media=file,
                             caption=f'Тип: <b>{offer_values.get("offer_type_of_flat")}</b>\n'
