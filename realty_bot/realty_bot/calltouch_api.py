@@ -3,6 +3,7 @@ import logging
 import random
 from datetime import datetime
 
+import pytz
 import requests
 from aiogram import Bot
 
@@ -36,11 +37,16 @@ async def make_calltouch_call_request(token: str, site_id: str, source: str, nam
                 {
                     "requestNumber": query_id,
                     "subject": source,
-                    "requestDate": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+                    "requestDate": datetime.now(pytz.timezone("Europe/Moscow")).strftime("%d-%m-%Y %H:%M:%S"),
                     "phoneNumber": phone_number,
                     "fio": name,
                     "comment": {
                         "text": f"{data}"
+                    },
+                    "customSources": {
+                        "source": source,
+                        "medium": source,
+                        "campaign": source
                     }
                 }
             ]
@@ -87,7 +93,7 @@ async def make_calltouch_callback_request(token: str, route_key: str, source: st
             {"name": "Дополнительная информация",
              "value": f"{data}"}
         ],
-        "scheduleTime": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+        "scheduleTime": datetime.now(pytz.timezone("Europe/Moscow")).strftime("%d-%m-%Y %H:%M:%S"),
         "utmSource": source,
         "utmMedium": source,
         "utmCampaign": source
