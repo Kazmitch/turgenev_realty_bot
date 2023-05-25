@@ -98,7 +98,7 @@ async def get_contact(message: Message, state: FSMContext):
                                                            phone_number=phone_number,
                                                            data=data, source=source, source_id=source_id.get(source))
             if call_request:
-                await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
+                await message.answer(text='Благодарим Вас! Ожидайте звонок.', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
                 await create_requests(building_name, message.from_user.id, phone_number, data)
                 await log_stat(message.from_user, event=f'Отправили контакт в Comagic с {source_id}')
@@ -124,7 +124,7 @@ async def get_contact(message: Message, state: FSMContext):
                                                                  name=telegram_first_name,
                                                                  phone_number=phone_number, data=data)
             if call_request:
-                await message.answer(text='Готово, вы великолепны!', reply_markup=ReplyKeyboardRemove())
+                await message.answer(text='Благодарим Вас! Ожидайте звонок.', reply_markup=ReplyKeyboardRemove())
                 await message.answer(text='Вы можете вернуться в главное меню', reply_markup=markup)
                 await create_requests(building_name, message.from_user.id, phone_number, data)
                 await log_stat(message.from_user, event=f'Отправили контакт в Calltouch с {source_id}')
