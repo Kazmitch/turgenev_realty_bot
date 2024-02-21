@@ -137,10 +137,9 @@ async def broadcaster_delete(mailing_id: str) -> int:
     count = 0
     try:
         for mailing in list(await get_mailing(mailing_id)):
-            for i in range(460, 520):
-                user_id, msg_id = mailing.user_bot.telegram_id, int(mailing.msg_id) - i
-                if await delete_message(user_id, msg_id):
-                    count += 1
+            user_id, msg_id = mailing.user_bot.telegram_id, int(mailing.msg_id)
+            if await delete_message(user_id, msg_id):
+                count += 1
         await asyncio.sleep(.05)
     finally:
         logger.info(f"{count} messages successful deleted.")
