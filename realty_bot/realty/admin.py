@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import UserBot, Developer, Profile, Address, Building, News, XmlLink, SpecialOffer, LocationPhoto, \
     ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Documentation, AboutProjectVideo, Term, Construction, \
     SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus, \
-    AnnouncementVideo, AboutProjectPhoto, BusinessLifePhoto, PersonalOfferPhoto, AboutProjectPresentation
+    AnnouncementVideo, AboutProjectPhoto, BusinessLifePhoto, PersonalOfferPhoto, AboutProjectPresentation, Mailing
 
 
 @admin.register(Profile)
@@ -217,7 +217,9 @@ class RequestAdmin(admin.ModelAdmin):
 
 @admin.register(CallTrackingCampaign)
 class CallTrackingCampaignAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'campaign_name', 'start_button', 'call_tracking_name', 'phone_number', 'developer', 'url_base64_encode', 'campaign_id', 'site_id', 'created_at', 'updated_at')
+    list_display = (
+    '__str__', 'campaign_name', 'start_button', 'call_tracking_name', 'phone_number', 'developer', 'url_base64_encode',
+    'campaign_id', 'site_id', 'created_at', 'updated_at')
     list_filter = ('developer', 'call_tracking_name')
     search_fields = ('developer', 'call_tracking_name')
     fieldsets = (
@@ -235,7 +237,7 @@ class CallTrackingCampaignAdmin(admin.ModelAdmin):
                        'phone_number',
                        'created_at',
                        'updated_at'
-)
+                       )
         }),
     )
     readonly_fields = ['__str__', 'created_at', 'updated_at', 'url_base64_encode']
@@ -246,3 +248,10 @@ class CallTrackingCampaignCredentialsAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'developer', 'access_token')
     list_filter = ('developer', 'building')
     search_fields = ('developer', 'building')
+
+
+@admin.register(Mailing)
+class MailingAdmin(admin.ModelAdmin):
+    list_display = ('mailing_id', 'user_bot', 'msg_id')
+    list_filter = ('mailing_id', 'user_bot')
+    search_fields = ('mailing_id', 'user_bot')

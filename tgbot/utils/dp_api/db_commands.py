@@ -8,7 +8,7 @@ from django.db.models import Q, QuerySet
 from realty_bot.realty.models import Developer, Building, XmlLink, SpecialOffer, Documentation, \
     AboutProjectPhoto, LocationPhoto, ProcessingCorpusPhoto, InteriorPhoto, ShowRoomPhoto, Term, News, Construction, \
     UserBot, SalesDepartment, CallRequest, CallTrackingCampaign, CallTrackingCampaignCredentials, ProgressVideo, Corpus, \
-    AnnouncementVideo, AboutProjectVideo, BusinessLifePhoto, PersonalOfferPhoto, AboutProjectPresentation
+    AnnouncementVideo, AboutProjectVideo, BusinessLifePhoto, PersonalOfferPhoto, AboutProjectPresentation, Mailing
 
 
 @sync_to_async
@@ -238,3 +238,20 @@ def get_start_campaign() -> CallTrackingCampaign:
     """Получаем объект рекламной кампании с органикой."""
     campaign = CallTrackingCampaign.objects.filter(start_button=True).first()
     return campaign
+
+
+async def create_mailing(send_id: str, user_id: str, msg_id: str):
+    """Сохраняем рассылку."""
+    user = await UserBot.objects.filter(telegram_id=user_id).afirst()
+    await Mailing.objects.acreate(
+        mailing_id=send_id,
+        user_bot=user,
+        msg_id=msg_id
+    )
+
+
+@sync_to_async
+def get_mailing(mailing_id: str):
+    """Получаем объект рассылки."""
+    mailing = list(Mailing.objects.prefetch_related('user_bot').filter(mailing_id=mailing_id))
+    return mailing

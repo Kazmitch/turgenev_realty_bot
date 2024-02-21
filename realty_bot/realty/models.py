@@ -720,14 +720,31 @@ class CallTrackingCampaign(BaseModel):
     @property
     def url_base64_encode(self, **kwargs):
         if self.building.latin_name and (self.campaign_id and self.site_id):
-            encoded_url = encode_decode_values(f'{self.building.latin_name}&ct={self.call_tracking_name}&s_id={self.site_id}&c_id={self.campaign_id}')
+            encoded_url = encode_decode_values(
+                f'{self.building.latin_name}&ct={self.call_tracking_name}&s_id={self.site_id}&c_id={self.campaign_id}')
             return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'
         elif self.building.latin_name and (self.campaign_id or self.site_id):
             if self.campaign_id:
-                encoded_url = encode_decode_values(f'{self.building.latin_name}&ct={self.call_tracking_name}&c_id={self.campaign_id}')
+                encoded_url = encode_decode_values(
+                    f'{self.building.latin_name}&ct={self.call_tracking_name}&c_id={self.campaign_id}')
                 return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'
             elif self.site_id:
-                encoded_url = encode_decode_values(f'{self.building.latin_name}&ct={self.call_tracking_name}&s_id={self.site_id}')
+                encoded_url = encode_decode_values(
+                    f'{self.building.latin_name}&ct={self.call_tracking_name}&s_id={self.site_id}')
                 return f'https://t.me/{env.str("BOT_NAME")}?start={encoded_url}'
         else:
             return f'Не заполнено поле: {self.building.latin_name} или {self.campaign_id} или {self.site_id}'
+
+
+class Mailing(BaseModel):
+    mailing_id = models.CharField(verbose_name="ID рассылки", max_length=32, null=True)
+    user_bot = models.ForeignKey(UserBot, verbose_name="Пользователь бота", on_delete=models.CASCADE,
+                                 related_name="users", null=True)
+    msg_id = models.CharField(verbose_name="ID сообщения", max_length=32)
+
+    class Meta:
+        verbose_name = "Рассылка"
+        verbose_name_plural = "Рассылки"
+
+    def __str__(self):
+        return f"{self.user_bot}"
