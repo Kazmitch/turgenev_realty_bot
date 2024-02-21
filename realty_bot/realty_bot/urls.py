@@ -23,7 +23,9 @@ from realty_bot.realty import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/mailing', views.mailing_request)
+    path('api/mailing', views.mailing_request),
+    path('api/edit_mailing', views.edit_mailing),
+    path('api/delete_mailing', views.delete_mailing)
 ]
 
 if settings.DEBUG:
